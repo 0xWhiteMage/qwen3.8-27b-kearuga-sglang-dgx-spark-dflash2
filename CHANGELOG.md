@@ -47,7 +47,7 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 ## [v0.4.0] - 2026-08-21
 
 ### 🎛️ Operational Parameters & Quality Controls
-* **Reasoning Effort Controls**: Standardized default `REASONING_EFFORT=medium`, $T=0.6$, and $\text{Top-}P=0.95$ across launchers and benchmark suites to ensure consistent decoding behavior.
+* **Reasoning Effort Controls**: Standardized default `REASONING_EFFORT=medium`, `T=0.6`, and `Top-P=0.95` across launchers and benchmark suites to ensure consistent decoding behavior.
 * **Quality Dataset Audit**: Integrated the 200-question multi-domain verification dataset across GSM8K, HumanEval, IFEval, and agentic coding.
 * **Cross-Platform Manifest Hardening**: Enforced bit-exact Linux LF line endings via `.gitattributes` to guarantee 100% cross-platform parity.
 

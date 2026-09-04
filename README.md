@@ -30,10 +30,10 @@ This repository provides certified production container launchers, hardware conf
 See the complete chronological release history in **[CHANGELOG.md](CHANGELOG.md)**.
 
 ### 🌟 v0.5.0 Release Highlights
-* 🎯 **New Production Checkpoint ([Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga))**: Upgraded to a hybrid GPTQ-4o6 + FP8 + NVFP4 architecture that cuts served first-token KL divergence in half ($0.0334 \rightarrow 0.0165$) vs. legacy NVFP4 builds, with 40/40 top-1 agreement and a 24.85 GB footprint.
+* 🎯 **New Production Checkpoint ([Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga))**: Upgraded to a hybrid GPTQ-4o6 + FP8 + NVFP4 architecture that cuts served first-token KL divergence in half (0.0334 → 0.0165) vs. legacy NVFP4 builds, with 40/40 top-1 agreement and a 24.85 GB footprint.
 * ⚡ **Official SGLang Image Migration**: Switched to `lmsysorg/sglang@sha256:616a3e97…` — with upstream integration of DFlash 2 PRs (`sglang#35371, #35496`), external kernel overlays are no longer required. Time-To-First-Token (TTFT) improved by −6%.
 * 🎛️ **Sweep-Validated K=10 Draft Block**: K=10 demonstrated Pareto optimality across all test domains (K=8 loses 7–12% code/math acceptance; K=12/16 degrade prose/IFEval and C4 throughput).
-* 🧊 **BF16 KV Cache by Default**: Preserves maximum logit fidelity ($D_{\text{KL}} 0.0170 \rightarrow 0.0165$, exact 32-token continuations $19 \rightarrow 20/40$) with negligible compute overhead.
+* 🧊 **BF16 KV Cache by Default**: Preserves maximum logit fidelity (KL: 0.0170 → 0.0165, exact 32-token continuations: 20/40 vs 19/40) with negligible compute overhead.
 
 ---
 
@@ -207,6 +207,6 @@ If you build upon this work, please cite:
   author={0xWhiteMage},
   year={2026},
   publisher={GitHub},
-  howpublished={\url{https://github.com/0xWhiteMage/Qwen3.8-27B-Kearuga-SGLang-DGX-Spark-DFlash2}}
+  url={https://github.com/0xWhiteMage/qwen3.8-27b-kearuga-sglang-dgx-spark-dflash2}
 }
 ```

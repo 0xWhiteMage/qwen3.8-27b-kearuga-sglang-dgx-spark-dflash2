@@ -41,7 +41,7 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 ```
 
 ### ⚡ DFlash 2: The Interactive Daily Driver (C1–C4)
-* **How It Works**: Traditional speculative drafters draft tokens sequentially ($O(K)$ steps). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks ($\gamma = 10$) in a single forward pass ($O(1)$ step).
+* **How It Works**: Traditional speculative drafters draft tokens sequentially (sequential O(K) steps). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=10) in a single forward pass (single-step O(1)).
 * **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **30.9 tok/s C1 (reasoning on)** and up to **65+ tok/s (thinking off)** on DGX Spark unified memory.
 
 ### 🦅 EAGLE 3/1/4: High-Concurrency Agent Workloads (C8–C32)
@@ -89,15 +89,19 @@ Applying sensitivity lessons from mixed-precision research ([`malaiwah/qwen38-27
 * **Outcome**: A compact **24.85 GB** model running with full Blackwell Tensor Core acceleration while preserving **40/40 top-1 token agreement** with the BF16 base and passing **157/180 Quality-200 objective gates** (GSM8K, HumanEval, IFEval, agentic coding).
 
 #### Four-Over-Six (4o6) Group Scales
-Standard GPTQ uses a single group scale per block ($\text{amax} \rightarrow \text{code } 6$). Four-Over-Six instead evaluates dynamic range per block and chooses the better of:
+Standard GPTQ uses a single group scale per block (amax → code 6). Four-Over-Six instead evaluates dynamic range per block and chooses the better of:
 - **amax → 6** (standard: larger dynamic range, slightly lower precision)
 - **amax → 4** (alternative: higher precision for blocks with tight local distribution)
 
-In our calibration, **44.7% of blocks chose Code 4**. This reduces Hessian-weighted MSE by 16% ($0.529 \rightarrow 0.445$) and cuts held-out KL divergence by 21.7% at identical bytes/step and identical serving format.
+In our calibration, **44.7% of blocks chose Code 4**. This reduces Hessian-weighted MSE by 16% (0.529 → 0.445) and cuts held-out KL divergence by 21.7% at identical bytes/step and identical serving format.
 
 #### Fused-Shared Global Scale (Serving Contract)
 SGLang fuses `gate_proj` + `up_proj` into a single linear kernel and uses `weight_scale_2.max()` for the pair. Kearuga writes identical `weight_scale_2` for gate and up of every layer by computing a shared global scale:
-$$\text{scale}_{\text{shared}} = \max\left(\text{amax}(\text{gate}), \text{amax}(\text{up})\right)$$
+
+```text
+scale_shared = max(amax(gate), amax(up))
+```
+
 Without this synchronization, one half of every fused MLP would be dequantized with a ~1.9× wrong scale, corrupting generation.
 
 ---
