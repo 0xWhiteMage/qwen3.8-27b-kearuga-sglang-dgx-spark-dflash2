@@ -4,6 +4,24 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.5.0] - 2026-09-05
+
+### 🎯 New Production Checkpoint — Hybrid GPTQ-4o6 + FP8
+* **Promoted [Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)**: New hybrid quantization checkpoint combining GPTQ with Four-Over-Six group scales (120 MLP tensors), NVFP4 AWQ (60 down_proj tensors), FP8 e4m3 (195 GDN/attention projections + 10 boundary MLP modules). Total footprint 24.85 GB.
+* **Fidelity Validation**: Served Fidelity-40 mean KL **0.0165** (−50.6% vs previous NVFP4-only checkpoint), top-1 agreement **40/40**, exact 32-token continuation **20/40**. Held-out full-vocab KL **0.0208** (top-1 95.0%). Quality-200 objective **157/180**.
+* **Speed**: C1 decode **30.9 tok/s** (+4.4%), C4 aggregate **98.3 tok/s** (+2.2%), at −0.89 GB/step smaller footprint.
+
+### ⚡ Serving Migration — Official Image, No Overlay
+* **Migrated to `lmsysorg/sglang@sha256:616a3e97…`**: The V5 checkpoint has no NVFP4_AWQ layers, so the 5-file kernel overlay is no longer needed. TTFT improved −6%.
+* **K=10 Draft Block**: Sweep-validated across K=8/10/12/16 as the only value not "worse" on any C1 domain. K=8 loses code/math 7–12%; K=12/16 lose prose/ifeval and C4.
+* **KV Cache bf16**: Fidelity-first default — KL 0.0170→0.0165, exact 19→20/40, speed cost within noise.
+
+### 📊 Hugging Face Integration
+* **Model card published** at [0xWhiteMage/Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) with full fidelity analysis, quantization architecture, serving instructions, and cross-references to this repository.
+* **Repository and model card interconnected**: Hugging Face model card links here for the serving suite and verification harness; this repository links to Hugging Face for the checkpoint and fidelity analysis.
+
+---
+
 ## [v0.4.1] - 2026-08-22
 
 ### 🎯 Target Model & Checkpoint Integrity

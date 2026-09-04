@@ -53,15 +53,15 @@ else:
     report("DFlash 2 Native BF16 Checkpoint", True, "Hosted on Hugging Face (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)")
 
 # Custom Hybrid Target Checkpoint
-hybrid_dir = REPO / "models" / "Qwen3.8-27B-Kearuga-NVFP4"
+hybrid_dir = REPO / "models" / "Qwen3.8-27B-Kearuga"
 if hybrid_dir.exists():
     shards = list(hybrid_dir.glob("*.safetensors"))
     sz_gb = sum(s.stat().st_size for s in shards) / (1024 ** 3)
     cfg_exists = (hybrid_dir / "config.json").exists()
-    ok = (len(shards) == 18 and cfg_exists and sz_gb > 25.0)
-    report("Custom Hybrid NVFP4 Target Checkpoint", ok, f"Local {sz_gb:.2f} GiB across {len(shards)} shards, 180 NVFP4, 260 FP8, 759 BF16, 0 NaNs")
+    ok = (len(shards) >= 3 and cfg_exists and sz_gb > 20.0)
+    report("Hybrid GPTQ-4o6 + FP8 Target Checkpoint", ok, f"Local {sz_gb:.2f} GiB across {len(shards)} shards")
 else:
-    report("Custom Hybrid NVFP4 Target Checkpoint", True, "Hosted on Hugging Face (0xWhiteMage/Qwen3.8-27B-Kearuga-NVFP4)")
+    report("Hybrid GPTQ-4o6 + FP8 Target Checkpoint", True, "Hosted on Hugging Face (0xWhiteMage/Qwen3.8-27B-Kearuga)")
 
 # Check HF cache for base checkpoints
 hf_hub = Path(os.path.expanduser("~/.cache/huggingface/hub"))

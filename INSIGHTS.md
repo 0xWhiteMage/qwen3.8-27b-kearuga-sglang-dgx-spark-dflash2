@@ -62,26 +62,38 @@ Applying a single quantization format across all layers (e.g. uniform INT4 or un
 
 ### ✅ The Kearuga Solution: EXL3-Inspired Tiered Sensitivity Hierarchy
 
-Applying sensitivity lessons from mixed-precision research ([`malaiwah/qwen38-27b-exl3`](https://github.com/malaiwah/qwen38-27b-exl3)), **`Qwen3.8-27B-Kearuga-NVFP4`** splits model weights into three distinct precision tiers:
+Applying sensitivity lessons from mixed-precision research ([`malaiwah/qwen38-27b-exl3`](https://github.com/malaiwah/qwen38-27b-exl3)), **[`Qwen3.8-27B-Kearuga`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** splits model weights into four distinct precision tiers:
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                        Kearuga Tiered Sensitivity Hierarchy                            │
-├─────────┬──────────────────────────────────┬──────────────┬────────────────────────────┤
-│ Tier    │ Layers & Tensors                 │ Precision    │ Architectural Purpose      │
-├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────┤
-│ Tier 1  │ embed_tokens, lm_head,           │ BF16 / FP16  │ Protects vocabulary logit  │
-│         │ 27 Vision Blocks (333 tensors)   │              │ tails, multimodal reasoning│
-├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────┤
-│ Tier 2  │ Attention Projections (Q, K, V, O)│ FP8 (e4m3)   │ Preserves draft feature    │
-│         │ GDN Recurrence (in_proj)         │              │ taps & numerical stability │
-├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────┤
-│ Tier 3  │ Middle MLP Blocks (Layers 2–61)  │ NVFP4        │ Maximum Blackwell Tensor   │
-│         │ (gate_proj, up_proj, down_proj)  │ (ModelOpt)   │ Core acceleration (~70% wt)│
-└─────────┴──────────────────────────────────┴──────────────┴────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────────┐
+│                        Kearuga Tiered Sensitivity Hierarchy (v0.5.0)                        │
+├─────────┬──────────────────────────────────┬──────────────┬────────────────────────────────┤
+│ Tier    │ Layers & Tensors                 │ Precision    │ Architectural Purpose          │
+├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────────┤
+│ Tier 1  │ embed_tokens, lm_head,           │ BF16 / FP16  │ Protects vocabulary logit      │
+│         │ 27 Vision Blocks (333 tensors)   │              │ tails, multimodal reasoning    │
+├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────────┤
+│ Tier 2  │ Attention Projections (Q, K, V, O)│ FP8 (e4m3)   │ Preserves draft feature        │
+│         │ GDN Recurrence (in_proj)         │              │ taps & numerical stability     │
+│         │ Boundary MLP (layers 0,1,62,63)  │              │                                │
+├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────────┤
+│ Tier 3  │ MLP gate_proj + up_proj          │ GPTQ-4o6     │ Four-Over-Six group scales     │
+│         │ (Layers 2–61, 120 tensors)       │ W4A16 NVFP4  │ remove 21.7% of weight KL      │
+├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────────┤
+│ Tier 4  │ MLP down_proj                    │ NVFP4 AWQ    │ ModelOpt AWQ export, retained  │
+│         │ (Layers 2–61, 60 tensors)        │              │ from certified checkpoint      │
+└─────────┴──────────────────────────────────┴──────────────┴────────────────────────────────┘
 ```
 
-* **Outcome**: A compact **31.37 GiB** model running with full Blackwell Tensor Core acceleration while retaining **100% pass rates across GSM8K, HumanEval, IFEval, and 262K Needle-In-A-Haystack retrieval**.
+* **Outcome**: A compact **24.85 GB** model running with full Blackwell Tensor Core acceleration while preserving **40/40 top-1 token agreement** with the BF16 base and passing **157/180 Quality-200 objective gates** (GSM8K, HumanEval, IFEval, agentic coding).
+
+#### Four-Over-Six (4o6) Group Scales
+
+Standard GPTQ uses a single group scale per block (amax → code 6). Four-Over-Six instead chooses, per block, the better of:
+- **amax → 6** (standard: more range, less precision)
+- **amax → 4** (alternative: less range, more precision for blocks with tight dynamic range)
+
+44.7% of blocks chose code 4. This reduces the Hessian-weighted MSE by 16% vs plain RTN group scales, and reduces held-out KL by 21.7% at identical bytes/step and identical serving format.
 
 ---
 
@@ -124,11 +136,11 @@ DFlash 2 operates by conditioning on intermediate features from the target model
 > *"A single 128 GB DGX Spark serves the 27-billion parameter dense model with abundant headroom."*
 
 ### Serving on a Single 128 GB DGX Spark (Comfortable Headroom)
-* **Target Model (ModelOpt NVFP4)**: 31.37 GiB
-* **DFlash 2 Drafter (Selective Hybrid)**: 2.39 GiB
-* **1M-Token FP8 KV Cache Pool**: 32.00 GiB
+* **Target Model (Hybrid GPTQ-4o6 + FP8 + NVFP4)**: 24.85 GiB
+* **DFlash 2 Drafter (Selective Hybrid)**: 3.58 GiB
+* **1M-Token KV Cache Pool (bf16)**: 32.00 GiB
 * **SGLang & PyTorch Runtime Overhead**: ~4.00 GiB
-* **Total Serving Footprint**: **~69.76 GiB (fits easily within 128 GB Unified Memory with >58 GiB headroom)**.
+* **Total Serving Footprint**: **~64.4 GiB (fits easily within 128 GB Unified Memory with >63 GiB headroom)**.
 
 ---
 

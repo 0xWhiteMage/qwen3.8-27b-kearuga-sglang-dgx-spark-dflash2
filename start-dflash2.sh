@@ -26,11 +26,10 @@ if [[ -f "${SCRIPT_DIR}/.env" ]]; then
   done < "${SCRIPT_DIR}/.env"
 fi
 
-DFLASH_IMAGE="${DFLASH_IMAGE:-lmsysorg/sglang:qwen38-27b-dflash2}"
-TARGET_MODEL="${TARGET_MODEL:-0xWhiteMage/Qwen3.8-27B-Kearuga-NVFP4}"
-TARGET_REV="${TARGET_REV:-8ea86bdcdd34c84b3d25b69fb7fcc8fc48d0cdd0}"
-DFLASH_MODEL="${DFLASH_MODEL:-0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2}"
-DFLASH_REV="${DFLASH_REV:-3a5f5763bbab5328e1ea8da06cc7875211a96d8d}"
+DFLASH_IMAGE="${DFLASH_IMAGE:-lmsysorg/sglang@sha256:616a3e97f45191af975896cfa644279096cb31bd408a071c2e99ca7209c3cafe}"
+TARGET_MODEL="${TARGET_MODEL:-0xWhiteMage/Qwen3.8-27B-Kearuga}"
+DFLASH_MODEL="${DFLASH_MODEL:-z-lab/Qwen3.8-27B-DFlash2}"
+DFLASH_REV="${DFLASH_REV:-50307d4c4cde6860d4eee73e2547cd786fe8e8a4}"
 SERVED_MODEL_NAME="${SERVED_MODEL_NAME:-qwen3.8-27b-sglang}"
 
 HOST="${HOST:-0.0.0.0}"
@@ -40,8 +39,9 @@ CHUNKED_PREFILL="${CHUNKED_PREFILL:-8192}"
 MAX_CONCURRENT_REQUESTS="${MAX_CONCURRENT_REQUESTS:-4}"
 CONTEXT_LENGTH="${CONTEXT_LENGTH:-262144}"
 MAX_TOTAL_TOKENS="${MAX_TOTAL_TOKENS:-1048576}"
-DFLASH_DRAFT_TOKENS="${DFLASH_DRAFT_TOKENS:-8}"
+DFLASH_DRAFT_TOKENS="${DFLASH_DRAFT_TOKENS:-10}"
 DFLASH_DRAFT_WINDOW_SIZE="${DFLASH_DRAFT_WINDOW_SIZE:-2048}"
+KV_CACHE_DTYPE="${KV_CACHE_DTYPE:-bf16}"
 CPUSET="${CPUSET:-${CPU_AFFINITY:-}}"
 HEALTH_TIMEOUT_SECS="${HEALTH_TIMEOUT_SECS:-900}"
 
@@ -92,7 +92,7 @@ if docker ps -a --format '{{.Names}}' | grep -qx "${CONTAINER_NAME}"; then
   docker rm "${CONTAINER_NAME}" >/dev/null
 fi
 
-echo "Starting ${TARGET_MODEL} @ ${TARGET_REV:0:8} with DFlash 2 ${DFLASH_MODEL} @ ${DFLASH_REV:0:8}"
+echo "Starting ${TARGET_MODEL} with DFlash 2 ${DFLASH_MODEL} @ ${DFLASH_REV:0:8}"
 echo "Per-request context: ${CONTEXT_LENGTH} tokens (native; YaRN off)"
 echo "Max concurrent requests: ${MAX_CONCURRENT_REQUESTS} (mamba pool ${MAMBA_CACHE_SIZE} slots)"
 echo "KV token pool: ${MAX_TOTAL_TOKENS}; DFlash draft window: ${DFLASH_DRAFT_WINDOW_SIZE}"
@@ -128,9 +128,7 @@ if [[ "${DFLASH_MODEL}" == /* ]]; then
   MODEL_MOUNT_ARGS+=(-v "${DFLASH_MODEL}:${DFLASH_MODEL}")
 fi
 
-# Conditional revisions
-REVISION_ARGS=()
-[[ -n "${TARGET_REV:-}" ]] && REVISION_ARGS=(--revision "${TARGET_REV}")
+# Conditional drafter revision
 DRAFT_REV_ARGS=()
 [[ -n "${DFLASH_REV:-}" ]] && DRAFT_REV_ARGS=(--speculative-draft-model-revision "${DFLASH_REV}")
 
@@ -155,7 +153,6 @@ docker run -d \
   "${DFLASH_IMAGE}" \
   python3 -m sglang.launch_server \
   --model-path "${TARGET_MODEL}" \
-  "${REVISION_ARGS[@]}" \
   --served-model-name "${SERVED_MODEL_NAME}" \
   --trust-remote-code \
   --mem-fraction-static "${MEM_FRACTION}" \
@@ -163,7 +160,7 @@ docker run -d \
   --chunked-prefill-size "${CHUNKED_PREFILL}" \
   --max-prefill-tokens "${CHUNKED_PREFILL}" \
   "${PREFILL_GRAPH_ARGS[@]}" \
-  --kv-cache-dtype fp8_e4m3 \
+  --kv-cache-dtype "${KV_CACHE_DTYPE}" \
   --mamba-ssm-dtype bfloat16 \
   --mamba-full-memory-ratio 4.21 \
   --mamba-radix-cache-strategy extra_buffer \
