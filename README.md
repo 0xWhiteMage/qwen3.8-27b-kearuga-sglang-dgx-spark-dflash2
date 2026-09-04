@@ -2,15 +2,11 @@
 
 <p align="center">
   <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang, DFlash 2 and EAGLE" width="100%"><br><br>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/release-v0.5.0-blue.svg?style=for-the-badge" alt="Version 0.5.0"></a>
-  <a href="#-benchmarks--community-comparison"><img src="https://img.shields.io/badge/C1_Net_Decode-30.9_tok%2Fs-success.svg?style=for-the-badge" alt="C1 Net Decode"></a>
-  <a href="#-benchmarks--community-comparison"><img src="https://img.shields.io/badge/C32_Aggregate-535_tok%2Fs-purple.svg?style=for-the-badge" alt="C32 Aggregate"></a>
-  <a href="#-runtime-envelope--memory-math"><img src="https://img.shields.io/badge/KV_Pool-1%2C048%2C576_Tokens-orange.svg?style=for-the-badge" alt="KV Pool"></a>
-  <a href="#-saturated-responsiveness--priority-scheduling"><img src="https://img.shields.io/badge/Priority_TTFT-~2.6s-red.svg?style=for-the-badge" alt="Priority TTFT"></a><br><br>
-  <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg?style=for-the-badge" alt="HuggingFace Model"></a>
-  <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-DFlash_Drafter-orange.svg?style=for-the-badge" alt="HuggingFace Drafter"></a>
-  <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/Follow_on_X-@0xWhiteMage-000000?style=for-the-badge&logo=x&logoColor=white" alt="Follow on X"></a> ·
-  <a href="https://ko-fi.com/0xwhitemage" target="_blank"><img src="https://img.shields.io/badge/Kofi-Buy_me_a_coffee-1A9642?style=for-the-badge&logo=buymeacoffee&logoColor=white" alt="Ko-fi"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.5.0-blue.svg" alt="Version 0.5.0"></a>
+  <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a>
+  <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-DFlash_Drafter-orange.svg" alt="HuggingFace Drafter"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-green.svg" alt="License: Apache 2.0"></a>
+  <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/X-@0xWhiteMage-000000?logo=x&logoColor=white" alt="Follow on X"></a>
 </p>
 
 Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** paired with the **[Kearuga DFlash 2 Drafter](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)** on **[SGLang](https://docs.sglang.io)** on a single 128 GB NVIDIA DGX Spark (GB10 / SM121). 
