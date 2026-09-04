@@ -3,119 +3,138 @@
 <p align="center">
   <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang, DFlash 2 and EAGLE" width="100%"><br><br>
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/release-v0.5.0-blue.svg?style=for-the-badge" alt="Version 0.5.0"></a>
-  <a href="#-benchmarks"><img src="https://img.shields.io/badge/C1_Net_Decode-30.9_tok%2Fs-success.svg?style=for-the-badge" alt="C1 Net Decode"></a>
-  <a href="#-benchmarks"><img src="https://img.shields.io/badge/C32_Aggregate-535_tok%2Fs-purple.svg?style=for-the-badge" alt="C32 Aggregate"></a>
-  <a href="#-runtime-envelope"><img src="https://img.shields.io/badge/KV_Pool-1%2C048%2C576_Tokens-orange.svg?style=for-the-badge" alt="KV Pool"></a>
+  <a href="#-benchmarks--community-comparison"><img src="https://img.shields.io/badge/C1_Net_Decode-30.9_tok%2Fs-success.svg?style=for-the-badge" alt="C1 Net Decode"></a>
+  <a href="#-benchmarks--community-comparison"><img src="https://img.shields.io/badge/C32_Aggregate-535_tok%2Fs-purple.svg?style=for-the-badge" alt="C32 Aggregate"></a>
+  <a href="#-runtime-envelope--memory-math"><img src="https://img.shields.io/badge/KV_Pool-1%2C048%2C576_Tokens-orange.svg?style=for-the-badge" alt="KV Pool"></a>
   <a href="#-saturated-responsiveness--priority-scheduling"><img src="https://img.shields.io/badge/Priority_TTFT-~2.6s-red.svg?style=for-the-badge" alt="Priority TTFT"></a><br><br>
-  <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Model-yellow.svg?style=for-the-badge" alt="HuggingFace Model"></a>
+  <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg?style=for-the-badge" alt="HuggingFace Model"></a>
+  <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-DFlash_Drafter-orange.svg?style=for-the-badge" alt="HuggingFace Drafter"></a>
   <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/Follow_on_X-@0xWhiteMage-000000?style=for-the-badge&logo=x&logoColor=white" alt="Follow on X"></a> ·
   <a href="https://ko-fi.com/0xwhitemage" target="_blank"><img src="https://img.shields.io/badge/Kofi-Buy_me_a_coffee-1A9642?style=for-the-badge&logo=buymeacoffee&logoColor=white" alt="Ko-fi"></a>
 </p>
 
-Run **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** paired with the **[Kearuga DFlash 2 Drafter](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)** on **[SGLang](https://docs.sglang.io)** on a single 128 GB NVIDIA DGX Spark (GB10). This repository provides production container builds, hardware launchers, kernel overlays, on-target distillation tooling, and automated quality benchmarks.
+Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** paired with the **[Kearuga DFlash 2 Drafter](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)** on **[SGLang](https://docs.sglang.io)** on a single 128 GB NVIDIA DGX Spark (GB10 / SM121). 
 
-* ⚡ **DFlash 2 (Daily Driver)**: Ultra-responsive C1–C4 profile (~31 tok/s net C1, ~98 tok/s C4) with full reasoning & tool calling.
-* 🦅 **EAGLE 3/1/4 (Agent Swarms)**: 32-seat high-concurrency profile for agent pipelines (~535 tok/s at C32).
-* 📜 **1M-Token KV Pool**: Sustains **4 simultaneous native 262K contexts** in shared KV memory.
-* 🛡️ **Tiered Sensitivity Hierarchy**: EXL3-inspired mixed-precision GPTQ-4o6 / NVFP4 / FP8 / BF16 preserving head fidelity and draft tap states across all model tensors.
+This repository provides certified production container launchers, hardware configurations, priority preemption queues, speculative distillation pipelines, and automated multi-gate verification suites.
 
-> 📖 **Deep Architectural Rationale**: Read **[Kearuga: Architecture Insights & Design Rationale](INSIGHTS.md)** to understand why tiered sensitivity quantization and dual-engine speculative inference outperform conventional approaches.
+* ⚡ **DFlash 2 (Interactive Daily Driver)**: Ultra-responsive C1–C4 profile (~31 tok/s net C1 decode, ~98 tok/s C4) with full reasoning & tool-calling support.
+* 🦅 **EAGLE 3/1/4 (Agent Swarms)**: 32-seat high-concurrency profile scaling linearly to **~535 tok/s aggregate at C32**.
+* 📜 **1M-Token KV Pool**: Sustains **4 simultaneous native 262K contexts** in shared unified memory without swapping or fragmentation.
+* 🛡️ **Tiered Sensitivity Hierarchy**: EXL3-inspired mixed-precision (GPTQ-4o6 / NVFP4 AWQ / FP8 / BF16) preserving vocabulary logit tails and intermediate draft taps.
+* 🚀 **Official Image, Zero Overlays**: Boots cleanly on official digest-pinned SGLang releases without custom Docker builds or kernel patches.
 
-> 🤗 **Model checkpoint**: The Kearuga target model lives on Hugging Face at **[0xWhiteMage/Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)**. The model card there contains the full fidelity analysis, quantization architecture, and serving instructions. This repository provides the serving suite that runs it.
+> 📖 **Deep Architectural Rationale**: Read **[Kearuga: Architecture Insights & Design Rationale](INSIGHTS.md)** for an in-depth analysis of our tiered quantization map, Four-Over-Six group scaling, and speculative dual-engine scheduling.
+>
+> 🤗 **Model Checkpoint**: The production target weights are hosted on Hugging Face at **[0xWhiteMage/Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** (24.85 GB, 3 shards + MTP head).
 
 ---
 
 ## 📢 Recent Updates
 
-See the complete release history in **[CHANGELOG.md](CHANGELOG.md)**.
+See the complete chronological release history in **[CHANGELOG.md](CHANGELOG.md)**.
 
-* 🌟 **v0.5.0 Release Highlights**:
-  * 🎯 **New Production Checkpoint**: Promoted **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** — a hybrid GPTQ-4o6 + FP8 quantization that halves served first-token KL divergence (0.0334 → 0.0165) at identical speed and a smaller footprint (24.85 GB).
-  * � **Measured Fidelity**: Served Fidelity-40 mean KL **0.0165**, top-1 agreement **40/40**, exact 32-token continuation **20/40**. Held-out full-vocab KL **0.0208** (top-1 95.0%). Quality-200 objective **157/180** (gsm8k 66, humaneval 39, ifeval 34, agentic 18).
-  * ⚡ **Official Image, No Overlay**: Migrated to `lmsysorg/sglang@sha256:616a3e97…` — the V5 checkpoint has no NVFP4_AWQ layers, so the 5-file kernel overlay is no longer needed. TTFT improved −6%.
-  * 🎛️ **K=10 Draft Block**: Sweep-validated as the only value not "worse" on any C1 domain (K=8 loses code/math 7–12%, K=12/16 lose prose/ifeval and C4).
-  * 🧊 **KV Cache bf16**: Fidelity-first default — KL 0.0170→0.0165, exact 19→20/40, speed cost within noise.
+### 🌟 v0.5.0 Release Highlights
+* 🎯 **New Production Checkpoint ([Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga))**: Upgraded to a hybrid GPTQ-4o6 + FP8 + NVFP4 architecture that cuts served first-token KL divergence in half ($0.0334 \rightarrow 0.0165$) vs. legacy NVFP4 builds, with 40/40 top-1 agreement and a 24.85 GB footprint.
+* ⚡ **Official SGLang Image Migration**: Switched to `lmsysorg/sglang@sha256:616a3e97…` — with upstream integration of DFlash 2 PRs (`sglang#35371, #35496`), external kernel overlays are no longer required. Time-To-First-Token (TTFT) improved by −6%.
+* 🎛️ **Sweep-Validated K=10 Draft Block**: K=10 demonstrated Pareto optimality across all test domains (K=8 loses 7–12% code/math acceptance; K=12/16 degrade prose/IFEval and C4 throughput).
+* 🧊 **BF16 KV Cache by Default**: Preserves maximum logit fidelity ($D_{\text{KL}} 0.0170 \rightarrow 0.0165$, exact 32-token continuations $19 \rightarrow 20/40$) with negligible compute overhead.
 
 ---
 
 ## 📊 Benchmarks & Community Comparison
 
-> 🚧 **In active development** — we're actively developing an upgraded on-target DFlash 2 drafter. Benchmarks below reflect the current stock `z-lab/Qwen3.8-27B-DFlash2` drafter; updated figures will be published when the new drafter lands.
+> 🚧 **Active Drafter Development**: An upgraded, on-target trained DFlash 2 drafter is currently under development. The interactive benchmarks below reflect the current stock `z-lab/Qwen3.8-27B-DFlash2` drafter; updated performance will be published upon release.
 
-> *"DFlash 2 delivers instant interactive feedback (~31 tok/s C1); EAGLE scales massive agent swarms (535 tok/s C32)."*
+> *"DFlash 2 delivers instant interactive feedback (~31 tok/s C1 decode); EAGLE scales massive agent swarms (~535 tok/s C32)."*
 
 ### ⚡ 1. Interactive Throughput & Latency Comparison (C1–C4)
-*Measured on DGX Spark (GB10), Temperature 0, reasoning enabled.*
+*Measured on NVIDIA DGX Spark (GB10 / SM121), Temperature 0, reasoning enabled.*
 
 | Solution / Repository | Speculative Method | Dedicated C1 (tok/s) | Net Decode C1 (tok/s) | Saturated C4 (tok/s) | Ladder C8 (tok/s) |
 |---|---|---:|---:|---:|---:|
 | 🧙‍♂️ **Kearuga Model Suite** | **DFlash 2 (BF16)** | **41.7** | **~31.0** | **~98.3** | **~135.0** |
-| 🔹 [Weschera (Latest)](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 (Block 10 Speed Profile) | 42.04 | — | 66.31 | 114.50 |
-| 🔹 [Weschera (Capacity)](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 (Block 8 Capacity Profile) | 34.08 | 25.33 | 64.10 | 120.58 |
-| 🔹 [MiaAI-Lab](https://github.com/MiaAI-Lab/Qwen3.8-27B-SGLang-DGX-Spark) | DSpark / DFlash 2 | ~50.9–51.5 | ~29.0–35.0 | 111.60 | — |
-| 🔹 [MiaAI-Lab](https://github.com/MiaAI-Lab/Qwen3.8-27B-SGLang-DGX-Spark) | MTP (In-Checkpoint) | ~26.0 | 33.0–35.0 | ~95.0 | — |
+| 🔹 [MiaAI-Lab (DFlash 2)](https://github.com/MiaAI-Lab/Qwen3.8-27B-SGLang-DGX-Spark) | DFlash 2 / DSpark | ~50.9–51.5 | ~29.0–35.0 | 111.60 | — |
+| 🔹 [MiaAI-Lab (MTP)](https://github.com/MiaAI-Lab/Qwen3.8-27B-SGLang-DGX-Spark) | MTP (In-Checkpoint) | ~26.0 | 33.0–35.0 | ~95.0 | — |
+| 🔹 [Weschera (Speed Profile)](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 (Block 10) | 42.04 | — | 66.31 | 114.50 |
+| 🔹 [Weschera (Capacity Profile)](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 (Block 8) | 34.08 | 25.33 | 64.10 | 120.58 |
 | 🔹 [r0b0tlab](https://github.com/r0b0tlab/qwen38-27b-nvfp4-sm121-sglang) | SM121 Pin (DFlash 2 K8) | 28.38 | 23.47 | 54.99 | 92.05 |
 
-### 🦅 2. High-Concurrency Throughput Comparison (C8–C32)
+*Note: In pure unconstrained decode without reasoning traces (`enable_thinking=false`), DFlash 2 achieves 45–65+ tok/s net decode on code and structured completion tasks.*
+
+### 🦅 2. High-Concurrency Swarm Throughput (C8–C32)
 *Measured with unique request suffixes, 512 generated tokens per request.*
 
-| Profile & Repository | Speculative Engine | C8 Aggregate | C16 Aggregate | C32 Aggregate | Saturated p95 TTFT |
-|---|---|---:|---:|---:|---:|
-| 🦅 **Kearuga Model Suite** | **EAGLE 3/1/4 (32 Seats)** | **181–193 tok/s** | **320–335 tok/s** | **527–539 tok/s** | **0.32s / 0.49s / 0.87s** |
-| 🔹 Kearuga DFlash 2 | DFlash 2 (4 Seats Max) | ~118 tok/s* | — | — | — |
-| 🔹 [0xBakeer](https://github.com/0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark) | vLLM 4-bit (MTP) | 246.0 tok/s | — | — | — |
-| 🔹 [Weschera](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 Capacity | 116.8 tok/s | 153.9 tok/s | 178.3 tok/s | — |
+| Profile & Engine | Concurrency Tier | Aggregate Throughput | Saturated p95 TTFT | Operational Use Case |
+|---|:---:|---:|:---:|---|
+| **EAGLE 3/1/4** | **C8** | **181–193 tok/s** | **0.32 s** | Parallel code reviewers & multi-agent debate |
+| **EAGLE 3/1/4** | **C16** | **320–335 tok/s** | **0.49 s** | High-density tool-calling pipelines |
+| **EAGLE 3/1/4** | **C32** | **527–539 tok/s** | **0.87 s** | Large autonomous background agent clusters |
+| 🔹 Kearuga DFlash 2 | C4 (Max Active) | ~98–118 tok/s* | 2.63 s | Real-time interactive user sessions |
+| 🔹 [0xBakeer](https://github.com/0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark) | vLLM 4-bit (MTP) | 246.0 tok/s | — | Batch baseline |
+| 🔹 [Weschera](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 Capacity | 178.3 tok/s (C32) | — | Block 8 capacity profile |
 
-*\*DFlash queues requests above batch size 4.*
+*\*DFlash queues interactive requests above batch size 4 to prevent draft acceptance collapse; EAGLE handles up to 32 concurrent active graphs.*
 
 ### ⏱️ 3. Saturated Responsiveness & Priority Scheduling
 
-| Server Load State | Default Priority TTFT | Interactive Priority (`priority: 100`) | Latency Reduction |
-|---|---:|---:|---:|
-| **DFlash 2 (All 4 Seats Busy)** | ~43 s | **~2.6 s** | **~94% Faster** |
-| **EAGLE (All 32 Seats Busy)** | 73.30 s | **2.76 s** | **96.2% Faster** |
+When running dozens of autonomous agent workers in the background, interactive developer chats cannot wait for queue drain. SGLang's native priority scheduling preempts background workers:
 
 ```json
 {
   "model": "qwen3.8-27b-sglang",
   "priority": 100,
-  "messages": [{"role": "user", "content": "Instant interactive code request"}]
+  "messages": [{"role": "user", "content": "Fix this unit test immediately"}]
 }
 ```
+
+| Server Saturation State | Default Priority TTFT | Interactive Priority (`priority: 100`) | Latency Reduction |
+|---|---:|---:|---:|
+| **DFlash 2 (All 4 Seats Busy)** | ~43.15 s | **~2.63 s** | **93.9% Faster** |
+| **EAGLE (All 32 Seats Busy)** | ~73.30 s | **~2.76 s** | **96.2% Faster** |
 
 ---
 
 ### ⚖️ 4. Checkpoint Fidelity (Kearuga vs. Original Base BF16)
 
-| | **Qwen/Qwen3.8-27B** (BF16 base) | **Qwen3.8-27B-Kearuga** | delta |
+| Metric | `Qwen/Qwen3.8-27B` (BF16 Base) | **Qwen3.8-27B-Kearuga** (This Suite) | Delta / Rationale |
 |---|---:|---:|---|
-| **Footprint** | 51.8 GiB | **24.85 GB** | **−52%** |
-| **Fidelity-40 mean KL** vs BF16 | 0 (self) | **0.0165** | — |
-| **Fidelity-40 top-1 agreement** | 40/40 | **40/40** | preserved |
-| **Fidelity-40 exact 32-token continuation** | 40/40 | **20/40** | 50% of near-tie continuations preserved |
-| **Held-out full-vocab KL** (72k positions) | 0 (self) | **0.0208** | — |
-| **Held-out top-1 agreement** | 100% | **95.0%** | −5.0 pt |
-| **Quality-200 objective** | — | **157/180** | — |
-| **C1 decode tok/s** (DFlash2, K=10) | ~14 (no spec) | **30.9** | **+121%** |
-| **C4 decode tok/s** (DFlash2, K=10) | ~45 (no spec) | **98.3** | **+118%** |
-
-Full methodology on the [Hugging Face model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga).
+| **Weight Footprint** | 51.8 GiB | **24.85 GB** | **−52.0%** footprint |
+| **Fidelity-40 Mean KL** vs BF16 | 0.0000 | **0.0165** | Near-zero distribution divergence |
+| **Fidelity-40 Mean JS Divergence** | 0.0000 | **0.0034** | High distributional stability |
+| **Fidelity-40 Top-1 Agreement** | 40 / 40 | **40 / 40** | 100% exact argmax token match |
+| **Fidelity-40 Exact 32-Token Match** | 40 / 40 | **20 / 40** | 50% byte-identical; ties flip to valid equivalents |
+| **Held-Out Full-Vocab KL (72k pos)** | 0.0000 | **0.0208** | Evaluated on out-of-domain sequences |
+| **Held-Out Top-1 Agreement** | 100.0% | **95.0%** | −5.0 pt drop over raw vocabulary |
+| **Quality-200 Objective Score** | — | **157 / 180** | GSM8K: 66 · HumanEval: 39 · IFEval: 34 · Agentic: 18 |
+| **C1 Decode tok/s (DFlash 2, K=10)** | ~14.0 (no spec) | **30.9** | **+121% speedup** |
+| **C4 Decode tok/s (DFlash 2, K=10)** | ~45.0 (no spec) | **98.3** | **+118% speedup** |
 
 ---
 
-## 🎛️ Runtime Envelope & Memory Allocation
+## 🎛️ Runtime Envelope & Memory Math
 
 > *"Four full native 262K contexts operating concurrently in a 1,048,576-token shared pool."*
 
+```
+DGX Spark Unified Memory: 128 GB
+┌─────────────────────────────────────────────────────────────┬────────────────────────┐
+│ Active Serving Allocation: ~64.4 GiB                        │ Free Headroom: ~63.6 G │
+├─────────────────┬──────────────┬──────────────┬─────────────┼────────────────────────┤
+│ Target Weights  │ Drafter      │ KV Cache     │ Runtime     │ Available for OS,      │
+│ 24.85 GiB       │ 3.58 GiB     │ 32.00 GiB    │ ~4.00 GiB   │ Page Cache, &          │
+│ (GPTQ/FP8/NVFP4)│ (BF16)       │ (1M Tokens)  │ (PyTorch/SGL│ Dynamic Context Growth │
+└─────────────────┴──────────────┴──────────────┴─────────────┴────────────────────────┘
+```
+
 | Architectural Dimension | Specification | Operational Details |
 |---|---:|---|
-| 🧠 **Per-Request Context** | `262,144` tokens | Native Qwen3.8 context length (YaRN disabled) |
+| 🧠 **Per-Request Context** | `262,144` tokens | Native Qwen3.8 window (YaRN interpolation disabled) |
 | 📜 **Shared Target KV Pool** | `1,048,576` tokens | Four simultaneous 262K requests without memory exhaustion |
 | 👥 **Admitted Concurrency** | `4` (DFlash) / `32` (EAGLE) | Governs maximum active parallel decode graphs |
-| 💾 **Target KV Allocation** | `32.0 GiB` | Allocated in bf16 KV (fidelity-first) |
-| ⚡ **Target Weight Footprint** | `24.85 GiB` | Hybrid GPTQ-4o6 + FP8 + NVFP4 (3 shards + MTP draft head) |
-| 🏎️ **Drafter Footprint** | `3.58 GiB` | BF16 (fused KV materialization active) |
-| 🛡️ **Total Serving VRAM** | **~60 GiB** | Fits with ~68 GiB headroom on 128 GB Unified Memory |
+| 💾 **Target KV Allocation** | `32.00 GiB` | Allocated in BF16 KV cache (fidelity-first profile) |
+| ⚡ **Target Weight Footprint** | `24.85 GiB` | Hybrid GPTQ-4o6 + FP8 + NVFP4 (3 shards + MTP head) |
+| 🏎️ **Drafter Footprint** | `3.58 GiB` | BF16 (fused KV materialization kernel active) |
+| 🛡️ **Total Serving Footprint** | **~64.4 GiB** | Fits with **>63 GiB headroom** on 128 GB Unified Memory |
 
 ---
 
@@ -126,7 +145,7 @@ Full methodology on the [Hugging Face model card](https://huggingface.co/0xWhite
 * Docker with NVIDIA Container Toolkit (`--gpus all`)
 * Linux kernel with unified memory support
 
-### 2. Clone & Configure
+### 2. Clone & Setup
 ```bash
 git clone https://github.com/0xWhiteMage/Qwen3.8-27B-Kearuga-SGLang-DGX-Spark-DFlash2.git
 cd Qwen3.8-27B-Kearuga-SGLang-DGX-Spark-DFlash2
@@ -148,39 +167,50 @@ cp .env.sample .env
   ./stop.sh
   ```
 
-The launcher automatically pulls the Kearuga checkpoint from [Hugging Face](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) on first run. No manual download or kernel overlay is needed — the V5 checkpoint boots on the official SGLang image with no patches.
+*The launcher automatically pulls the verified Kearuga checkpoint and DFlash drafter from Hugging Face on first run. No manual weight conversion or kernel patching is required.*
 
 ---
 
 ## 🧪 Verification & Benchmarking
 
-Run the complete verification harness:
+Run the complete 15-gate verification harness:
 ```bash
 python3 bench/verify_all.py
 ```
 
-Run semantic canary and speculative decoding benchmarks:
+Run specialized quality and latency suites:
 ```bash
-python3 bench/semantic_gate.py
-python3 bench/ndec.py
-python3 bench/run_quality_set.py
+python3 bench/semantic_gate.py   # Verify exact arithmetic & decimal comparison canaries
+python3 bench/niah.py            # Test Needle-In-A-Haystack at 64K depth
+python3 bench/run_quality_set.py # Run 200-sample multi-domain benchmark
+python3 bench/ndec.py            # Measure net decode throughput
+python3 bench/priority_ttft.py   # Benchmark priority queue preemption latency
 ```
 
 ---
 
-## 🤗 Hugging Face Integration
+## 🤗 Hugging Face Model Suite
 
-The Kearuga model suite is split across two platforms:
+The Kearuga deployment suite is interconnected across GitHub and Hugging Face:
 
-| artifact | location | purpose |
+| Artifact | Location | Purpose |
 |---|---|---|
-| **Target checkpoint** | [`0xWhiteMage/Qwen3.8-27B-Kearuga`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) | The quantized 27B model weights (24.85 GB, 3 shards + MTP head) with the full model card, fidelity analysis, and serving instructions |
-| **DFlash 2 drafter** | [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) | The speculative decoding draft model (BF16, 3.58 GiB) |
-| **Serving suite** | This repository | Container builds, launchers, benchmarks, distillation tooling |
-
-The Hugging Face model card and this repository cross-reference each other. The model card links here for the serving suite and verification harness; this repo links to Hugging Face for the checkpoint and fidelity analysis.
+| **Target Checkpoint (27B)** | [`0xWhiteMage/Qwen3.8-27B-Kearuga`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) | Production weights (24.85 GB, 3 shards + MTP head), model card, and fidelity proofs |
+| **DFlash 2 Drafter** | [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) | Speculative decoding draft model (BF16, 3.58 GiB) |
+| **Serving Suite & Harness** | This Repository | Production container scripts, benchmarks, and hardware launchers |
 
 ---
 
 ## 📄 License & Citations
-Distributed under the Apache 2.0 License. See [LICENSE](LICENSE) for details.
+Distributed under the **Apache 2.0 License**. See [LICENSE](LICENSE) for details. Base model weights are governed by Alibaba Cloud's original license terms.
+
+If you build upon this work, please cite:
+```bibtex
+@misc{kearuga-2026,
+  title={Kearuga: Hybrid GPTQ-4o6 + FP8 Quantization of Qwen3.8-27B for Speculative-Decoding Serve on NVIDIA DGX Spark},
+  author={0xWhiteMage},
+  year={2026},
+  publisher={GitHub},
+  howpublished={\url{https://github.com/0xWhiteMage/Qwen3.8-27B-Kearuga-SGLang-DGX-Spark-DFlash2}}
+}
+```

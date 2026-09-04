@@ -5,9 +5,8 @@ set -euo pipefail
 # Default launcher for this recipe.
 #
 # Prereqs:
-#   1. Build the DFlash 2 overlay image once:
-#      bash patch/build-dflash2-image.sh
-#   2. Ensure .env is present (use .env.sample as template).
+#   1. Ensure .env is present (use .env.sample as template).
+#   2. NVIDIA DGX Spark (GB10 / SM121) with NVIDIA Container Toolkit.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
