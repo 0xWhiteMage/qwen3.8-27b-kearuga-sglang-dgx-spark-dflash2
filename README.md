@@ -1,7 +1,7 @@
 # 🧙‍♂️ Qwen3.8-27B Kearuga on a Single DGX Spark
 
 <p align="center">
-  <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang, DFlash 2 and EAGLE" width="100%"><br><br>
+  <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang, DFlash 2 and EAGLE" width="100%"><br>
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.5.0-blue.svg" alt="Version 0.5.0"></a>
   <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a>
   <a href="https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Stock_DFlash2_Drafter-orange.svg" alt="Stock DFlash 2 Drafter"></a>
