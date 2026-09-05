@@ -24,6 +24,5 @@
 * **Hardware Platform**: NVIDIA DGX Spark (GB10 / SM121, 128 GB Unified Memory).
 * **Serving Image**: `lmsysorg/sglang@sha256:616a3e97…` (official, digest-pinned, no overlay needed).
 * **Serving VRAM Envelope**: 24.85 GiB (Target) + 3.58 GiB (Drafter) + 32.00 GiB (1M-Token BF16 KV Pool) + ~4.0 GiB (PyTorch / CUDA runtime) = ~64.4 GiB total (>63.6 GiB headroom).
-* **Launch Profiles**:
+* **Launch Profile**:
   * `start-dflash2.sh`: Interactive low-latency profile (57 tok/s C1 decode · 264ms TTFT, 51 tok/s C2 agg, 94 tok/s C4 agg · 480ms TTFT).
-  * `start-eagle.sh`: High-concurrency agent profile (527–539 tok/s C32 throughput).

@@ -18,8 +18,8 @@ def call(prompt, mt, thinking):
 call("Say OK", 16, False)  # warmup
 
 probes = [
-    ("code (DFlash-favoured)", "Write a Python class LRUCache with O(1) get and put using OrderedDict, plus a small test.", False),
-    ("essay-prose (EAGLE-favoured)", "Write a detailed technical essay on the history of computing, from Babbage to GPUs.", False),
+    ("code (algorithmic)", "Write a Python class LRUCache with O(1) get and put using OrderedDict, plus a small test.", False),
+    ("essay-prose (long-form)", "Write a detailed technical essay on the history of computing, from Babbage to GPUs.", False),
 ]
 for name, p, th in probes:
     d1, c1 = call(p, 60, th)

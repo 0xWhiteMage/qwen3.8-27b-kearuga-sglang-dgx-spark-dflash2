@@ -53,7 +53,6 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ## [v0.3.0] - 2026-08-18
 
-### ⚡ Dual-Engine Speculative Inference
-* **DFlash 2 Daily Driver Profile**: Integrated block-diffusion speculative decoding delivering 65–82 tok/s net decode on single stream.
-* **EAGLE High-Concurrency Profile**: Integrated 32-seat tree-speculative profile scaling to 535 tok/s aggregate at C32.
-* **1M-Token KV Pool**: Implemented shared FP8 KV cache sustaining 4 concurrent native 262K contexts.
+### ⚡ Speculative Decoding Framework
+* **DFlash 2 Daily Driver Profile**: Integrated block-diffusion speculative decoding delivering high-speed net decode on single stream.
+* **1M-Token KV Pool**: Implemented shared KV cache sustaining 4 concurrent native 262K contexts.

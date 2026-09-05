@@ -98,7 +98,6 @@ for s in scripts_to_test:
 # TEST 4: Hardware & Launch Configuration Compliance
 print("\n--- 4. Hardware & Launch Configuration Compliance ---")
 launcher_dflash = REPO / "start-dflash2.sh"
-launcher_eagle = REPO / "start-eagle.sh"
 
 def check_launcher_flags(p, required_flags):
     if not p.exists():
@@ -117,16 +116,6 @@ dflash_flags = [
 ]
 ok, detail = check_launcher_flags(launcher_dflash, dflash_flags)
 report("DFlash 2 Launcher Compliance (start-dflash2.sh)", ok, detail)
-
-eagle_flags = [
-    "--ulimit memlock=-1:-1",
-    "--cap-add IPC_LOCK",
-    '--cuda-graph-max-bs-decode "${CUDA_GRAPH_MAX_BS}"',
-    "extra_buffer_lazy",
-    "MODEL_MOUNT_ARGS"
-]
-ok, detail = check_launcher_flags(launcher_eagle, eagle_flags)
-report("EAGLE Launcher Compliance (start-eagle.sh)", ok, detail)
 
 print("\n=====================================================================")
 final_msg = "ALL GATES PASSED (100% COMPLIANT WITH PROVEN RECIPE)" if all_passed else "FAILURES DETECTED"

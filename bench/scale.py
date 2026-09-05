@@ -113,7 +113,7 @@ def main() -> int:
     ap=argparse.ArgumentParser()
     ap.add_argument("--base", default="http://127.0.0.1:8888/v1")
     ap.add_argument("--tag", help="Result filename stem; defaults to a UTC timestamp")
-    ap.add_argument("--widths", default="8,16,32")
+    ap.add_argument("--widths", default="1,2,4")
     ap.add_argument("--reps", type=int, default=2)
     ap.add_argument("--max-tokens", type=int, default=512)
     ap.add_argument("--out-dir", default="bench/results")

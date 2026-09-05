@@ -1,7 +1,7 @@
 # 🧙‍♂️ Qwen3.8-27B Kearuga on a Single DGX Spark
 
 <p align="center">
-  <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang, DFlash 2 and EAGLE" width="100%"><br><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.5.0-blue.svg" alt="Version 0.5.0"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a> <a href="https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Stock_DFlash2_Drafter-orange.svg" alt="Stock DFlash 2 Drafter"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-green.svg" alt="License: Apache 2.0"></a> <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/X-@0xWhiteMage-000000?logo=x&logoColor=white" alt="Follow on X"></a> <a href="https://ko-fi.com/0xwhitemage" target="_blank"><img src="https://img.shields.io/badge/Ko--fi-Donate-FF5E5B?logo=ko-fi&logoColor=white" alt="Donate on Ko-fi"></a>
+  <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang and DFlash 2" width="100%"><br><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.5.0-blue.svg" alt="Version 0.5.0"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a> <a href="https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Stock_DFlash2_Drafter-orange.svg" alt="Stock DFlash 2 Drafter"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-green.svg" alt="License: Apache 2.0"></a> <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/X-@0xWhiteMage-000000?logo=x&logoColor=white" alt="Follow on X"></a> <a href="https://ko-fi.com/0xwhitemage" target="_blank"><img src="https://img.shields.io/badge/Ko--fi-Donate-FF5E5B?logo=ko-fi&logoColor=white" alt="Donate on Ko-fi"></a>
 </p>
 
 Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** paired with the stock **[z-lab/Qwen3.8-27B-DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2)** drafter on **[SGLang](https://docs.sglang.io)** on a single 128 GB NVIDIA DGX Spark (GB10 / SM121). 
@@ -9,12 +9,12 @@ Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kea
 This repository provides certified production container launchers, hardware configurations, priority preemption queues, and automated multi-gate verification suites.
 
 * ⚡ **DFlash 2 (Interactive Daily Driver)**: Ultra-responsive C1–C4 profile (57 tok/s C1 decode, 94 tok/s aggregate C4, 264 ms TTFT) with full reasoning & tool-calling support.
-* 🦅 **EAGLE 3/1/4 (Agent Swarms)**: 32-seat high-concurrency profile scaling linearly to **~535 tok/s aggregate at C32**.
 * 📜 **1M-Token KV Pool**: Sustains **4 simultaneous native 262K contexts** in shared unified memory without swapping or fragmentation.
 * 🛡️ **Tiered Sensitivity Hierarchy**: EXL3-inspired mixed-precision (GPTQ-4o6 / NVFP4 AWQ / FP8 / BF16) preserving vocabulary logit tails and intermediate draft taps.
+* ⏱️ **Priority Queue Preemption**: Sub-3-second interactive response under full multi-session saturation via native priority scheduling.
 * 🚀 **Official Image, Zero Overlays**: Boots cleanly on official digest-pinned SGLang releases without custom Docker builds or kernel patches.
 
-> 📖 **Deep Architectural Rationale**: Read **[Kearuga: Architecture Insights & Design Rationale](INSIGHTS.md)** for an in-depth analysis of our tiered quantization map, Four-Over-Six group scaling, and speculative dual-engine scheduling.
+> 📖 **Deep Architectural Rationale**: Read **[Kearuga: Architecture Insights & Design Rationale](INSIGHTS.md)** for an in-depth analysis of our tiered quantization map, Four-Over-Six group scaling, and DFlash 2 block-diffusion serving.
 >
 > 🤗 **Model Checkpoint**: The production target weights are hosted on Hugging Face at **[0xWhiteMage/Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** (24.85 GB, 3 shards + MTP head).
 
@@ -36,9 +36,9 @@ See the complete chronological release history in **[CHANGELOG.md](CHANGELOG.md)
 
 > 🚧 **Active Drafter Development**: An upgraded, on-target trained DFlash 2 drafter is currently under development. The interactive benchmarks below reflect the current stock `z-lab/Qwen3.8-27B-DFlash2` drafter; updated performance will be published upon release.
 
-> *"DFlash 2 delivers instant interactive feedback (57 tok/s C1 decode, 264 ms TTFT); EAGLE scales massive agent swarms (~535 tok/s C32)."*
+> *"DFlash 2 delivers instant interactive feedback (57 tok/s C1 decode, 264 ms TTFT) with four simultaneous native 262K contexts in shared unified memory."*
 
-### ⚡ 1. Interactive Throughput & Latency Comparison (C1–C4)
+### ⚡ 1. Interactive Throughput & Community Comparison (C1–C4)
 *Measured on NVIDIA DGX Spark (GB10 / SM121), Temperature 0, reasoning enabled.*
 
 | Solution / Repository | Speculative Method | Dedicated C1 (tok/s) | Net Decode C1 (tok/s) | Saturated C4 (tok/s) | Ladder C8 (tok/s) |
@@ -52,23 +52,9 @@ See the complete chronological release history in **[CHANGELOG.md](CHANGELOG.md)
 
 *Note: Measured with stock DFlash 2 and 2048 draft window on DGX Spark: C1 = 57 tok/s (57 tok/s/stream, TTFT 264ms), C2 = 51 tok/s aggregate (40 tok/s/stream, TTFT 416ms), C4 = 94 tok/s aggregate (39 tok/s/stream, TTFT 480ms). In pure unconstrained decode without reasoning traces (`enable_thinking=false`), DFlash 2 reaches 65+ tok/s.*
 
-### 🦅 2. High-Concurrency Swarm Throughput (C8–C32)
-*Measured with unique request suffixes, 512 generated tokens per request.*
+### ⏱️ 2. Saturated Responsiveness & Priority Scheduling
 
-| Profile & Engine | Concurrency Tier | Aggregate Throughput | Saturated p95 TTFT | Operational Use Case |
-|---|:---:|---:|:---:|---|
-| **EAGLE 3/1/4** | **C8** | **181–193 tok/s** | **0.32 s** | Parallel code reviewers & multi-agent debate |
-| **EAGLE 3/1/4** | **C16** | **320–335 tok/s** | **0.49 s** | High-density tool-calling pipelines |
-| **EAGLE 3/1/4** | **C32** | **527–539 tok/s** | **0.87 s** | Large autonomous background agent clusters |
-| 🔹 Kearuga DFlash 2 | C4 (Max Active) | **94 tok/s agg (39/str)\*** | **0.48 s** | Real-time interactive user sessions (TTFT 480ms) |
-| 🔹 [0xBakeer](https://github.com/0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark) | vLLM 4-bit (MTP) | 246.0 tok/s | — | Batch baseline |
-| 🔹 [Weschera](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 Capacity | 178.3 tok/s (C32) | — | Block 8 capacity profile |
-
-*\*DFlash queues interactive requests above batch size 4 to prevent draft acceptance collapse; EAGLE handles up to 32 concurrent active graphs.*
-
-### ⏱️ 3. Saturated Responsiveness & Priority Scheduling
-
-When running dozens of autonomous agent workers in the background, interactive developer chats cannot wait for queue drain. SGLang's native priority scheduling preempts background workers:
+When running concurrent agent workers, interactive developer chats cannot wait for queue drain. SGLang's native priority scheduling preempts background requests:
 
 ```json
 {
@@ -81,11 +67,10 @@ When running dozens of autonomous agent workers in the background, interactive d
 | Server Saturation State | Default Priority TTFT | Interactive Priority (`priority: 100`) | Latency Reduction |
 |---|---:|---:|---:|
 | **DFlash 2 (All 4 Seats Busy)** | ~43.15 s | **~2.63 s** | **93.9% Faster** |
-| **EAGLE (All 32 Seats Busy)** | ~73.30 s | **~2.76 s** | **96.2% Faster** |
 
 ---
 
-### ⚖️ 4. Checkpoint Fidelity (Kearuga vs. Original Base BF16)
+### ⚖️ 3. Checkpoint Fidelity (Kearuga vs. Original Base BF16)
 
 | Metric | Base Model: `Qwen/Qwen3.8-27B` (Native BF16) | **Qwen3.8-27B-Kearuga** (This Suite) | Delta / Rationale |
 |---|:---:|:---:|:---|
@@ -120,7 +105,7 @@ When running dozens of autonomous agent workers in the background, interactive d
 |---|---:|---|
 | 🧠 **Per-Request Context** | `262,144` tokens | Native Qwen3.8 window (YaRN interpolation disabled) |
 | 📜 **Shared Target KV Pool** | `1,048,576` tokens | Four simultaneous 262K requests without memory exhaustion |
-| 👥 **Admitted Concurrency** | `4` (DFlash) / `32` (EAGLE) | Governs maximum active parallel decode graphs |
+| 👥 **Admitted Concurrency** | `4` concurrent streams | Governs maximum active parallel decode graphs (DFlash 2) |
 | 💾 **Target KV Allocation** | `32.00 GiB` | Allocated in BF16 KV cache (fidelity-first profile) |
 | ⚡ **Target Weight Footprint** | `24.85 GiB` | Hybrid GPTQ-4o6 + FP8 + NVFP4 (3 shards + MTP head) |
 | 🏎️ **Drafter Footprint** | `3.58 GiB` | BF16 (fused KV materialization kernel active) |
@@ -142,15 +127,11 @@ cd Qwen3.8-27B-Kearuga-SGLang-DGX-Spark-DFlash2
 cp .env.sample .env
 ```
 
-### 3. Launch Serving Engines
+### 3. Launch Serving Engine
 
-* **Daily Driver (DFlash 2 Interactive C1–C4)**:
+* **Start Server (DFlash 2 Interactive C1–C4)**:
   ```bash
   ./start-dflash2.sh
-  ```
-* **High-Concurrency Agent Swarms (EAGLE C8–C32)**:
-  ```bash
-  ./start-eagle.sh
   ```
 * **Stop Server**:
   ```bash

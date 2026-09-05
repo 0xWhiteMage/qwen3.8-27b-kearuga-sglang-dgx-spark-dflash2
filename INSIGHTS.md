@@ -6,44 +6,36 @@
 
 ## 🎯 Executive Summary: What Kearuga Solves
 
-Running a 27-billion parameter dense model like **Qwen3.8-27B** locally on a single machine requires balancing two competing operational demands:
+Serving a 27-billion parameter dense model like **Qwen3.8-27B** locally on a single machine requires balancing interactive latency, multi-request capacity, and output fidelity without GPU memory exhaustion.
 
-1. **Ultra-Low Latency for Interactive Use (C1–C4)**: Real-time code completion, chat, and reasoning that feels instant.
-2. **High-Throughput Concurrency for Background Agents (C8–C32)**: Sustaining dozens of autonomous agent streams simultaneously without GPU memory exhaustion.
-
-Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by pairing two specialized speculative inference architectures:
+Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by combining **EXL3-inspired tiered sensitivity quantization** with **DFlash 2 block-diffusion speculative decoding**:
 
 | Benchmark / Capability | Kearuga Profile | Measured Performance | Operational Significance |
 |---|---|---:|---|
 | ⚡ **Single-Stream Net Decode (C1)** | **DFlash 2 (C1)** | **57 tok/s** (57/str, TTFT 264ms) | Zero-latency interactive daily driver |
 | 👥 **Dual-Stream Decode (C2)** | **DFlash 2 (C2)** | **51 tok/s agg** (40/str, TTFT 416ms) | Balanced dual-stream interactive sessions |
 | 👷 **Saturated Interactive (C4)** | **DFlash 2 (C4)** | **94 tok/s agg** (39/str, TTFT 480ms) | Quad-stream simultaneous interactive tasks |
-| 🦅 **High-Concurrency Agent Swarms**| **EAGLE 3/1/4 (C32)**| **527–539 tok/s** | 32 concurrent agent seats without stalling |
 | 📜 **Shared KV Cache Capacity** | **BF16 KV Pool** | **1,048,576 tokens**| 4 × full 262K native contexts concurrently |
 | ⏱️ **Saturated Priority TTFT** | **Preemption Mode** | **43.15s → 2.63s** | **93.9% latency reduction** under full load |
 
 ---
 
-## 🏗️ 1. Why Our Dual-Engine Approach Outperforms Single-Engine Stacks
+## 🏗️ 1. Why Block-Diffusion Speculative Decoding (DFlash 2) Outperforms Sequential Drafters
 
-> *"One inference engine cannot simultaneously optimize for minimum single-stream latency and maximum 32-stream throughput."*
+> *"Sequential speculative drafters saturate memory bandwidth. Block-diffusion predicts candidate blocks in a single forward pass, unlocking instant interactive responsiveness."*
 
-| Dimension | ⚡ DFlash 2 Profile (Interactive C1–C4) | 🦅 EAGLE Profile (Agent Swarms C8–C32) |
+| Architectural Dimension | Traditional Sequential Drafters | ⚡ DFlash 2 Block-Diffusion Profile |
 |---|---|---|
-| **Draft Architecture** | Block-diffusion parallel drafting ($O(1)$ single-step) | Tree-structured autoregressive draft ($O(K)$ sequential) |
-| **Drafter Model** | Stock DFlash 2 BF16 drafter (3.58 GiB) | EAGLE-3/1/4 Draft Head |
-| **Serving Concurrency** | 4 active streams with priority preemption | 32 concurrent CUDA graph capture slots |
-| **Operational Focus** | Real-time interactive user chats & code assistance | High-density tool-calling pipelines & agent clusters |
-| **Throughput Ceiling** | 57 tok/s (C1) · 51 tok/s agg (C2) · 94 tok/s agg (C4) | 181 tok/s (C8) · 328 tok/s (C16) · ~535 tok/s (C32) |
+| **Draft Prediction Complexity** | Sequential $O(K)$ autoregressive forward passes | Parallel single-step $O(1)$ block diffusion |
+| **Memory Bus Overhead** | $K$ sequential memory round-trips per step | Single memory fetch per candidate block |
+| **Drafter Footprint** | Often multi-billion parameter autoregressive model | Compact stock drafter (3.58 GiB native BF16) |
+| **Kernel Materialization** | Separate draft KV cache allocations | Fused CUDA graph KV projection (`fused_dflash_kv_kernel`) |
+| **Empirical Throughput** | High per-step latency overhead | **57 tok/s C1**, **51 tok/s C2 agg**, **94 tok/s C4 agg** |
 
-
-### ⚡ DFlash 2: The Interactive Daily Driver (C1–C4)
-* **How It Works**: Traditional speculative drafters draft tokens sequentially (sequential O(K) steps). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=10) in a single forward pass (single-step O(1)).
+### ⚡ DFlash 2: The Interactive Engine (C1–C4)
+* **How It Works**: Traditional speculative drafters draft tokens sequentially (generating one candidate token at a time). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=10) in a single forward pass (single-step O(1)).
 * **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **57 tok/s C1 (57 tok/s/stream, TTFT 264ms)**, **51 tok/s aggregate C2 (40 tok/s/stream)**, and **94 tok/s aggregate C4 (39 tok/s/stream, TTFT 480ms)** on DGX Spark unified memory.
-
-### 🦅 EAGLE 3/1/4: High-Concurrency Agent Workloads (C8–C32)
-* **How It Works**: When serving 8 to 32 parallel agent streams, memory bandwidth becomes saturated. EAGLE builds a speculative tree structure that allows the main 27B model to verify multiple token paths simultaneously using its native Multi-Token Prediction (MTP) draft head (`model-mtp.safetensors`).
-* **The Benefit**: Scales throughput linearly up to **~535 tok/s aggregate at C32** while maintaining sub-second TTFT per stream.
+* **Unified Memory Optimization**: Because Grace-Blackwell GB10 utilizes unified high-bandwidth memory, eliminating sequential kernel launches and memory ping-pong is paramount. DFlash 2 reduces GPU memory bus traffic by amortizing draft overhead into a single parallel tensor operation.
 
 ---
 
@@ -134,7 +126,6 @@ While naive post-hoc FC/norm tuning is prone to Triton index assertion instabili
 | Load Scenario | Default Priority TTFT | Interactive Priority (`priority: 100`) | Latency Improvement |
 |---|---:|---:|---:|
 | **DFlash 2 (All 4 Seats Full)** | ~43.15 s | **~2.63 s** | **93.9% faster** |
-| **EAGLE (All 32 Seats Full)** | ~73.30 s | **~2.76 s** | **96.2% faster** |
 
 Passing `"priority": 100` in the OpenAI-compatible API request preempts background agent batches, delivering sub-3-second responses even when the GPU is 100% saturated.
 
