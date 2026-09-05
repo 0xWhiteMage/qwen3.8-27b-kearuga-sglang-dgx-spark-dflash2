@@ -95,17 +95,16 @@ When running dozens of autonomous agent workers in the background, interactive d
 
 | Metric | Base Model: `Qwen/Qwen3.8-27B` (Native BF16) | **Qwen3.8-27B-Kearuga** (This Suite) | Delta / Rationale |
 |---|:---:|:---:|:---|
-| **Precision / Format** | Native BF16 (16-bit Unquantized) | **Hybrid GPTQ-4o6 + FP8 + NVFP4** | 4-tier mixed precision |
-| **Weight Footprint** | 51.8 GiB (BF16) | **24.85 GB** | **−52.0%** footprint |
-| **Fidelity-40 Mean KL** vs BF16 | 0.0000 (BF16 Reference) | **0.0165** | Near-zero distribution divergence |
-| **Fidelity-40 Mean JS Divergence** | 0.0000 (BF16 Reference) | **0.0034** | High distributional stability |
-| **Fidelity-40 Top-1 Agreement** | 40 / 40 (BF16 Self) | **40 / 40** | 100% exact argmax token match |
-| **Fidelity-40 Exact 32-Token Match** | 40 / 40 (BF16 Self) | **20 / 40** | 50% byte-identical; ties flip to valid equivalents |
-| **Held-Out Full-Vocab KL (72k pos)** | 0.0000 (BF16 Reference) | **0.0208** | Evaluated on out-of-domain sequences |
-| **Held-Out Top-1 Agreement** | 100.0% (BF16 Reference) | **95.0%** | −5.0 pt drop over raw vocabulary |
+| **Weight Footprint** | 51.8 GiB | **24.85 GB** | **−52.0%** footprint |
+| **Fidelity-40 Mean KL** | 0.0000 | **0.0165** | Near-zero distribution divergence |
+| **Fidelity-40 Mean JS Divergence** | 0.0000 | **0.0034** | High distributional stability |
+| **Fidelity-40 Top-1 Agreement** | 40 / 40 | **40 / 40** | 100% exact argmax token match |
+| **Fidelity-40 Exact 32-Token Match** | 40 / 40 | **20 / 40** | 50% byte-identical; ties flip to valid equivalents |
+| **Held-Out Full-Vocab KL (72k pos)** | 0.0000 | **0.0208** | Evaluated on out-of-domain sequences |
+| **Held-Out Top-1 Agreement** | 100.0% | **95.0%** | −5.0 pt drop over raw vocabulary |
 | **Quality-200 Objective Score** | — | **157 / 180** | GSM8K: 66 · HumanEval: 39 · IFEval: 34 · Agentic: 18 |
-| **C1 Decode tok/s (DFlash 2, K=10)** | ~14.0 tok/s (BF16 Baseline, no spec) | **30.9** | **+121% speedup** |
-| **C4 Decode tok/s (DFlash 2, K=10)** | ~45.0 tok/s (BF16 Baseline, no spec) | **98.3** | **+118% speedup** |
+| **C1 Decode tok/s (DFlash 2, K=10)** | ~14.0 (no spec) | **30.9** | **+121% speedup** |
+| **C4 Decode tok/s (DFlash 2, K=10)** | ~45.0 (no spec) | **98.3** | **+118% speedup** |
 
 ---
 
