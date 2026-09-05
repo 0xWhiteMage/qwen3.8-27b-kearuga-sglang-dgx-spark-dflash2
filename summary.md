@@ -11,10 +11,11 @@
   * **Context**: 262,144 tokens native context.
 
 * **Speculative Drafter (DFlash 2)**:
-  * **Repository**: [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)
+  * **Repository**: [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) (Stock Drafter, revision `50307d4c…`)
   * **Precision**: Native BF16 with fused KV materialization active (3.58 GiB).
   * **Context**: 262,144 tokens.
   * **SGLang Kernel**: `fused_kv_materialization` is 100% ENABLED.
+  * **Status**: Proven out-of-the-box stock drafter (~31 tok/s C1 decode with reasoning, 45–65+ tok/s pure decode). Custom target-retrained drafter is unreleased / in training.
 
 ---
 

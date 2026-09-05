@@ -28,10 +28,8 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 * **Target Model Specification (`8ea86bdc...`)**: Certified complete 2,194-tensor ModelOpt NVFP4 target checkpoint on `0xWhiteMage/Qwen3.8-27B-Kearuga-NVFP4` with verified dual scale matrices (`weight_scale_2`, `input_scale`).
 * **Multimodal Architecture Verification**: Confirmed 27 Vision Transformer blocks producing all 333 visual tensors (`model.visual.*`) remain lossless in BF16 alongside image/video preprocessor configurations.
 
-### ⚡ Speculative Decoding & On-Target Distillation Architecture
-* **On-Target Distillation Protocol**: Established the native on-target distillation architecture against live NVFP4 hidden states (`[5, 19, 33, 47, 61]`), optimizing student cross-attention for sustained **85–92%+** speculative acceptance.
-* **Selective Hybrid Drafter (`3a5f5763...`)**: Preserved `qkv_proj` and `out_proj` in native BF16 so SGLang's `fused_kv_materialization` CUDA kernel is 100% active, while compressing MLP feed-forward layers to FP8 E4M3 (2.39 GiB footprint).
-* **5,000-Sample Deep Distillation Corpus**: Committed `artifacts/deep_distill_5000.jsonl` covering Olympiad Math, Python Algorithms, Formal Logic, Tool Calling, and IFEval.
+### ⚡ Speculative Decoding Architecture
+* **DFlash 2 Speculative Integration**: Paired the target with stock `z-lab/Qwen3.8-27B-DFlash2` (3.58 GiB native BF16), maintaining low-noise FP8 tap points (`[5, 19, 33, 47, 61]`) and activating SGLang's `fused_kv_materialization` CUDA kernel.
 
 ### 📊 Community Benchmark Synchronization & Hardware
 * **Weschera Recipe Synchronization**: Aligned benchmark matrix with Weschera's latest DFlash 2 Block 10 Speed Profile (42.04 tok/s dedicated C1) and Block 8 Capacity Profile (120.58 tok/s C8), incorporating findings on SGLang fp8_gemm autotuning.

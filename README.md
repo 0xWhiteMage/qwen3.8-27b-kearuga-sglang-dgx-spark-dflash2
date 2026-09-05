@@ -4,14 +4,14 @@
   <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang, DFlash 2 and EAGLE" width="100%"><br><br>
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.5.0-blue.svg" alt="Version 0.5.0"></a>
   <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a>
-  <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-DFlash_Drafter-orange.svg" alt="HuggingFace Drafter"></a>
+  <a href="https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Stock_DFlash2_Drafter-orange.svg" alt="Stock DFlash 2 Drafter"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-green.svg" alt="License: Apache 2.0"></a>
   <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/X-@0xWhiteMage-000000?logo=x&logoColor=white" alt="Follow on X"></a>
 </p>
 
-Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** paired with the **[Kearuga DFlash 2 Drafter](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)** on **[SGLang](https://docs.sglang.io)** on a single 128 GB NVIDIA DGX Spark (GB10 / SM121). 
+Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** paired with the stock **[z-lab/Qwen3.8-27B-DFlash2](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2)** drafter on **[SGLang](https://docs.sglang.io)** on a single 128 GB NVIDIA DGX Spark (GB10 / SM121). 
 
-This repository provides certified production container launchers, hardware configurations, priority preemption queues, speculative distillation pipelines, and automated multi-gate verification suites.
+This repository provides certified production container launchers, hardware configurations, priority preemption queues, and automated multi-gate verification suites.
 
 * ⚡ **DFlash 2 (Interactive Daily Driver)**: Ultra-responsive C1–C4 profile (~31 tok/s net C1 decode, ~98 tok/s C4) with full reasoning & tool-calling support.
 * 🦅 **EAGLE 3/1/4 (Agent Swarms)**: 32-seat high-concurrency profile scaling linearly to **~535 tok/s aggregate at C32**.
@@ -192,7 +192,7 @@ The Kearuga deployment suite is interconnected across GitHub and Hugging Face:
 | Artifact | Location | Purpose |
 |---|---|---|
 | **Target Checkpoint (27B)** | [`0xWhiteMage/Qwen3.8-27B-Kearuga`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) | Production weights (24.85 GB, 3 shards + MTP head), model card, and fidelity proofs |
-| **DFlash 2 Drafter** | [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) | Speculative decoding draft model (BF16, 3.58 GiB) |
+| **DFlash 2 Drafter** | [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) | Proven stock speculative draft model (BF16, 3.58 GiB) |
 | **Serving Suite & Harness** | This Repository | Production container scripts, benchmarks, and hardware launchers |
 
 ---

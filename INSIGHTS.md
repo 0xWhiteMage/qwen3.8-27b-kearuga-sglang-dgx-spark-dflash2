@@ -113,30 +113,21 @@ Without this synchronization, one half of every fused MLP would be dequantized w
 ### 3.1 Fused KV Materialization Contract
 In SGLang's DFlash engine, the draft model projects target hidden states into the draft KV cache using a specialized CUDA kernel (`fused_dflash_kv_kernel`).
 * SGLang's high-speed kernel requires `self_attn.qkv_proj` in native **BF16**.
-* By keeping `qkv_proj` and `out_proj` in native BF16, we achieve zero-allocation CUDA graph execution with a compact **3.58 GiB** footprint on [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2).
+* By keeping `qkv_proj` and `out_proj` in native BF16, the stock [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) drafter achieves zero-allocation CUDA graph execution with a compact **3.58 GiB** footprint.
 
 ---
 
-## 🎓 4. On-Target Distillation: Precision Feature Calibration
+## 🏎️ 4. Drafter Selection: Stock DFlash 2 Baseline & Future Calibration
 
-> *"Distilling the student model directly on the target's live feature representations ensures optimal token acceptance."*
+> *"Stock DFlash 2 delivers instant speedup out of the box; on-target draft retraining remains an active future engineering lane."*
 
-### 4.1 The On-Target Feature Calibration Principle
-DFlash 2 operates by conditioning on intermediate features from the target model at layers `[5, 19, 33, 47, 61]`. Distilling the student model directly on the target model's representations ensures exact numerical alignment with the 27B model's output distribution, driving sustained high acceptance rates:
+### 4.1 Why Stock DFlash 2 Delivers Strong Baselines
+The stock [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) drafter was distilled against BF16 Qwen3.8 hidden states. Even without custom retraining, it achieves high acceptance lengths (3.7–4.8 tokens) against our hybrid target model due to our Tier 2 sensitivity preservation:
+* **Tapped Layers Held in FP8**: Kearuga retains the draft feature tap layers `[5, 19, 33, 47, 61]` in low-noise FP8 E4M3 rather than aggressive 4-bit quantization, minimizing hidden-state divergence from BF16.
+* **Empirical Speed**: Delivers steady-state interactive decode throughput of **~31 tok/s C1 (reasoning enabled)** and up to **45–65+ tok/s (pure decode / thinking off)**.
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                   On-Target Speculative Distillation Architecture                      │
-├─────────────────────────┬──────────────────────────┬───────────────────────────────────┤
-│ 1. 5,000-Sample Corpus  │ 2. D-PACE Position Loss  │ 3. On-Policy Error Replay         │
-├─────────────────────────┼──────────────────────────┼───────────────────────────────────┤
-│ • Olympiad Math (1,500) │ • Exponential loss decay │ • Perturbs intermediate draft     │
-│ • Python Coding (1,500) │   w_k = exp(-k / 6.0)    │   tokens to teach student error   │
-│ • Formal Logic (800)    │ • Prioritizes anchor     │   recovery dynamics.              │
-│ • Tool Calling (700)    │   tokens 1-3.            │ • Reverse-KL on soft logits       │
-│ • IFEval Schema (500)   │ • Quadratic overconf pen │   (T = 0.7).                      │
-└─────────────────────────┴──────────────────────────┴───────────────────────────────────┘
-```
+### 4.2 Custom Drafter Retraining Status
+While naive post-hoc FC/norm tuning is prone to Triton index assertion instabilities, a dedicated full-stack retraining lane calibrated directly on Kearuga's quantized representations is planned for a future release to further elevate speculative acceptance.
 
 ---
 

@@ -21,8 +21,8 @@ if [[ -f "${SCRIPT_DIR}/.env" ]]; then
 fi
 
 EAGLE_IMAGE="${EAGLE_IMAGE:-lmsysorg/sglang:v0.4.3.post2-cu124-arm64}"
-TARGET_MODEL="${TARGET_MODEL:-0xWhiteMage/Qwen3.8-27B-Kearuga-NVFP4}"
-TARGET_REV="${TARGET_REV:-8ea86bdcdd34c84b3d25b69fb7fcc8fc48d0cdd0}"
+TARGET_MODEL="${TARGET_MODEL:-0xWhiteMage/Qwen3.8-27B-Kearuga}"
+TARGET_REV="${TARGET_REV:-}"
 SERVED_MODEL_NAME="${SERVED_MODEL_NAME:-qwen3.8-27b-sglang}"
 
 HOST="${HOST:-0.0.0.0}"
@@ -111,8 +111,11 @@ fi
 REVISION_ARGS=()
 [[ -n "${TARGET_REV:-}" ]] && REVISION_ARGS=(--revision "${TARGET_REV}")
 
-echo "Starting EAGLE ${SPEC_STEPS}/${SPEC_TOPK}/${SPEC_DRAFT} high-concurrency profile"
-echo "Target: ${TARGET_MODEL} @ ${TARGET_REV:0:8}"
+if [[ -n "${TARGET_REV:-}" ]]; then
+  echo "Target: ${TARGET_MODEL} @ ${TARGET_REV:0:8}"
+else
+  echo "Target: ${TARGET_MODEL}"
+fi
 echo "Seats: ${MAX_CONCURRENT_REQUESTS}; context: ${CONTEXT_LENGTH}; shared tokens: ${MAX_TOTAL_TOKENS}"
 echo "Mamba pool: ${MAMBA_CACHE_SIZE}; graph max batch: ${CUDA_GRAPH_MAX_BS}"
 echo "Priority: ${PRIORITY_SCHEDULING} (default=${DEFAULT_PRIORITY_VALUE}, threshold=${PRIORITY_PREEMPTION_THRESHOLD})"
