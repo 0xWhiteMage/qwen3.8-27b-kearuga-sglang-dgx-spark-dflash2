@@ -28,17 +28,14 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 
 > *"One inference engine cannot simultaneously optimize for minimum single-stream latency and maximum 32-stream throughput."*
 
-```
-┌───────────────────────────────────────────────────────────────────────────────────────────┐
-│                              Dual-Engine Speculative Workload Split                       │
-├─────────────────────────────────────────────┬─────────────────────────────────────────────┤
-│ ⚡ DFlash 2 Profile (Interactive C1–C4)      │ 🦅 EAGLE Profile (Agent Swarms C8–C32)      │
-├─────────────────────────────────────────────┼─────────────────────────────────────────────┤
-│ • Block-diffusion parallel drafting (O(1))  │ • Tree-structured autoregressive draft      │
-│ • Selective Hybrid BF16 drafter (3.58 GiB)  │ • 32 concurrent CUDA graph capture slots    │
-│ • 4 admitted streams with priority preempt  │ • High batch saturation (~535 tok/s aggregate)│
-└─────────────────────────────────────────────┴─────────────────────────────────────────────┘
-```
+| Dimension | ⚡ DFlash 2 Profile (Interactive C1–C4) | 🦅 EAGLE Profile (Agent Swarms C8–C32) |
+|---|---|---|
+| **Draft Architecture** | Block-diffusion parallel drafting ($O(1)$ single-step) | Tree-structured autoregressive draft ($O(K)$ sequential) |
+| **Drafter Model** | Stock DFlash 2 BF16 drafter (3.58 GiB) | EAGLE-3/1/4 Draft Head |
+| **Serving Concurrency** | 4 active streams with priority preemption | 32 concurrent CUDA graph capture slots |
+| **Operational Focus** | Real-time interactive user chats & code assistance | High-density tool-calling pipelines & agent clusters |
+| **Throughput Ceiling** | 30.9 tok/s (C1 interactive) · 98.3 tok/s (C4 saturated) | 181 tok/s (C8) · 328 tok/s (C16) · ~535 tok/s (C32) |
+
 
 ### ⚡ DFlash 2: The Interactive Daily Driver (C1–C4)
 * **How It Works**: Traditional speculative drafters draft tokens sequentially (sequential O(K) steps). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=10) in a single forward pass (single-step O(1)).

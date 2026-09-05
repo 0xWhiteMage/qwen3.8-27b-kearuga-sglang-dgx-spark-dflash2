@@ -112,16 +112,15 @@ When running dozens of autonomous agent workers in the background, interactive d
 
 > *"Four full native 262K contexts operating concurrently in a 1,048,576-token shared pool."*
 
-```
-DGX Spark Unified Memory: 128 GB
-┌─────────────────────────────────────────────────────────────┬────────────────────────┐
-│ Active Serving Allocation: ~64.4 GiB                        │ Free Headroom: ~63.6 G │
-├─────────────────┬──────────────┬──────────────┬─────────────┼────────────────────────┤
-│ Target Weights  │ Drafter      │ KV Cache     │ Runtime     │ Available for OS,      │
-│ 24.85 GiB       │ 3.58 GiB     │ 32.00 GiB    │ ~4.00 GiB   │ Page Cache, &          │
-│ (GPTQ/FP8/NVFP4)│ (BF16)       │ (1M Tokens)  │ (PyTorch/SGL│ Dynamic Context Growth │
-└─────────────────┴──────────────┴──────────────┴─────────────┴────────────────────────┘
-```
+| Allocation Layer | Memory Footprint | Format / Allocation Scope |
+|---|:---:|---|
+| **Target Model Weights** | 24.85 GiB | Hybrid GPTQ-4o6 + FP8 + NVFP4 (3 shards + MTP head) |
+| **Speculative Drafter** | 3.58 GiB | Stock DFlash 2 (BF16, fused KV materialization active) |
+| **Shared Target KV Cache** | 32.00 GiB | 1,048,576 shared tokens in Native BF16 (4 × 262K contexts) |
+| **PyTorch & SGLang Runtime** | ~4.00 GiB | CUDA context, execution buffers, and scratchpad memory |
+| **Total Active Serving Footprint** | **~64.4 GiB** | Allocated out of 128 GB Unified Memory |
+| **Free System Headroom** | **~63.6 GiB** | Available for OS, page cache, and dynamic context growth |
+
 
 | Architectural Dimension | Specification | Operational Details |
 |---|---:|---|
