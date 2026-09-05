@@ -64,27 +64,13 @@ Applying a single quantization format across all layers (e.g. uniform INT4 or un
 
 Applying sensitivity lessons from mixed-precision research ([`malaiwah/qwen38-27b-exl3`](https://github.com/malaiwah/qwen38-27b-exl3)), **[`Qwen3.8-27B-Kearuga`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** splits model weights into four distinct precision tiers:
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────────┐
-│                        Kearuga Tiered Sensitivity Hierarchy (v0.5.0)                        │
-├─────────┬──────────────────────────────────┬──────────────┬────────────────────────────────┤
-│ Tier    │ Layers & Tensors                 │ Precision    │ Architectural Purpose          │
-├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────────┤
-│ Tier 1  │ embed_tokens, lm_head, all norms │ Native BF16  │ Protects vocabulary logit      │
-│         │ 27 Vision Blocks (333 tensors)   │              │ tails, multimodal reasoning,   │
-│         │ MTP draft head (15 tensors)      │              │ and MTP speculative decoding   │
-├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────────┤
-│ Tier 2  │ Attention Projections (Q, K, V, O)│ FP8 (E4M3)   │ Preserves draft feature taps   │
-│         │ GDN Recurrence (in_proj)         │              │ [5,19,33,47,61] & stability    │
-│         │ Boundary MLPs (layers 0,1,62,63) │              │                                │
-├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────────┤
-│ Tier 3  │ MLP gate_proj + up_proj          │ GPTQ-4o6     │ Four-Over-Six group scales     │
-│         │ (Layers 2–61, 120 tensors)       │ W4A16 NVFP4  │ remove 21.7% of weight KL      │
-├─────────┼──────────────────────────────────┼──────────────┼────────────────────────────────┤
-│ Tier 4  │ MLP down_proj                    │ NVFP4 AWQ    │ ModelOpt AWQ export, retained  │
-│         │ (Layers 2–61, 60 tensors)        │ (Pre-quant)  │ to handle activation outliers  │
-└─────────┴──────────────────────────────────┴──────────────┴────────────────────────────────┘
-```
+| Tier | Layers & Tensors | Precision | Architectural Purpose |
+|---|---|:---:|---|
+| **Tier 1 (Protect)** | `embed_tokens`, `lm_head`, all norms, 27 Vision Blocks (333 tensors), MTP draft head (15 tensors) | Native BF16 | Protects vocabulary logit tails, multimodal reasoning, and MTP speculative decoding |
+| **Tier 2 (Medium)** | Attention Projections (`q_proj`, `k_proj`, `v_proj`, `o_proj`), GDN Recurrence (`in_proj`), Boundary MLPs (Layers 0, 1, 62, 63) | FP8 E4M3 | Preserves draft feature taps `[5, 19, 33, 47, 61]` and recurrence stability |
+| **Tier 3 (Core)** | MLP `gate_proj` + `up_proj` (Layers 2–61, 120 tensors) | GPTQ-4o6 (W4A16 NVFP4) | Four-Over-Six group scales remove 21.7% of weight KL divergence |
+| **Tier 4 (Down)** | MLP `down_proj` (Layers 2–61, 60 tensors) | NVFP4 AWQ (Pre-quantized) | ModelOpt AWQ export, retained to handle activation outliers |
+
 
 * **Outcome**: A compact **24.85 GB** model running with full Blackwell Tensor Core acceleration while preserving **40/40 top-1 token agreement** with the BF16 base and passing **157/180 Quality-200 objective gates** (GSM8K, HumanEval, IFEval, agentic coding).
 
