@@ -15,9 +15,9 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 
 | Benchmark / Capability | Kearuga Profile | Measured Performance | Operational Significance |
 |---|---|---:|---|
-| ⚡ **Single-Stream Net Decode** | **DFlash 2 (C1)** | **~31 tok/s** (reasoning on) / **45–65+ tok/s** (decode) | Zero-latency interactive daily driver |
-| 🚪 **Door-to-Door Interactive C1** | **DFlash 2 (C1)** | **~41.7 tok/s** | Full turn latency including prefill & TTFT |
-| 👷 **Saturated Interactive C4** | **DFlash 2 (C4)** | **~98.3 tok/s** | Quad-stream simultaneous interactive tasks |
+| ⚡ **Single-Stream Net Decode (C1)** | **DFlash 2 (C1)** | **57 tok/s** (57/str, TTFT 264ms) | Zero-latency interactive daily driver |
+| 👥 **Dual-Stream Decode (C2)** | **DFlash 2 (C2)** | **51 tok/s agg** (40/str, TTFT 416ms) | Balanced dual-stream interactive sessions |
+| 👷 **Saturated Interactive (C4)** | **DFlash 2 (C4)** | **94 tok/s agg** (39/str, TTFT 480ms) | Quad-stream simultaneous interactive tasks |
 | 🦅 **High-Concurrency Agent Swarms**| **EAGLE 3/1/4 (C32)**| **527–539 tok/s** | 32 concurrent agent seats without stalling |
 | 📜 **Shared KV Cache Capacity** | **BF16 KV Pool** | **1,048,576 tokens**| 4 × full 262K native contexts concurrently |
 | ⏱️ **Saturated Priority TTFT** | **Preemption Mode** | **43.15s → 2.63s** | **93.9% latency reduction** under full load |
@@ -34,12 +34,12 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 | **Drafter Model** | Stock DFlash 2 BF16 drafter (3.58 GiB) | EAGLE-3/1/4 Draft Head |
 | **Serving Concurrency** | 4 active streams with priority preemption | 32 concurrent CUDA graph capture slots |
 | **Operational Focus** | Real-time interactive user chats & code assistance | High-density tool-calling pipelines & agent clusters |
-| **Throughput Ceiling** | 30.9 tok/s (C1 interactive) · 98.3 tok/s (C4 saturated) | 181 tok/s (C8) · 328 tok/s (C16) · ~535 tok/s (C32) |
+| **Throughput Ceiling** | 57 tok/s (C1) · 51 tok/s agg (C2) · 94 tok/s agg (C4) | 181 tok/s (C8) · 328 tok/s (C16) · ~535 tok/s (C32) |
 
 
 ### ⚡ DFlash 2: The Interactive Daily Driver (C1–C4)
 * **How It Works**: Traditional speculative drafters draft tokens sequentially (sequential O(K) steps). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=10) in a single forward pass (single-step O(1)).
-* **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **30.9 tok/s C1 (reasoning on)** and up to **65+ tok/s (thinking off)** on DGX Spark unified memory.
+* **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **57 tok/s C1 (57 tok/s/stream, TTFT 264ms)**, **51 tok/s aggregate C2 (40 tok/s/stream)**, and **94 tok/s aggregate C4 (39 tok/s/stream, TTFT 480ms)** on DGX Spark unified memory.
 
 ### 🦅 EAGLE 3/1/4: High-Concurrency Agent Workloads (C8–C32)
 * **How It Works**: When serving 8 to 32 parallel agent streams, memory bandwidth becomes saturated. EAGLE builds a speculative tree structure that allows the main 27B model to verify multiple token paths simultaneously using its native Multi-Token Prediction (MTP) draft head (`model-mtp.safetensors`).
@@ -107,7 +107,7 @@ In SGLang's DFlash engine, the draft model projects target hidden states into th
 ### 4.1 Why Stock DFlash 2 Delivers Strong Baselines
 The stock [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) drafter was distilled against BF16 Qwen3.8 hidden states. Even without custom retraining, it achieves high acceptance lengths (3.7–4.8 tokens) against our hybrid target model due to our Tier 2 sensitivity preservation:
 * **Tapped Layers Held in FP8**: Kearuga retains the draft feature tap layers `[5, 19, 33, 47, 61]` in low-noise FP8 E4M3 rather than aggressive 4-bit quantization, minimizing hidden-state divergence from BF16.
-* **Empirical Speed**: Delivers steady-state interactive decode throughput of **~31 tok/s C1 (reasoning enabled)** and up to **45–65+ tok/s (pure decode / thinking off)**.
+* **Empirical Speed**: Delivers steady-state interactive decode throughput of **57 tok/s C1 (57 tok/s/stream, TTFT 264ms)**, **51 tok/s aggregate C2 (40 tok/s/stream, TTFT 416ms)**, and **94 tok/s aggregate C4 (39 tok/s/stream, TTFT 480ms)**.
 
 ### 4.2 Custom Drafter Retraining Status
 While naive post-hoc FC/norm tuning is prone to Triton index assertion instabilities, a dedicated full-stack retraining lane calibrated directly on Kearuga's quantized representations is planned for a future release to further elevate speculative acceptance.

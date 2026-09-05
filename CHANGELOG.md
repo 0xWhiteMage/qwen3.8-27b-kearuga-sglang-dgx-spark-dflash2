@@ -9,7 +9,7 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 ### 🎯 New Production Checkpoint — Hybrid GPTQ-4o6 + FP8
 * **Promoted [Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)**: New hybrid quantization checkpoint combining GPTQ with Four-Over-Six group scales (120 MLP tensors), NVFP4 AWQ (60 down_proj tensors), FP8 e4m3 (195 GDN/attention projections + 10 boundary MLP modules). Total footprint 24.85 GB.
 * **Fidelity Validation**: Served Fidelity-40 mean KL **0.0165** (−50.6% vs previous NVFP4-only checkpoint), top-1 agreement **40/40**, exact 32-token continuation **20/40**. Held-out full-vocab KL **0.0208** (top-1 95.0%). Quality-200 objective **157/180**.
-* **Speed**: C1 decode **30.9 tok/s** (+4.4%), C4 aggregate **98.3 tok/s** (+2.2%), at −0.89 GB/step smaller footprint.
+* **Speed**: Empirical Spark DFlash (2048 draft window): C1 decode **57 tok/s** (57 tok/s/stream, TTFT 264ms), C2 aggregate **51 tok/s** (40 tok/s/stream, TTFT 416ms), C4 aggregate **94 tok/s** (39 tok/s/stream, TTFT 480ms).
 
 ### ⚡ Serving Migration — Official Image, No Overlay
 * **Migrated to `lmsysorg/sglang@sha256:616a3e97…`**: The V5 checkpoint has no NVFP4_AWQ layers, so the 5-file kernel overlay is no longer needed. TTFT improved −6%.

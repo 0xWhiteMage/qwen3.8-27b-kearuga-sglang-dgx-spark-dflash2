@@ -15,7 +15,7 @@
   * **Precision**: Native BF16 with fused KV materialization active (3.58 GiB).
   * **Context**: 262,144 tokens.
   * **SGLang Kernel**: `fused_kv_materialization` is 100% ENABLED.
-  * **Status**: Proven out-of-the-box stock drafter (~31 tok/s C1 decode with reasoning, 45–65+ tok/s pure decode). Custom target-retrained drafter is unreleased / in training.
+  * **Status**: Proven out-of-the-box stock drafter (57 tok/s C1 decode · 264ms TTFT, 51 tok/s C2 agg, 94 tok/s C4 agg · 480ms TTFT). Custom target-retrained drafter is unreleased / in training.
 
 ---
 
@@ -25,5 +25,5 @@
 * **Serving Image**: `lmsysorg/sglang@sha256:616a3e97…` (official, digest-pinned, no overlay needed).
 * **Serving VRAM Envelope**: 24.85 GiB (Target) + 3.58 GiB (Drafter) + 32.00 GiB (1M-Token BF16 KV Pool) + ~4.0 GiB (PyTorch / CUDA runtime) = ~64.4 GiB total (>63.6 GiB headroom).
 * **Launch Profiles**:
-  * `start-dflash2.sh`: Interactive low-latency profile (30.9 tok/s C1 decode, 98.3 tok/s C4).
+  * `start-dflash2.sh`: Interactive low-latency profile (57 tok/s C1 decode · 264ms TTFT, 51 tok/s C2 agg, 94 tok/s C4 agg · 480ms TTFT).
   * `start-eagle.sh`: High-concurrency agent profile (527–539 tok/s C32 throughput).

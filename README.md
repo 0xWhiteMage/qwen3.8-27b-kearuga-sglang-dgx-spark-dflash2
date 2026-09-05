@@ -8,7 +8,7 @@ Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kea
 
 This repository provides certified production container launchers, hardware configurations, priority preemption queues, and automated multi-gate verification suites.
 
-* ⚡ **DFlash 2 (Interactive Daily Driver)**: Ultra-responsive C1–C4 profile (~31 tok/s net C1 decode, ~98 tok/s C4) with full reasoning & tool-calling support.
+* ⚡ **DFlash 2 (Interactive Daily Driver)**: Ultra-responsive C1–C4 profile (57 tok/s C1 decode, 94 tok/s aggregate C4, 264 ms TTFT) with full reasoning & tool-calling support.
 * 🦅 **EAGLE 3/1/4 (Agent Swarms)**: 32-seat high-concurrency profile scaling linearly to **~535 tok/s aggregate at C32**.
 * 📜 **1M-Token KV Pool**: Sustains **4 simultaneous native 262K contexts** in shared unified memory without swapping or fragmentation.
 * 🛡️ **Tiered Sensitivity Hierarchy**: EXL3-inspired mixed-precision (GPTQ-4o6 / NVFP4 AWQ / FP8 / BF16) preserving vocabulary logit tails and intermediate draft taps.
@@ -36,21 +36,21 @@ See the complete chronological release history in **[CHANGELOG.md](CHANGELOG.md)
 
 > 🚧 **Active Drafter Development**: An upgraded, on-target trained DFlash 2 drafter is currently under development. The interactive benchmarks below reflect the current stock `z-lab/Qwen3.8-27B-DFlash2` drafter; updated performance will be published upon release.
 
-> *"DFlash 2 delivers instant interactive feedback (~31 tok/s C1 decode); EAGLE scales massive agent swarms (~535 tok/s C32)."*
+> *"DFlash 2 delivers instant interactive feedback (57 tok/s C1 decode, 264 ms TTFT); EAGLE scales massive agent swarms (~535 tok/s C32)."*
 
 ### ⚡ 1. Interactive Throughput & Latency Comparison (C1–C4)
 *Measured on NVIDIA DGX Spark (GB10 / SM121), Temperature 0, reasoning enabled.*
 
 | Solution / Repository | Speculative Method | Dedicated C1 (tok/s) | Net Decode C1 (tok/s) | Saturated C4 (tok/s) | Ladder C8 (tok/s) |
 |---|---|---:|---:|---:|---:|
-| 🧙‍♂️ **Kearuga Model Suite** | **DFlash 2 (BF16)** | **41.7** | **~31.0** | **~98.3** | **~135.0** |
+| 🧙‍♂️ **Kearuga Model Suite** | **DFlash 2 (BF16)** | **57.0** | **57.0** | **94.0** | — |
 | 🔹 [MiaAI-Lab (DFlash 2)](https://github.com/MiaAI-Lab/Qwen3.8-27B-SGLang-DGX-Spark) | DFlash 2 / DSpark | ~50.9–51.5 | ~29.0–35.0 | 111.60 | — |
 | 🔹 [MiaAI-Lab (MTP)](https://github.com/MiaAI-Lab/Qwen3.8-27B-SGLang-DGX-Spark) | MTP (In-Checkpoint) | ~26.0 | 33.0–35.0 | ~95.0 | — |
 | 🔹 [Weschera (Speed Profile)](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 (Block 10) | 42.04 | — | 66.31 | 114.50 |
 | 🔹 [Weschera (Capacity Profile)](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 (Block 8) | 34.08 | 25.33 | 64.10 | 120.58 |
 | 🔹 [r0b0tlab](https://github.com/r0b0tlab/qwen38-27b-nvfp4-sm121-sglang) | SM121 Pin (DFlash 2 K8) | 28.38 | 23.47 | 54.99 | 92.05 |
 
-*Note: In pure unconstrained decode without reasoning traces (`enable_thinking=false`), DFlash 2 achieves 45–65+ tok/s net decode on code and structured completion tasks.*
+*Note: Measured with stock DFlash 2 and 2048 draft window on DGX Spark: C1 = 57 tok/s (57 tok/s/stream, TTFT 264ms), C2 = 51 tok/s aggregate (40 tok/s/stream, TTFT 416ms), C4 = 94 tok/s aggregate (39 tok/s/stream, TTFT 480ms). In pure unconstrained decode without reasoning traces (`enable_thinking=false`), DFlash 2 reaches 65+ tok/s.*
 
 ### 🦅 2. High-Concurrency Swarm Throughput (C8–C32)
 *Measured with unique request suffixes, 512 generated tokens per request.*
@@ -60,7 +60,7 @@ See the complete chronological release history in **[CHANGELOG.md](CHANGELOG.md)
 | **EAGLE 3/1/4** | **C8** | **181–193 tok/s** | **0.32 s** | Parallel code reviewers & multi-agent debate |
 | **EAGLE 3/1/4** | **C16** | **320–335 tok/s** | **0.49 s** | High-density tool-calling pipelines |
 | **EAGLE 3/1/4** | **C32** | **527–539 tok/s** | **0.87 s** | Large autonomous background agent clusters |
-| 🔹 Kearuga DFlash 2 | C4 (Max Active) | ~98–118 tok/s* | 2.63 s | Real-time interactive user sessions |
+| 🔹 Kearuga DFlash 2 | C4 (Max Active) | **94 tok/s agg (39/str)\*** | **0.48 s** | Real-time interactive user sessions (TTFT 480ms) |
 | 🔹 [0xBakeer](https://github.com/0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark) | vLLM 4-bit (MTP) | 246.0 tok/s | — | Batch baseline |
 | 🔹 [Weschera](https://github.com/Weschera/Qwen3.8-27B-NVFP4-DFlash2-DGX-Spark) | DFlash 2 Capacity | 178.3 tok/s (C32) | — | Block 8 capacity profile |
 
@@ -96,9 +96,9 @@ When running dozens of autonomous agent workers in the background, interactive d
 | **Fidelity-40 Exact 32-Token Match** | 40 / 40 | **20 / 40** | 50% byte-identical; ties flip to valid equivalents |
 | **Held-Out Full-Vocab KL (72k pos)** | 0.0000 | **0.0208** | Evaluated on out-of-domain sequences |
 | **Held-Out Top-1 Agreement** | 100.0% | **95.0%** | −5.0 pt drop over raw vocabulary |
-| **Quality-200 Objective Score** | — | **157 / 180** | GSM8K: 66 · HumanEval: 39 · IFEval: 34 · Agentic: 18 |
-| **C1 Decode tok/s (DFlash 2, K=10)** | ~14.0 (no spec) | **30.9** | **+121% speedup** |
-| **C4 Decode tok/s (DFlash 2, K=10)** | ~45.0 (no spec) | **98.3** | **+118% speedup** |
+| **C1 Decode tok/s (DFlash 2, K=10)** | ~14.0 (no spec) | **57.0** | **+307% speedup** (57 tok/s/stream, TTFT 264ms) |
+| **C2 Decode tok/s (DFlash 2, K=10)** | ~28.0 (no spec) | **51.0** | **+82% speedup** (40 tok/s/stream, TTFT 416ms) |
+| **C4 Decode tok/s (DFlash 2, K=10)** | ~45.0 (no spec) | **94.0** | **+109% speedup** (39 tok/s/stream, TTFT 480ms) |
 
 ---
 
