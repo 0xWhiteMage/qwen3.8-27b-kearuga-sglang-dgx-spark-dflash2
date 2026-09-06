@@ -1,0 +1,3455 @@
+{
+  "model": "qwen3.8-27b-sglang",
+  "base_url": "http://192.168.0.60:8890/v1",
+  "prompts_sha256": "6eac1c63971664e1f855271119720a1c624f701bd38d497ef7352f7a9a5f0ef5",
+  "protocol": {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "seed": 1234,
+    "enable_thinking": false,
+    "top_logprobs": 20,
+    "continuation_tokens": 32
+  },
+  "records": [
+    {
+      "prompt": "The capital city of France is",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.015048901550471783
+        },
+        {
+          "token": "Paris",
+          "logprob": -4.265048980712891
+        },
+        {
+          "token": "Par",
+          "logprob": -7.765048980712891
+        },
+        {
+          "token": "**",
+          "logprob": -8.51504898071289
+        },
+        {
+          "token": "Based",
+          "logprob": -11.07754898071289
+        },
+        {
+          "token": "P",
+          "logprob": -11.20254898071289
+        },
+        {
+          "token": "Capital",
+          "logprob": -11.26504898071289
+        },
+        {
+          "token": "France",
+          "logprob": -11.45254898071289
+        },
+        {
+          "token": "the",
+          "logprob": -11.70254898071289
+        },
+        {
+          "token": "Answer",
+          "logprob": -11.89004898071289
+        },
+        {
+          "token": "London",
+          "logprob": -11.95254898071289
+        },
+        {
+          "token": "It",
+          "logprob": -12.01504898071289
+        },
+        {
+          "token": "This",
+          "logprob": -12.20254898071289
+        },
+        {
+          "token": "In",
+          "logprob": -12.26504898071289
+        },
+        {
+          "token": "There",
+          "logprob": -12.26504898071289
+        },
+        {
+          "token": "I",
+          "logprob": -12.45254898071289
+        },
+        {
+          "token": "Since",
+          "logprob": -12.51504898071289
+        },
+        {
+          "token": "A",
+          "logprob": -12.64004898071289
+        },
+        {
+          "token": "Berlin",
+          "logprob": -12.76504898071289
+        },
+        {
+          "token": "That",
+          "logprob": -12.82754898071289
+        }
+      ],
+      "continuation": "The capital city of France is **Paris**."
+    },
+    {
+      "prompt": "def fibonacci(n):",
+      "top20": [
+        {
+          "token": "```",
+          "logprob": -0.6059149503707886
+        },
+        {
+          "token": "Here",
+          "logprob": -1.6059149503707886
+        },
+        {
+          "token": "#",
+          "logprob": -1.6059149503707886
+        },
+        {
+          "token": "def",
+          "logprob": -3.980915069580078
+        },
+        {
+          "token": "It",
+          "logprob": -5.105915069580078
+        },
+        {
+          "token": "I",
+          "logprob": -5.480915069580078
+        },
+        {
+          "token": "The",
+          "logprob": -5.855915069580078
+        },
+        {
+          "token": "这里",
+          "logprob": -5.980915069580078
+        },
+        {
+          "token": "Based",
+          "logprob": -6.105915069580078
+        },
+        {
+          "token": "You",
+          "logprob": -6.105915069580078
+        },
+        {
+          "token": "There",
+          "logprob": -7.168415069580078
+        },
+        {
+          "token": "This",
+          "logprob": -7.355915069580078
+        },
+        {
+          "token": " def",
+          "logprob": -7.418415069580078
+        },
+        {
+          "token": "Ass",
+          "logprob": -7.480915069580078
+        },
+        {
+          "token": "##",
+          "logprob": -7.605915069580078
+        },
+        {
+          "token": "Sure",
+          "logprob": -7.668415069580078
+        },
+        {
+          "token": " Here",
+          "logprob": -7.793415069580078
+        },
+        {
+          "token": "Let",
+          "logprob": -7.918415069580078
+        },
+        {
+          "token": "Since",
+          "logprob": -7.918415069580078
+        },
+        {
+          "token": "Looking",
+          "logprob": -7.918415069580078
+        }
+      ],
+      "continuation": "```python\ndef fibonacci(n):\n    \"\"\"\n    Return the n-th Fibonacci number (0-indexed).\n    \n    Args:\n        n:"
+    },
+    {
+      "prompt": "{\"status\": \"ok\", \"code\":",
+      "top20": [
+        {
+          "token": "It",
+          "logprob": -0.20953059196472168
+        },
+        {
+          "token": "I",
+          "logprob": -2.8345305919647217
+        },
+        {
+          "token": "The",
+          "logprob": -3.8970305919647217
+        },
+        {
+          "token": "```",
+          "logprob": -3.8970305919647217
+        },
+        {
+          "token": "Your",
+          "logprob": -4.397030830383301
+        },
+        {
+          "token": "Based",
+          "logprob": -4.459530830383301
+        },
+        {
+          "token": "Hello",
+          "logprob": -4.959530830383301
+        },
+        {
+          "token": "看起来",
+          "logprob": -5.022030830383301
+        },
+        {
+          "token": "{",
+          "logprob": -5.522030830383301
+        },
+        {
+          "token": "{\"",
+          "logprob": -5.584530830383301
+        },
+        {
+          "token": "Here",
+          "logprob": -5.772030830383301
+        },
+        {
+          "token": "This",
+          "logprob": -5.959530830383301
+        },
+        {
+          "token": "That",
+          "logprob": -6.209530830383301
+        },
+        {
+          "token": "您好",
+          "logprob": -6.209530830383301
+        },
+        {
+          "token": "Looks",
+          "logprob": -6.334530830383301
+        },
+        {
+          "token": "`",
+          "logprob": -6.397030830383301
+        },
+        {
+          "token": "你好",
+          "logprob": -6.459530830383301
+        },
+        {
+          "token": "it",
+          "logprob": -6.709530830383301
+        },
+        {
+          "token": "You",
+          "logprob": -6.897030830383301
+        },
+        {
+          "token": "<tool_call>",
+          "logprob": -7.022030830383301
+        }
+      ],
+      "continuation": "It looks like your message got cut off. Could you please provide the full JSON or clarify what you're asking? I'm happy to help!"
+    },
+    {
+      "prompt": "The result of 19 multiplied by 23 is",
+      "top20": [
+        {
+          "token": "To",
+          "logprob": -0.018183207139372826
+        },
+        {
+          "token": "The",
+          "logprob": -4.39318323135376
+        },
+        {
+          "token": "$",
+          "logprob": -6.26818323135376
+        },
+        {
+          "token": "1",
+          "logprob": -6.39318323135376
+        },
+        {
+          "token": "4",
+          "logprob": -7.39318323135376
+        },
+        {
+          "token": " To",
+          "logprob": -7.89318323135376
+        },
+        {
+          "token": "$$",
+          "logprob": -8.018182754516602
+        },
+        {
+          "token": "**",
+          "logprob": -8.518182754516602
+        },
+        {
+          "token": "Here",
+          "logprob": -8.518182754516602
+        },
+        {
+          "token": "I",
+          "logprob": -9.768182754516602
+        },
+        {
+          "token": "There",
+          "logprob": -10.768182754516602
+        },
+        {
+          "token": "Let",
+          "logprob": -10.830682754516602
+        },
+        {
+          "token": "We",
+          "logprob": -10.893182754516602
+        },
+        {
+          "token": "It",
+          "logprob": -11.205682754516602
+        },
+        {
+          "token": "###",
+          "logprob": -11.393182754516602
+        },
+        {
+          "token": "Multip",
+          "logprob": -11.518182754516602
+        },
+        {
+          "token": "First",
+          "logprob": -11.580682754516602
+        },
+        {
+          "token": "to",
+          "logprob": -11.768182754516602
+        },
+        {
+          "token": "When",
+          "logprob": -11.768182754516602
+        },
+        {
+          "token": "$\\",
+          "logprob": -11.830682754516602
+        }
+      ],
+      "continuation": "To find the result of 19 multiplied by 23, we can perform the calculation step-by-step.\n\n**Method 1: Standard Multiplication"
+    },
+    {
+      "prompt": "Quantum entanglement is best described as",
+      "top20": [
+        {
+          "token": "Based",
+          "logprob": -0.8622503280639648
+        },
+        {
+          "token": "Quant",
+          "logprob": -1.4872503280639648
+        },
+        {
+          "token": "**",
+          "logprob": -1.7372503280639648
+        },
+        {
+          "token": "###",
+          "logprob": -2.237250328063965
+        },
+        {
+          "token": "To",
+          "logprob": -2.987250328063965
+        },
+        {
+          "token": "The",
+          "logprob": -5.112250328063965
+        },
+        {
+          "token": "In",
+          "logprob": -5.987250328063965
+        },
+        {
+          "token": "Since",
+          "logprob": -6.112250328063965
+        },
+        {
+          "token": "Logical",
+          "logprob": -6.737250328063965
+        },
+        {
+          "token": "Here",
+          "logprob": -6.862250328063965
+        },
+        {
+          "token": "Logic",
+          "logprob": -7.362250328063965
+        },
+        {
+          "token": "A",
+          "logprob": -7.612250328063965
+        },
+        {
+          "token": "\"",
+          "logprob": -7.737250328063965
+        },
+        {
+          "token": "If",
+          "logprob": -7.862250328063965
+        },
+        {
+          "token": "##",
+          "logprob": -8.674750328063965
+        },
+        {
+          "token": "While",
+          "logprob": -8.737250328063965
+        },
+        {
+          "token": "Best",
+          "logprob": -8.799750328063965
+        },
+        {
+          "token": "This",
+          "logprob": -8.799750328063965
+        },
+        {
+          "token": "<think>",
+          "logprob": -8.799750328063965
+        },
+        {
+          "token": "Scient",
+          "logprob": -8.924750328063965
+        }
+      ],
+      "continuation": "Based on the principles of quantum mechanics, here is the step-by-step logical deduction to determine the best description of quantum entanglement, followed by the final conclusion"
+    },
+    {
+      "prompt": "SELECT id, name FROM users WHERE",
+      "top20": [
+        {
+          "token": "It",
+          "logprob": -0.6811131238937378
+        },
+        {
+          "token": "Your",
+          "logprob": -0.9311131238937378
+        },
+        {
+          "token": "#",
+          "logprob": -3.0561132431030273
+        },
+        {
+          "token": "The",
+          "logprob": -3.9311132431030273
+        },
+        {
+          "token": "This",
+          "logprob": -4.431113243103027
+        },
+        {
+          "token": "You",
+          "logprob": -5.618613243103027
+        },
+        {
+          "token": "I",
+          "logprob": -5.993613243103027
+        },
+        {
+          "token": "你的",
+          "logprob": -6.243613243103027
+        },
+        {
+          "token": "Looks",
+          "logprob": -6.993613243103027
+        },
+        {
+          "token": "您的",
+          "logprob": -7.056113243103027
+        },
+        {
+          "token": " Your",
+          "logprob": -7.056113243103027
+        },
+        {
+          "token": "Here",
+          "logprob": -7.181113243103027
+        },
+        {
+          "token": "Based",
+          "logprob": -7.243613243103027
+        },
+        {
+          "token": "That",
+          "logprob": -7.243613243103027
+        },
+        {
+          "token": "看起来",
+          "logprob": -7.431113243103027
+        },
+        {
+          "token": "```",
+          "logprob": -7.493613243103027
+        },
+        {
+          "token": "To",
+          "logprob": -7.493613243103027
+        },
+        {
+          "token": "your",
+          "logprob": -7.993613243103027
+        },
+        {
+          "token": "`",
+          "logprob": -8.118613243103027
+        },
+        {
+          "token": "SELECT",
+          "logprob": -8.243613243103027
+        }
+      ],
+      "continuation": "It looks like your SQL query is incomplete. The `WHERE` clause is missing its condition.\n\nHere are a few common examples of how you might complete it"
+    },
+    {
+      "prompt": "Once upon a time in a lighthouse,",
+      "top20": [
+        {
+          "token": "Once",
+          "logprob": -0.5532389283180237
+        },
+        {
+          "token": "...",
+          "logprob": -1.178238868713379
+        },
+        {
+          "token": "…",
+          "logprob": -2.678238868713379
+        },
+        {
+          "token": "the",
+          "logprob": -3.553238868713379
+        },
+        {
+          "token": "once",
+          "logprob": -5.928238868713379
+        },
+        {
+          "token": "**",
+          "logprob": -5.928238868713379
+        },
+        {
+          "token": "The",
+          "logprob": -6.178238868713379
+        },
+        {
+          "token": "There",
+          "logprob": -6.428238868713379
+        },
+        {
+          "token": "there",
+          "logprob": -6.803238868713379
+        },
+        {
+          "token": "Here",
+          "logprob": -6.928238868713379
+        },
+        {
+          "token": "…the",
+          "logprob": -7.178238868713379
+        },
+        {
+          "token": "a",
+          "logprob": -7.428238868713379
+        },
+        {
+          "token": "where",
+          "logprob": -7.553238868713379
+        },
+        {
+          "token": "One",
+          "logprob": -7.865738868713379
+        },
+        {
+          "token": "In",
+          "logprob": -7.865738868713379
+        },
+        {
+          "token": "…but",
+          "logprob": -8.053238868713379
+        },
+        {
+          "token": "……",
+          "logprob": -8.053238868713379
+        },
+        {
+          "token": "it",
+          "logprob": -8.178238868713379
+        },
+        {
+          "token": "in",
+          "logprob": -8.553238868713379
+        },
+        {
+          "token": "s",
+          "logprob": -8.553238868713379
+        }
+      ],
+      "continuation": "Once upon a time in a lighthouse, perched on a jagged cliff that jutted out like a broken tooth into the churning gray sea, there"
+    },
+    {
+      "prompt": "The three primary colours are",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.05628035590052605
+        },
+        {
+          "token": "There",
+          "logprob": -4.181280136108398
+        },
+        {
+          "token": "To",
+          "logprob": -4.806280136108398
+        },
+        {
+          "token": "In",
+          "logprob": -4.931280136108398
+        },
+        {
+          "token": "Based",
+          "logprob": -5.556280136108398
+        },
+        {
+          "token": "Because",
+          "logprob": -5.681280136108398
+        },
+        {
+          "token": "Depending",
+          "logprob": -6.056280136108398
+        },
+        {
+          "token": "###",
+          "logprob": -6.056280136108398
+        },
+        {
+          "token": "It",
+          "logprob": -6.056280136108398
+        },
+        {
+          "token": "Determin",
+          "logprob": -6.306280136108398
+        },
+        {
+          "token": "Since",
+          "logprob": -6.306280136108398
+        },
+        {
+          "token": "Ident",
+          "logprob": -7.181280136108398
+        },
+        {
+          "token": "When",
+          "logprob": -7.306280136108398
+        },
+        {
+          "token": "Def",
+          "logprob": -7.681280136108398
+        },
+        {
+          "token": "Answer",
+          "logprob": -7.681280136108398
+        },
+        {
+          "token": "Actually",
+          "logprob": -8.118780136108398
+        },
+        {
+          "token": "Unlike",
+          "logprob": -8.431280136108398
+        },
+        {
+          "token": "Primary",
+          "logprob": -8.493780136108398
+        },
+        {
+          "token": "Strict",
+          "logprob": -8.618780136108398
+        },
+        {
+          "token": "As",
+          "logprob": -8.618780136108398
+        }
+      ],
+      "continuation": "The answer depends on the context, as there are two main systems for defining \"primary colors\":\n\n### 1. **Additive Color Model (Light)**"
+    },
+    {
+      "prompt": "In Singapore, hawker centres typically serve",
+      "top20": [
+        {
+          "token": "In",
+          "logprob": -0.07719119638204575
+        },
+        {
+          "token": "H",
+          "logprob": -3.577191114425659
+        },
+        {
+          "token": "local",
+          "logprob": -4.577191352844238
+        },
+        {
+          "token": "**",
+          "logprob": -4.702191352844238
+        },
+        {
+          "token": "a",
+          "logprob": -5.077191352844238
+        },
+        {
+          "token": "Singapore",
+          "logprob": -5.702191352844238
+        },
+        {
+          "token": "...",
+          "logprob": -5.827191352844238
+        },
+        {
+          "token": "auth",
+          "logprob": -6.202191352844238
+        },
+        {
+          "token": "aff",
+          "logprob": -6.327191352844238
+        },
+        {
+          "token": "haw",
+          "logprob": -6.577191352844238
+        },
+        {
+          "token": "traditional",
+          "logprob": -7.264691352844238
+        },
+        {
+          "token": "Local",
+          "logprob": -7.264691352844238
+        },
+        {
+          "token": "Traditional",
+          "logprob": -7.514691352844238
+        },
+        {
+          "token": "A",
+          "logprob": -7.639691352844238
+        },
+        {
+          "token": "aw",
+          "logprob": -7.827191352844238
+        },
+        {
+          "token": "loc",
+          "logprob": -7.889691352844238
+        },
+        {
+          "token": "h",
+          "logprob": -8.264691352844238
+        },
+        {
+          "token": "…",
+          "logprob": -8.389691352844238
+        },
+        {
+          "token": "Loc",
+          "logprob": -8.577191352844238
+        },
+        {
+          "token": "typ",
+          "logprob": -8.764691352844238
+        }
+      ],
+      "continuation": "In Singapore, hawker centres typically serve **affordable, diverse, and authentic local street food** from multiple independent vendors (hawkers) under one roof"
+    },
+    {
+      "prompt": "The Pythagorean theorem states that",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.044329021126031876
+        },
+        {
+          "token": "**",
+          "logprob": -4.0443291664123535
+        },
+        {
+          "token": "In",
+          "logprob": -4.1693291664123535
+        },
+        {
+          "token": "###",
+          "logprob": -5.7943291664123535
+        },
+        {
+          "token": "For",
+          "logprob": -6.4193291664123535
+        },
+        {
+          "token": "Based",
+          "logprob": -6.5443291664123535
+        },
+        {
+          "token": "the",
+          "logprob": -7.1693291664123535
+        },
+        {
+          "token": "in",
+          "logprob": -7.4193291664123535
+        },
+        {
+          "token": "#",
+          "logprob": -7.4193291664123535
+        },
+        {
+          "token": "a",
+          "logprob": -8.294328689575195
+        },
+        {
+          "token": "To",
+          "logprob": -8.669328689575195
+        },
+        {
+          "token": "It",
+          "logprob": -8.794328689575195
+        },
+        {
+          "token": "Here",
+          "logprob": -8.794328689575195
+        },
+        {
+          "token": "for",
+          "logprob": -8.919328689575195
+        },
+        {
+          "token": "A",
+          "logprob": -9.169328689575195
+        },
+        {
+          "token": "I",
+          "logprob": -9.231828689575195
+        },
+        {
+          "token": "##",
+          "logprob": -9.231828689575195
+        },
+        {
+          "token": "Actually",
+          "logprob": -9.419328689575195
+        },
+        {
+          "token": "If",
+          "logprob": -9.794328689575195
+        },
+        {
+          "token": "and",
+          "logprob": -9.856828689575195
+        }
+      ],
+      "continuation": "The Pythagorean theorem states that in a **right-angled triangle**, the square of the length of the hypotenuse (the side opposite the right angle"
+    },
+    {
+      "prompt": "Machine learning models learn by",
+      "top20": [
+        {
+          "token": "Machine",
+          "logprob": -0.024563252925872803
+        },
+        {
+          "token": "**",
+          "logprob": -5.024563312530518
+        },
+        {
+          "token": "Based",
+          "logprob": -5.774563312530518
+        },
+        {
+          "token": "In",
+          "logprob": -5.899563312530518
+        },
+        {
+          "token": "The",
+          "logprob": -6.024563312530518
+        },
+        {
+          "token": "At",
+          "logprob": -6.774563312530518
+        },
+        {
+          "token": "To",
+          "logprob": -7.149563312530518
+        },
+        {
+          "token": "It",
+          "logprob": -7.337063312530518
+        },
+        {
+          "token": "machine",
+          "logprob": -7.899563312530518
+        },
+        {
+          "token": "###",
+          "logprob": -8.33706283569336
+        },
+        {
+          "token": "Comple",
+          "logprob": -8.46206283569336
+        },
+        {
+          "token": "Short",
+          "logprob": -8.71206283569336
+        },
+        {
+          "token": "ML",
+          "logprob": -8.77456283569336
+        },
+        {
+          "token": "This",
+          "logprob": -8.83706283569336
+        },
+        {
+          "token": "By",
+          "logprob": -8.89956283569336
+        },
+        {
+          "token": " Machine",
+          "logprob": -8.89956283569336
+        },
+        {
+          "token": "As",
+          "logprob": -8.96206283569336
+        },
+        {
+          "token": "A",
+          "logprob": -9.02456283569336
+        },
+        {
+          "token": "Most",
+          "logprob": -9.02456283569336
+        },
+        {
+          "token": "That",
+          "logprob": -9.08706283569336
+        }
+      ],
+      "continuation": "Machine learning models learn by **identifying patterns and relationships in data** to make predictions or decisions.\n\nHere’s a more detailed breakdown of how this process works"
+    },
+    {
+      "prompt": "The largest planet in our solar system is",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.08564858138561249
+        },
+        {
+          "token": "Based",
+          "logprob": -2.835648536682129
+        },
+        {
+          "token": "###",
+          "logprob": -4.210648536682129
+        },
+        {
+          "token": "**",
+          "logprob": -5.460648536682129
+        },
+        {
+          "token": "J",
+          "logprob": -6.085648536682129
+        },
+        {
+          "token": "Step",
+          "logprob": -7.710648536682129
+        },
+        {
+          "token": "To",
+          "logprob": -7.960648536682129
+        },
+        {
+          "token": "#",
+          "logprob": -8.710648536682129
+        },
+        {
+          "token": "##",
+          "logprob": -9.210648536682129
+        },
+        {
+          "token": "Logic",
+          "logprob": -9.335648536682129
+        },
+        {
+          "token": "Answer",
+          "logprob": -9.335648536682129
+        },
+        {
+          "token": "By",
+          "logprob": -9.460648536682129
+        },
+        {
+          "token": "In",
+          "logprob": -9.710648536682129
+        },
+        {
+          "token": "Logical",
+          "logprob": -10.210648536682129
+        },
+        {
+          "token": "Since",
+          "logprob": -10.523148536682129
+        },
+        {
+          "token": "the",
+          "logprob": -10.710648536682129
+        },
+        {
+          "token": "L",
+          "logprob": -10.835648536682129
+        },
+        {
+          "token": "According",
+          "logprob": -11.148148536682129
+        },
+        {
+          "token": "Analysis",
+          "logprob": -11.148148536682129
+        },
+        {
+          "token": "A",
+          "logprob": -11.210648536682129
+        }
+      ],
+      "continuation": "The largest planet in our solar system is **Jupiter**.\n\n### Key Facts:\n- **Size**: Jupiter has a diameter of about 139"
+    },
+    {
+      "prompt": "Water boils at sea level when temperatures reach",
+      "top20": [
+        {
+          "token": "###",
+          "logprob": -0.6615211367607117
+        },
+        {
+          "token": "Water",
+          "logprob": -1.2865211963653564
+        },
+        {
+          "token": "Based",
+          "logprob": -2.1615211963653564
+        },
+        {
+          "token": "At",
+          "logprob": -3.4115211963653564
+        },
+        {
+          "token": "The",
+          "logprob": -3.6615211963653564
+        },
+        {
+          "token": "**",
+          "logprob": -4.161520957946777
+        },
+        {
+          "token": "Under",
+          "logprob": -5.786520957946777
+        },
+        {
+          "token": "#",
+          "logprob": -5.911520957946777
+        },
+        {
+          "token": "To",
+          "logprob": -6.036520957946777
+        },
+        {
+          "token": "Standard",
+          "logprob": -6.661520957946777
+        },
+        {
+          "token": "Here",
+          "logprob": -7.036520957946777
+        },
+        {
+          "token": "Logic",
+          "logprob": -7.286520957946777
+        },
+        {
+          "token": "When",
+          "logprob": -7.286520957946777
+        },
+        {
+          "token": "1",
+          "logprob": -7.536520957946777
+        },
+        {
+          "token": "##",
+          "logprob": -7.536520957946777
+        },
+        {
+          "token": "For",
+          "logprob": -7.786520957946777
+        },
+        {
+          "token": "Logical",
+          "logprob": -7.911520957946777
+        },
+        {
+          "token": "Since",
+          "logprob": -7.911520957946777
+        },
+        {
+          "token": "Answer",
+          "logprob": -8.161520957946777
+        },
+        {
+          "token": "Ass",
+          "logprob": -8.536520957946777
+        }
+      ],
+      "continuation": "### Logical Deduction\n\n1.  **Definition of Boiling Point**: The boiling point of a liquid is the temperature at which its vapor pressure equals the external"
+    },
+    {
+      "prompt": "async function fetchData(url) {",
+      "top20": [
+        {
+          "token": "It",
+          "logprob": -0.509178638458252
+        },
+        {
+          "token": "#",
+          "logprob": -1.884178638458252
+        },
+        {
+          "token": "Here",
+          "logprob": -2.009178638458252
+        },
+        {
+          "token": "```",
+          "logprob": -3.134178638458252
+        },
+        {
+          "token": "You",
+          "logprob": -3.259178638458252
+        },
+        {
+          "token": "I",
+          "logprob": -5.071678638458252
+        },
+        {
+          "token": "The",
+          "logprob": -5.509178638458252
+        },
+        {
+          "token": "Your",
+          "logprob": -5.759178638458252
+        },
+        {
+          "token": "That",
+          "logprob": -6.321678638458252
+        },
+        {
+          "token": "This",
+          "logprob": -6.446678638458252
+        },
+        {
+          "token": "Looks",
+          "logprob": -6.634178638458252
+        },
+        {
+          "token": " It",
+          "logprob": -6.696678638458252
+        },
+        {
+          "token": "Based",
+          "logprob": -6.821678638458252
+        },
+        {
+          "token": "看起来",
+          "logprob": -6.946678638458252
+        },
+        {
+          "token": "Sure",
+          "logprob": -7.009178638458252
+        },
+        {
+          "token": "这里",
+          "logprob": -7.634178638458252
+        },
+        {
+          "token": "`",
+          "logprob": -7.759178638458252
+        },
+        {
+          "token": "it",
+          "logprob": -7.759178638458252
+        },
+        {
+          "token": "<tool_call>",
+          "logprob": -8.009178161621094
+        },
+        {
+          "token": "你",
+          "logprob": -8.009178161621094
+        }
+      ],
+      "continuation": "It looks like you've started an `async` function to fetch data from a URL. Here's a complete, robust implementation with error handling:\n\n```javascript"
+    },
+    {
+      "prompt": "The French Revolution began in the year",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.002960348967462778
+        },
+        {
+          "token": "1",
+          "logprob": -6.002960205078125
+        },
+        {
+          "token": "**",
+          "logprob": -9.002960205078125
+        },
+        {
+          "token": "In",
+          "logprob": -10.127960205078125
+        },
+        {
+          "token": "Based",
+          "logprob": -10.815460205078125
+        },
+        {
+          "token": "Although",
+          "logprob": -11.252960205078125
+        },
+        {
+          "token": "To",
+          "logprob": -11.252960205078125
+        },
+        {
+          "token": "###",
+          "logprob": -11.440460205078125
+        },
+        {
+          "token": "It",
+          "logprob": -11.627960205078125
+        },
+        {
+          "token": "the",
+          "logprob": -11.627960205078125
+        },
+        {
+          "token": "7",
+          "logprob": -11.627960205078125
+        },
+        {
+          "token": "A",
+          "logprob": -11.690460205078125
+        },
+        {
+          "token": " The",
+          "logprob": -11.690460205078125
+        },
+        {
+          "token": "July",
+          "logprob": -11.752960205078125
+        },
+        {
+          "token": "There",
+          "logprob": -11.752960205078125
+        },
+        {
+          "token": "Most",
+          "logprob": -11.815460205078125
+        },
+        {
+          "token": "French",
+          "logprob": -11.940460205078125
+        },
+        {
+          "token": "*",
+          "logprob": -12.002960205078125
+        },
+        {
+          "token": "While",
+          "logprob": -12.002960205078125
+        },
+        {
+          "token": "<think>",
+          "logprob": -12.315460205078125
+        }
+      ],
+      "continuation": "The French Revolution began in **1789**.\n\nKey events marking its start include:\n*   **May 5, 1789"
+    },
+    {
+      "prompt": "Photosynthesis converts sunlight into",
+      "top20": [
+        {
+          "token": "Photos",
+          "logprob": -0.211484894156456
+        },
+        {
+          "token": "###",
+          "logprob": -2.211484909057617
+        },
+        {
+          "token": "Based",
+          "logprob": -3.336484909057617
+        },
+        {
+          "token": "**",
+          "logprob": -3.586484909057617
+        },
+        {
+          "token": "The",
+          "logprob": -5.086484909057617
+        },
+        {
+          "token": "#",
+          "logprob": -6.586484909057617
+        },
+        {
+          "token": "Logical",
+          "logprob": -6.961484909057617
+        },
+        {
+          "token": "Photo",
+          "logprob": -7.148984909057617
+        },
+        {
+          "token": "Phot",
+          "logprob": -7.148984909057617
+        },
+        {
+          "token": "To",
+          "logprob": -7.211484909057617
+        },
+        {
+          "token": "Logic",
+          "logprob": -7.461484909057617
+        },
+        {
+          "token": "In",
+          "logprob": -7.648984909057617
+        },
+        {
+          "token": "##",
+          "logprob": -7.711484909057617
+        },
+        {
+          "token": "photos",
+          "logprob": -7.711484909057617
+        },
+        {
+          "token": "Chem",
+          "logprob": -7.773984909057617
+        },
+        {
+          "token": "Log",
+          "logprob": -8.336484909057617
+        },
+        {
+          "token": "Here",
+          "logprob": -8.461484909057617
+        },
+        {
+          "token": "Physics",
+          "logprob": -8.523984909057617
+        },
+        {
+          "token": "<think>",
+          "logprob": -8.648984909057617
+        },
+        {
+          "token": "A",
+          "logprob": -8.898984909057617
+        }
+      ],
+      "continuation": "Photosynthesis converts sunlight into **chemical energy** (specifically stored in the form of **glucose** or other organic compounds).\n\n### Detailed Explanation:\n\n"
+    },
+    {
+      "prompt": "A haiku about rain:",
+      "top20": [
+        {
+          "token": "Soft",
+          "logprob": -0.7960289120674133
+        },
+        {
+          "token": "Silver",
+          "logprob": -1.9210288524627686
+        },
+        {
+          "token": "Gray",
+          "logprob": -2.0460288524627686
+        },
+        {
+          "token": "Grey",
+          "logprob": -2.5460288524627686
+        },
+        {
+          "token": "Dr",
+          "logprob": -3.0460288524627686
+        },
+        {
+          "token": "Sil",
+          "logprob": -3.7960288524627686
+        },
+        {
+          "token": "P",
+          "logprob": -3.9210288524627686
+        },
+        {
+          "token": "Dark",
+          "logprob": -4.046029090881348
+        },
+        {
+          "token": "Rain",
+          "logprob": -4.171029090881348
+        },
+        {
+          "token": "Cold",
+          "logprob": -4.296029090881348
+        },
+        {
+          "token": "Cool",
+          "logprob": -5.046029090881348
+        },
+        {
+          "token": "D",
+          "logprob": -5.171029090881348
+        },
+        {
+          "token": "Sky",
+          "logprob": -5.421029090881348
+        },
+        {
+          "token": "S",
+          "logprob": -5.921029090881348
+        },
+        {
+          "token": "Cloud",
+          "logprob": -5.921029090881348
+        },
+        {
+          "token": "First",
+          "logprob": -6.171029090881348
+        },
+        {
+          "token": "Heavy",
+          "logprob": -6.296029090881348
+        },
+        {
+          "token": "R",
+          "logprob": -6.421029090881348
+        },
+        {
+          "token": "On",
+          "logprob": -6.421029090881348
+        },
+        {
+          "token": "Quiet",
+          "logprob": -6.421029090881348
+        }
+      ],
+      "continuation": "Soft drops tap the glass,\nGrey clouds weep their silver tears,\nEarth drinks deep and sighs."
+    },
+    {
+      "prompt": "The HTTP response code 404 means",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.04882247373461723
+        },
+        {
+          "token": "**",
+          "logprob": -3.4238224029541016
+        },
+        {
+          "token": "HTTP",
+          "logprob": -5.298822402954102
+        },
+        {
+          "token": "In",
+          "logprob": -5.798822402954102
+        },
+        {
+          "token": "#",
+          "logprob": -6.611322402954102
+        },
+        {
+          "token": "An",
+          "logprob": -6.673822402954102
+        },
+        {
+          "token": "Based",
+          "logprob": -7.048822402954102
+        },
+        {
+          "token": "###",
+          "logprob": -7.298822402954102
+        },
+        {
+          "token": "A",
+          "logprob": -8.048822402954102
+        },
+        {
+          "token": "##",
+          "logprob": -8.173822402954102
+        },
+        {
+          "token": "4",
+          "logprob": -8.423822402954102
+        },
+        {
+          "token": "It",
+          "logprob": -8.611322402954102
+        },
+        {
+          "token": "When",
+          "logprob": -8.861322402954102
+        },
+        {
+          "token": "\"",
+          "logprob": -8.861322402954102
+        },
+        {
+          "token": " The",
+          "logprob": -9.361322402954102
+        },
+        {
+          "token": "the",
+          "logprob": -9.611322402954102
+        },
+        {
+          "token": "To",
+          "logprob": -9.736322402954102
+        },
+        {
+          "token": "I",
+          "logprob": -10.173822402954102
+        },
+        {
+          "token": "Not",
+          "logprob": -10.236322402954102
+        },
+        {
+          "token": "As",
+          "logprob": -10.361322402954102
+        }
+      ],
+      "continuation": "The HTTP response code **404** means **Not Found**.\n\n### Explanation:\n- **Status Class**: It belongs to the **4xx**"
+    },
+    {
+      "prompt": "DNA carries genetic information using",
+      "top20": [
+        {
+          "token": "DNA",
+          "logprob": -0.37727153301239014
+        },
+        {
+          "token": "###",
+          "logprob": -1.7522715330123901
+        },
+        {
+          "token": "Based",
+          "logprob": -2.3772716522216797
+        },
+        {
+          "token": "**",
+          "logprob": -3.7522716522216797
+        },
+        {
+          "token": "The",
+          "logprob": -4.37727165222168
+        },
+        {
+          "token": "To",
+          "logprob": -5.75227165222168
+        },
+        {
+          "token": "#",
+          "logprob": -6.37727165222168
+        },
+        {
+          "token": "Here",
+          "logprob": -6.75227165222168
+        },
+        {
+          "token": "Logic",
+          "logprob": -7.37727165222168
+        },
+        {
+          "token": "Logical",
+          "logprob": -7.50227165222168
+        },
+        {
+          "token": "##",
+          "logprob": -7.81477165222168
+        },
+        {
+          "token": "Answer",
+          "logprob": -8.00227165222168
+        },
+        {
+          "token": "In",
+          "logprob": -8.43977165222168
+        },
+        {
+          "token": "<think>",
+          "logprob": -8.56477165222168
+        },
+        {
+          "token": "A",
+          "logprob": -8.62727165222168
+        },
+        {
+          "token": "Log",
+          "logprob": -9.00227165222168
+        },
+        {
+          "token": "Gen",
+          "logprob": -9.12727165222168
+        },
+        {
+          "token": "based",
+          "logprob": -9.12727165222168
+        },
+        {
+          "token": "Step",
+          "logprob": -9.18977165222168
+        },
+        {
+          "token": "This",
+          "logprob": -9.31477165222168
+        }
+      ],
+      "continuation": "DNA carries genetic information using **the specific sequence of its four nitrogenous bases**.\n\nHere is the step-by-step breakdown of how this mechanism works:\n\n###"
+    },
+    {
+      "prompt": "The speed of light is approximately",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.17296864092350006
+        },
+        {
+          "token": "###",
+          "logprob": -2.547968626022339
+        },
+        {
+          "token": "Based",
+          "logprob": -2.797968626022339
+        },
+        {
+          "token": "In",
+          "logprob": -4.547968864440918
+        },
+        {
+          "token": "To",
+          "logprob": -5.922968864440918
+        },
+        {
+          "token": "**",
+          "logprob": -6.297968864440918
+        },
+        {
+          "token": "#",
+          "logprob": -7.172968864440918
+        },
+        {
+          "token": "Here",
+          "logprob": -8.172968864440918
+        },
+        {
+          "token": "When",
+          "logprob": -8.235468864440918
+        },
+        {
+          "token": "Approx",
+          "logprob": -8.422968864440918
+        },
+        {
+          "token": "Since",
+          "logprob": -8.422968864440918
+        },
+        {
+          "token": "##",
+          "logprob": -8.485468864440918
+        },
+        {
+          "token": "Depending",
+          "logprob": -8.860468864440918
+        },
+        {
+          "token": "It",
+          "logprob": -9.172968864440918
+        },
+        {
+          "token": "There",
+          "logprob": -9.172968864440918
+        },
+        {
+          "token": "<think>",
+          "logprob": -9.235468864440918
+        },
+        {
+          "token": "Speed",
+          "logprob": -9.422968864440918
+        },
+        {
+          "token": "As",
+          "logprob": -9.547968864440918
+        },
+        {
+          "token": "Ass",
+          "logprob": -9.547968864440918
+        },
+        {
+          "token": "$$",
+          "logprob": -9.610468864440918
+        }
+      ],
+      "continuation": "The speed of light in a vacuum is a fundamental physical constant, denoted by the symbol $c$.\n\n### Exact Value\nAccording to the International System of"
+    },
+    {
+      "prompt": "To change a flat tyre, first",
+      "top20": [
+        {
+          "token": "To",
+          "logprob": -0.06319534033536911
+        },
+        {
+          "token": "**",
+          "logprob": -3.93819522857666
+        },
+        {
+          "token": "find",
+          "logprob": -4.31319522857666
+        },
+        {
+          "token": "Find",
+          "logprob": -5.93819522857666
+        },
+        {
+          "token": "Park",
+          "logprob": -6.06319522857666
+        },
+        {
+          "token": "1",
+          "logprob": -6.06319522857666
+        },
+        {
+          "token": "...",
+          "logprob": -6.06319522857666
+        },
+        {
+          "token": "First",
+          "logprob": -6.31319522857666
+        },
+        {
+          "token": "Here",
+          "logprob": -6.43819522857666
+        },
+        {
+          "token": "move",
+          "logprob": -6.56319522857666
+        },
+        {
+          "token": "park",
+          "logprob": -6.81319522857666
+        },
+        {
+          "token": "You",
+          "logprob": -7.06319522857666
+        },
+        {
+          "token": "Before",
+          "logprob": -7.18819522857666
+        },
+        {
+          "token": "finding",
+          "logprob": -7.18819522857666
+        },
+        {
+          "token": "pull",
+          "logprob": -7.31319522857666
+        },
+        {
+          "token": "first",
+          "logprob": -7.31319522857666
+        },
+        {
+          "token": "Finding",
+          "logprob": -7.43819522857666
+        },
+        {
+          "token": "It",
+          "logprob": -7.68819522857666
+        },
+        {
+          "token": "The",
+          "logprob": -7.68819522857666
+        },
+        {
+          "token": "Move",
+          "logprob": -7.81319522857666
+        }
+      ],
+      "continuation": "To change a flat tyre, first **find a safe, flat, and stable location to pull over**.\n\nHere’s why this is the critical first step:"
+    },
+    {
+      "prompt": "Shakespeare wrote Hamlet around",
+      "top20": [
+        {
+          "token": "Sh",
+          "logprob": -0.2579713463783264
+        },
+        {
+          "token": "William",
+          "logprob": -1.6329712867736816
+        },
+        {
+          "token": "Most",
+          "logprob": -4.257971286773682
+        },
+        {
+          "token": "Sch",
+          "logprob": -5.132971286773682
+        },
+        {
+          "token": "The",
+          "logprob": -6.382971286773682
+        },
+        {
+          "token": "Ham",
+          "logprob": -6.757971286773682
+        },
+        {
+          "token": "While",
+          "logprob": -7.132971286773682
+        },
+        {
+          "token": "Christopher",
+          "logprob": -7.257971286773682
+        },
+        {
+          "token": "Around",
+          "logprob": -7.257971286773682
+        },
+        {
+          "token": "*",
+          "logprob": -7.257971286773682
+        },
+        {
+          "token": "Based",
+          "logprob": -7.382971286773682
+        },
+        {
+          "token": "W",
+          "logprob": -7.757971286773682
+        },
+        {
+          "token": "Will",
+          "logprob": -7.882971286773682
+        },
+        {
+          "token": "Wil",
+          "logprob": -8.07047176361084
+        },
+        {
+          "token": "It",
+          "logprob": -8.13297176361084
+        },
+        {
+          "token": "**",
+          "logprob": -8.57047176361084
+        },
+        {
+          "token": "Determin",
+          "logprob": -8.75797176361084
+        },
+        {
+          "token": "Sir",
+          "logprob": -8.82047176361084
+        },
+        {
+          "token": "Modern",
+          "logprob": -8.94547176361084
+        },
+        {
+          "token": "Histor",
+          "logprob": -9.00797176361084
+        }
+      ],
+      "continuation": "Shakespeare wrote *Hamlet* around **1600–1601**.\n\n### Key Evidence:\n- **First recorded performance**: The"
+    },
+    {
+      "prompt": "The derivative of x squared is",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.10109169036149979
+        },
+        {
+          "token": "To",
+          "logprob": -2.7260916233062744
+        },
+        {
+          "token": "###",
+          "logprob": -4.4760918617248535
+        },
+        {
+          "token": "Based",
+          "logprob": -4.9760918617248535
+        },
+        {
+          "token": "Using",
+          "logprob": -5.1010918617248535
+        },
+        {
+          "token": "2",
+          "logprob": -6.9760918617248535
+        },
+        {
+          "token": "**",
+          "logprob": -7.1010918617248535
+        },
+        {
+          "token": "##",
+          "logprob": -7.2260918617248535
+        },
+        {
+          "token": "$$",
+          "logprob": -7.9760918617248535
+        },
+        {
+          "token": " The",
+          "logprob": -7.9760918617248535
+        },
+        {
+          "token": "#",
+          "logprob": -8.226091384887695
+        },
+        {
+          "token": "By",
+          "logprob": -8.413591384887695
+        },
+        {
+          "token": "According",
+          "logprob": -8.413591384887695
+        },
+        {
+          "token": "We",
+          "logprob": -8.476091384887695
+        },
+        {
+          "token": "It",
+          "logprob": -8.538591384887695
+        },
+        {
+          "token": "$",
+          "logprob": -8.851091384887695
+        },
+        {
+          "token": "If",
+          "logprob": -8.976091384887695
+        },
+        {
+          "token": "I",
+          "logprob": -9.351091384887695
+        },
+        {
+          "token": "Math",
+          "logprob": -9.413591384887695
+        },
+        {
+          "token": "the",
+          "logprob": -9.476091384887695
+        }
+      ],
+      "continuation": "The derivative of $x^2$ is **$2x$**.\n\n### Step-by-Step Deduction\n\nTo find the derivative of the function $"
+    },
+    {
+      "prompt": "Black holes form when",
+      "top20": [
+        {
+          "token": "Black",
+          "logprob": -0.6119301915168762
+        },
+        {
+          "token": "Based",
+          "logprob": -0.9869301915168762
+        },
+        {
+          "token": "**",
+          "logprob": -3.4869301319122314
+        },
+        {
+          "token": "###",
+          "logprob": -3.4869301319122314
+        },
+        {
+          "token": "The",
+          "logprob": -4.7369303703308105
+        },
+        {
+          "token": "A",
+          "logprob": -5.8619303703308105
+        },
+        {
+          "token": "To",
+          "logprob": -5.9869303703308105
+        },
+        {
+          "token": "In",
+          "logprob": -6.4869303703308105
+        },
+        {
+          "token": "Here",
+          "logprob": -6.9869303703308105
+        },
+        {
+          "token": "<think>",
+          "logprob": -7.3619303703308105
+        },
+        {
+          "token": "Log",
+          "logprob": -7.7369303703308105
+        },
+        {
+          "token": "#",
+          "logprob": -8.174429893493652
+        },
+        {
+          "token": "Strict",
+          "logprob": -8.236929893493652
+        },
+        {
+          "token": "Logical",
+          "logprob": -8.236929893493652
+        },
+        {
+          "token": "##",
+          "logprob": -8.299429893493652
+        },
+        {
+          "token": "It",
+          "logprob": -8.299429893493652
+        },
+        {
+          "token": "Logic",
+          "logprob": -8.486929893493652
+        },
+        {
+          "token": "black",
+          "logprob": -8.674429893493652
+        },
+        {
+          "token": "According",
+          "logprob": -8.736929893493652
+        },
+        {
+          "token": "There",
+          "logprob": -8.799429893493652
+        }
+      ],
+      "continuation": "Black holes form when a massive object collapses under its own gravity to a point where the escape velocity exceeds the speed of light. This process generally occurs through the following"
+    },
+    {
+      "prompt": "print(\"Hello, \" +",
+      "top20": [
+        {
+          "token": "It",
+          "logprob": -0.11334199458360672
+        },
+        {
+          "token": "```",
+          "logprob": -3.738342046737671
+        },
+        {
+          "token": "#",
+          "logprob": -3.988342046737671
+        },
+        {
+          "token": "Your",
+          "logprob": -4.300841808319092
+        },
+        {
+          "token": "The",
+          "logprob": -4.363341808319092
+        },
+        {
+          "token": "Here",
+          "logprob": -4.925841808319092
+        },
+        {
+          "token": "I",
+          "logprob": -5.800841808319092
+        },
+        {
+          "token": "You",
+          "logprob": -5.800841808319092
+        },
+        {
+          "token": "Hello",
+          "logprob": -5.800841808319092
+        },
+        {
+          "token": "This",
+          "logprob": -6.050841808319092
+        },
+        {
+          "token": "Based",
+          "logprob": -6.488341808319092
+        },
+        {
+          "token": "There",
+          "logprob": -6.550841808319092
+        },
+        {
+          "token": "That",
+          "logprob": -6.613341808319092
+        },
+        {
+          "token": "Looks",
+          "logprob": -6.675841808319092
+        },
+        {
+          "token": "a",
+          "logprob": -6.863341808319092
+        },
+        {
+          "token": "看起来",
+          "logprob": -7.050841808319092
+        },
+        {
+          "token": " It",
+          "logprob": -7.050841808319092
+        },
+        {
+          "token": "it",
+          "logprob": -7.488341808319092
+        },
+        {
+          "token": "print",
+          "logprob": -7.613341808319092
+        },
+        {
+          "token": "`",
+          "logprob": -7.613341808319092
+        }
+      ],
+      "continuation": "It looks like your code snippet is incomplete. The `print` statement is missing the closing parenthesis and the string argument.\n\nHere are a few ways to complete"
+    },
+    {
+      "prompt": "The Great Wall of China was built to",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.0026895562186837196
+        },
+        {
+          "token": "To",
+          "logprob": -7.002689361572266
+        },
+        {
+          "token": "Protect",
+          "logprob": -8.502689361572266
+        },
+        {
+          "token": "protect",
+          "logprob": -8.627689361572266
+        },
+        {
+          "token": "**",
+          "logprob": -8.815189361572266
+        },
+        {
+          "token": "It",
+          "logprob": -9.377689361572266
+        },
+        {
+          "token": "prim",
+          "logprob": -9.627689361572266
+        },
+        {
+          "token": "Prim",
+          "logprob": -9.690189361572266
+        },
+        {
+          "token": "prevent",
+          "logprob": -9.752689361572266
+        },
+        {
+          "token": "In",
+          "logprob": -9.752689361572266
+        },
+        {
+          "token": "Def",
+          "logprob": -10.002689361572266
+        },
+        {
+          "token": "Primary",
+          "logprob": -10.002689361572266
+        },
+        {
+          "token": "to",
+          "logprob": -10.065189361572266
+        },
+        {
+          "token": "Keep",
+          "logprob": -10.190189361572266
+        },
+        {
+          "token": "As",
+          "logprob": -10.190189361572266
+        },
+        {
+          "token": "Actually",
+          "logprob": -10.377689361572266
+        },
+        {
+          "token": "For",
+          "logprob": -10.377689361572266
+        },
+        {
+          "token": "There",
+          "logprob": -10.565189361572266
+        },
+        {
+          "token": "the",
+          "logprob": -10.752689361572266
+        },
+        {
+          "token": "def",
+          "logprob": -10.815189361572266
+        }
+      ],
+      "continuation": "The Great Wall of China was built primarily to **protect the Chinese Empire from invasions and raids by nomadic groups** from the north, such as the Mong"
+    },
+    {
+      "prompt": "Electric current is measured in",
+      "top20": [
+        {
+          "token": "Electric",
+          "logprob": -0.4886401891708374
+        },
+        {
+          "token": "###",
+          "logprob": -1.2386401891708374
+        },
+        {
+          "token": "The",
+          "logprob": -3.113640308380127
+        },
+        {
+          "token": "Based",
+          "logprob": -3.863640308380127
+        },
+        {
+          "token": "**",
+          "logprob": -3.988640308380127
+        },
+        {
+          "token": "Elect",
+          "logprob": -5.238640308380127
+        },
+        {
+          "token": "Logic",
+          "logprob": -6.238640308380127
+        },
+        {
+          "token": "#",
+          "logprob": -7.363640308380127
+        },
+        {
+          "token": "##",
+          "logprob": -7.363640308380127
+        },
+        {
+          "token": "Logical",
+          "logprob": -7.738640308380127
+        },
+        {
+          "token": "To",
+          "logprob": -7.988640308380127
+        },
+        {
+          "token": " Electric",
+          "logprob": -8.301139831542969
+        },
+        {
+          "token": "Standard",
+          "logprob": -8.301139831542969
+        },
+        {
+          "token": "Step",
+          "logprob": -8.613639831542969
+        },
+        {
+          "token": "Electronic",
+          "logprob": -8.613639831542969
+        },
+        {
+          "token": "In",
+          "logprob": -8.863639831542969
+        },
+        {
+          "token": "electric",
+          "logprob": -8.863639831542969
+        },
+        {
+          "token": "An",
+          "logprob": -9.051139831542969
+        },
+        {
+          "token": "A",
+          "logprob": -9.488639831542969
+        },
+        {
+          "token": "Answer",
+          "logprob": -9.551139831542969
+        }
+      ],
+      "continuation": "Electric current is measured in **amperes** (often shortened to **amps**).\n\n### Key Details:\n*   **Symbol**: The unit symbol"
+    },
+    {
+      "prompt": "The Mona Lisa was painted by",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.038944393396377563
+        },
+        {
+          "token": "Leon",
+          "logprob": -3.4139444828033447
+        },
+        {
+          "token": "Le",
+          "logprob": -6.038944244384766
+        },
+        {
+          "token": "**",
+          "logprob": -6.163944244384766
+        },
+        {
+          "token": "Leo",
+          "logprob": -8.788944244384766
+        },
+        {
+          "token": "the",
+          "logprob": -9.038944244384766
+        },
+        {
+          "token": "La",
+          "logprob": -9.913944244384766
+        },
+        {
+          "token": "M",
+          "logprob": -10.413944244384766
+        },
+        {
+          "token": "L",
+          "logprob": -10.851444244384766
+        },
+        {
+          "token": " Leonardo",
+          "logprob": -10.913944244384766
+        },
+        {
+          "token": "It",
+          "logprob": -11.038944244384766
+        },
+        {
+          "token": "Michel",
+          "logprob": -11.101444244384766
+        },
+        {
+          "token": "*",
+          "logprob": -11.163944244384766
+        },
+        {
+          "token": "A",
+          "logprob": -11.351444244384766
+        },
+        {
+          "token": "Lu",
+          "logprob": -11.413944244384766
+        },
+        {
+          "token": "In",
+          "logprob": -11.538944244384766
+        },
+        {
+          "token": "le",
+          "logprob": -11.538944244384766
+        },
+        {
+          "token": "P",
+          "logprob": -11.601444244384766
+        },
+        {
+          "token": "LE",
+          "logprob": -11.601444244384766
+        },
+        {
+          "token": "Vin",
+          "logprob": -11.663944244384766
+        }
+      ],
+      "continuation": "The *Mona Lisa* was painted by **Leonardo da Vinci**.\n\nHe began working on the painting around 1503 and continued to refine"
+    },
+    {
+      "prompt": "An algorithm is a sequence of",
+      "top20": [
+        {
+          "token": "An",
+          "logprob": -0.22156454622745514
+        },
+        {
+          "token": "**",
+          "logprob": -1.971564531326294
+        },
+        {
+          "token": "Based",
+          "logprob": -4.221564769744873
+        },
+        {
+          "token": "well",
+          "logprob": -4.721564769744873
+        },
+        {
+          "token": "A",
+          "logprob": -5.221564769744873
+        },
+        {
+          "token": "un",
+          "logprob": -5.596564769744873
+        },
+        {
+          "token": "...",
+          "logprob": -5.971564769744873
+        },
+        {
+          "token": "finite",
+          "logprob": -6.096564769744873
+        },
+        {
+          "token": "Well",
+          "logprob": -6.096564769744873
+        },
+        {
+          "token": "Here",
+          "logprob": -6.221564769744873
+        },
+        {
+          "token": "The",
+          "logprob": -6.221564769744873
+        },
+        {
+          "token": "steps",
+          "logprob": -6.596564769744873
+        },
+        {
+          "token": "###",
+          "logprob": -6.596564769744873
+        },
+        {
+          "token": "an",
+          "logprob": -6.721564769744873
+        },
+        {
+          "token": "distinct",
+          "logprob": -7.409064769744873
+        },
+        {
+          "token": "def",
+          "logprob": -7.534064769744873
+        },
+        {
+          "token": "logical",
+          "logprob": -7.596564769744873
+        },
+        {
+          "token": "#",
+          "logprob": -7.596564769744873
+        },
+        {
+          "token": "To",
+          "logprob": -7.659064769744873
+        },
+        {
+          "token": "strict",
+          "logprob": -7.909064769744873
+        }
+      ],
+      "continuation": "An algorithm is a sequence of **well-defined, finite steps** (or instructions) designed to solve a specific problem or perform a particular task.\n\n### Key"
+    },
+    {
+      "prompt": "Mount Everest stands at",
+      "top20": [
+        {
+          "token": "Mount",
+          "logprob": -0.016483791172504425
+        },
+        {
+          "token": "The",
+          "logprob": -4.766483783721924
+        },
+        {
+          "token": "As",
+          "logprob": -6.016483783721924
+        },
+        {
+          "token": "8",
+          "logprob": -6.391483783721924
+        },
+        {
+          "token": "Depending",
+          "logprob": -7.516483783721924
+        },
+        {
+          "token": "Currently",
+          "logprob": -7.766483783721924
+        },
+        {
+          "token": "**",
+          "logprob": -8.016484260559082
+        },
+        {
+          "token": "There",
+          "logprob": -8.016484260559082
+        },
+        {
+          "token": "Based",
+          "logprob": -8.453984260559082
+        },
+        {
+          "token": "Mountain",
+          "logprob": -8.578984260559082
+        },
+        {
+          "token": "According",
+          "logprob": -8.828984260559082
+        },
+        {
+          "token": "Mt",
+          "logprob": -9.203984260559082
+        },
+        {
+          "token": "It",
+          "logprob": -9.266484260559082
+        },
+        {
+          "token": "Current",
+          "logprob": -9.703984260559082
+        },
+        {
+          "token": "Most",
+          "logprob": -9.766484260559082
+        },
+        {
+          "token": " Mount",
+          "logprob": -9.953984260559082
+        },
+        {
+          "token": "In",
+          "logprob": -10.141484260559082
+        },
+        {
+          "token": "Height",
+          "logprob": -10.141484260559082
+        },
+        {
+          "token": "For",
+          "logprob": -10.203984260559082
+        },
+        {
+          "token": "Since",
+          "logprob": -10.266484260559082
+        }
+      ],
+      "continuation": "Mount Everest stands at **8,848.86 meters** (29,031.7 feet) above sea level.\n\nThis"
+    },
+    {
+      "prompt": "Coffee originated in",
+      "top20": [
+        {
+          "token": "Coffee",
+          "logprob": -0.0014817459741607308
+        },
+        {
+          "token": "The",
+          "logprob": -7.251481533050537
+        },
+        {
+          "token": "**",
+          "logprob": -9.001482009887695
+        },
+        {
+          "token": "C",
+          "logprob": -9.376482009887695
+        },
+        {
+          "token": " Coffee",
+          "logprob": -9.938982009887695
+        },
+        {
+          "token": "Most",
+          "logprob": -9.938982009887695
+        },
+        {
+          "token": "According",
+          "logprob": -10.001482009887695
+        },
+        {
+          "token": "While",
+          "logprob": -10.251482009887695
+        },
+        {
+          "token": "coffee",
+          "logprob": -10.313982009887695
+        },
+        {
+          "token": "There",
+          "logprob": -10.626482009887695
+        },
+        {
+          "token": "Histor",
+          "logprob": -10.938982009887695
+        },
+        {
+          "token": "It",
+          "logprob": -10.938982009887695
+        },
+        {
+          "token": "Based",
+          "logprob": -11.001482009887695
+        },
+        {
+          "token": "Modern",
+          "logprob": -11.063982009887695
+        },
+        {
+          "token": "Origin",
+          "logprob": -11.188982009887695
+        },
+        {
+          "token": "Eth",
+          "logprob": -11.251482009887695
+        },
+        {
+          "token": "Common",
+          "logprob": -11.626482009887695
+        },
+        {
+          "token": "Although",
+          "logprob": -11.813982009887695
+        },
+        {
+          "token": "A",
+          "logprob": -12.001482009887695
+        },
+        {
+          "token": "Current",
+          "logprob": -12.251482009887695
+        }
+      ],
+      "continuation": "Coffee originated in **Ethiopia**.\n\n### Key Details:\n- **Region**: The Kaffa region in southwestern Ethiopia is widely recognized as the birth"
+    },
+    {
+      "prompt": "The human heart has how many chambers? The answer is",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.011915224604308605
+        },
+        {
+          "token": "4",
+          "logprob": -4.76191520690918
+        },
+        {
+          "token": "Four",
+          "logprob": -6.76191520690918
+        },
+        {
+          "token": "**",
+          "logprob": -7.26191520690918
+        },
+        {
+          "token": "There",
+          "logprob": -8.01191520690918
+        },
+        {
+          "token": "four",
+          "logprob": -8.63691520690918
+        },
+        {
+          "token": "Two",
+          "logprob": -8.82441520690918
+        },
+        {
+          "token": " The",
+          "logprob": -9.32441520690918
+        },
+        {
+          "token": "A",
+          "logprob": -9.57441520690918
+        },
+        {
+          "token": "Based",
+          "logprob": -9.63691520690918
+        },
+        {
+          "token": "Human",
+          "logprob": -9.76191520690918
+        },
+        {
+          "token": "###",
+          "logprob": -9.82441520690918
+        },
+        {
+          "token": "Answer",
+          "logprob": -10.19941520690918
+        },
+        {
+          "token": "the",
+          "logprob": -10.82441520690918
+        },
+        {
+          "token": "2",
+          "logprob": -11.07441520690918
+        },
+        {
+          "token": "It",
+          "logprob": -11.13691520690918
+        },
+        {
+          "token": "An",
+          "logprob": -11.19941520690918
+        },
+        {
+          "token": "To",
+          "logprob": -11.44941520690918
+        },
+        {
+          "token": "In",
+          "logprob": -11.44941520690918
+        },
+        {
+          "token": "$",
+          "logprob": -11.63691520690918
+        }
+      ],
+      "continuation": "The human heart has **4** chambers.\n\nThese are:\n1. Right Atrium\n2. Right Ventricle\n3. Left A"
+    },
+    {
+      "prompt": "Git rebase differs from merge because",
+      "top20": [
+        {
+          "token": "Git",
+          "logprob": -0.9925638437271118
+        },
+        {
+          "token": "**",
+          "logprob": -1.2425638437271118
+        },
+        {
+          "token": "`",
+          "logprob": -1.6175638437271118
+        },
+        {
+          "token": "The",
+          "logprob": -2.3675637245178223
+        },
+        {
+          "token": "#",
+          "logprob": -4.242563724517822
+        },
+        {
+          "token": "Based",
+          "logprob": -5.242563724517822
+        },
+        {
+          "token": "In",
+          "logprob": -5.617563724517822
+        },
+        {
+          "token": "To",
+          "logprob": -5.742563724517822
+        },
+        {
+          "token": "When",
+          "logprob": -6.117563724517822
+        },
+        {
+          "token": "Here",
+          "logprob": -6.180063724517822
+        },
+        {
+          "token": "While",
+          "logprob": -6.367563724517822
+        },
+        {
+          "token": "###",
+          "logprob": -6.617563724517822
+        },
+        {
+          "token": "git",
+          "logprob": -6.617563724517822
+        },
+        {
+          "token": "A",
+          "logprob": -7.055063724517822
+        },
+        {
+          "token": "It",
+          "logprob": -7.055063724517822
+        },
+        {
+          "token": "##",
+          "logprob": -7.367563724517822
+        },
+        {
+          "token": "Re",
+          "logprob": -7.617563724517822
+        },
+        {
+          "token": "At",
+          "logprob": -7.680063724517822
+        },
+        {
+          "token": "Unlike",
+          "logprob": -7.742563724517822
+        },
+        {
+          "token": "There",
+          "logprob": -7.742563724517822
+        }
+      ],
+      "continuation": "Git rebase differs from merge primarily in how they integrate changes from one branch into another, resulting in different commit histories.\n\n### Key Differences:\n\n| Feature"
+    },
+    {
+      "prompt": "The boiling point of ethanol is",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.5835370421409607
+        },
+        {
+          "token": "###",
+          "logprob": -1.4585371017456055
+        },
+        {
+          "token": "Based",
+          "logprob": -1.7085371017456055
+        },
+        {
+          "token": "To",
+          "logprob": -4.4585371017456055
+        },
+        {
+          "token": "**",
+          "logprob": -5.0835371017456055
+        },
+        {
+          "token": "At",
+          "logprob": -6.2085371017456055
+        },
+        {
+          "token": "Standard",
+          "logprob": -6.3335371017456055
+        },
+        {
+          "token": "Under",
+          "logprob": -6.3335371017456055
+        },
+        {
+          "token": "Here",
+          "logprob": -6.9585371017456055
+        },
+        {
+          "token": "Ass",
+          "logprob": -7.5835371017456055
+        },
+        {
+          "token": "#",
+          "logprob": -7.7085371017456055
+        },
+        {
+          "token": "Eth",
+          "logprob": -7.7085371017456055
+        },
+        {
+          "token": "Since",
+          "logprob": -8.083537101745605
+        },
+        {
+          "token": "##",
+          "logprob": -8.333537101745605
+        },
+        {
+          "token": "Determin",
+          "logprob": -8.771037101745605
+        },
+        {
+          "token": "For",
+          "logprob": -8.958537101745605
+        },
+        {
+          "token": "In",
+          "logprob": -9.146037101745605
+        },
+        {
+          "token": "Depending",
+          "logprob": -9.208537101745605
+        },
+        {
+          "token": "When",
+          "logprob": -9.458537101745605
+        },
+        {
+          "token": "D",
+          "logprob": -9.458537101745605
+        }
+      ],
+      "continuation": "The boiling point of ethanol (ethyl alcohol) is **78.37 °C** (173.07 °F) at standard atmospheric"
+    },
+    {
+      "prompt": "Rome was founded according to legend by",
+      "top20": [
+        {
+          "token": "According",
+          "logprob": -0.09492605924606323
+        },
+        {
+          "token": "R",
+          "logprob": -2.469926118850708
+        },
+        {
+          "token": "Rom",
+          "logprob": -6.344925880432129
+        },
+        {
+          "token": "The",
+          "logprob": -6.969925880432129
+        },
+        {
+          "token": "Roman",
+          "logprob": -7.094925880432129
+        },
+        {
+          "token": "according",
+          "logprob": -7.469925880432129
+        },
+        {
+          "token": "**",
+          "logprob": -8.094925880432129
+        },
+        {
+          "token": "Based",
+          "logprob": -8.344925880432129
+        },
+        {
+          "token": "Legend",
+          "logprob": -8.719925880432129
+        },
+        {
+          "token": "In",
+          "logprob": -9.532425880432129
+        },
+        {
+          "token": " According",
+          "logprob": -9.844925880432129
+        },
+        {
+          "token": "A",
+          "logprob": -9.907425880432129
+        },
+        {
+          "token": "根据",
+          "logprob": -10.469925880432129
+        },
+        {
+          "token": "Roma",
+          "logprob": -10.594925880432129
+        },
+        {
+          "token": "Two",
+          "logprob": -10.594925880432129
+        },
+        {
+          "token": "Leg",
+          "logprob": -10.657425880432129
+        },
+        {
+          "token": "###",
+          "logprob": -10.782425880432129
+        },
+        {
+          "token": "Jul",
+          "logprob": -10.907425880432129
+        },
+        {
+          "token": "<think>",
+          "logprob": -10.907425880432129
+        },
+        {
+          "token": " according",
+          "logprob": -10.969925880432129
+        }
+      ],
+      "continuation": "According to Roman legend, Rome was founded by the twin brothers **Romulus and Remus**.\n\nThe traditional story goes as follows:\n\n1.  **"
+    },
+    {
+      "prompt": "Neural networks consist of layers of",
+      "top20": [
+        {
+          "token": "Ne",
+          "logprob": -0.26645976305007935
+        },
+        {
+          "token": "**",
+          "logprob": -1.6414597034454346
+        },
+        {
+          "token": "Based",
+          "logprob": -3.6414597034454346
+        },
+        {
+          "token": "Art",
+          "logprob": -5.391459941864014
+        },
+        {
+          "token": "ne",
+          "logprob": -6.266459941864014
+        },
+        {
+          "token": "The",
+          "logprob": -6.516459941864014
+        },
+        {
+          "token": "###",
+          "logprob": -7.141459941864014
+        },
+        {
+          "token": "To",
+          "logprob": -7.641459941864014
+        },
+        {
+          "token": "In",
+          "logprob": -7.641459941864014
+        },
+        {
+          "token": "...",
+          "logprob": -7.766459941864014
+        },
+        {
+          "token": "Inter",
+          "logprob": -7.891459941864014
+        },
+        {
+          "token": "art",
+          "logprob": -8.016459465026855
+        },
+        {
+          "token": "based",
+          "logprob": -8.578959465026855
+        },
+        {
+          "token": "Here",
+          "logprob": -9.016459465026855
+        },
+        {
+          "token": "Nodes",
+          "logprob": -9.078959465026855
+        },
+        {
+          "token": "An",
+          "logprob": -9.141459465026855
+        },
+        {
+          "token": "inter",
+          "logprob": -9.391459465026855
+        },
+        {
+          "token": "A",
+          "logprob": -9.391459465026855
+        },
+        {
+          "token": "<think>",
+          "logprob": -9.703959465026855
+        },
+        {
+          "token": "##",
+          "logprob": -9.766459465026855
+        }
+      ],
+      "continuation": "Neural networks consist of layers of **neurons** (also known as **nodes** or **units**).\n\n### Detailed Explanation:\n\n1. "
+    },
+    {
+      "prompt": "The Pacific Ocean borders",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.0027926277834922075
+        },
+        {
+          "token": "To",
+          "logprob": -7.127792835235596
+        },
+        {
+          "token": "Because",
+          "logprob": -8.627792358398438
+        },
+        {
+          "token": "Based",
+          "logprob": -9.002792358398438
+        },
+        {
+          "token": "It",
+          "logprob": -9.065292358398438
+        },
+        {
+          "token": "There",
+          "logprob": -9.127792358398438
+        },
+        {
+          "token": "Ge",
+          "logprob": -9.127792358398438
+        },
+        {
+          "token": "Techn",
+          "logprob": -9.190292358398438
+        },
+        {
+          "token": "In",
+          "logprob": -9.252792358398438
+        },
+        {
+          "token": "As",
+          "logprob": -9.502792358398438
+        },
+        {
+          "token": "Since",
+          "logprob": -9.815292358398438
+        },
+        {
+          "token": "Strict",
+          "logprob": -9.815292358398438
+        },
+        {
+          "token": "Actually",
+          "logprob": -10.002792358398438
+        },
+        {
+          "token": "By",
+          "logprob": -10.127792358398438
+        },
+        {
+          "token": "Depending",
+          "logprob": -10.377792358398438
+        },
+        {
+          "token": "Here",
+          "logprob": -10.440292358398438
+        },
+        {
+          "token": " The",
+          "logprob": -10.502792358398438
+        },
+        {
+          "token": "the",
+          "logprob": -10.502792358398438
+        },
+        {
+          "token": "###",
+          "logprob": -10.565292358398438
+        },
+        {
+          "token": "While",
+          "logprob": -10.565292358398438
+        }
+      ],
+      "continuation": "The Pacific Ocean is the largest and deepest of Earth's oceanic divisions. It is bordered by the following continents and landmasses:\n\n### **Continents"
+    },
+    {
+      "prompt": "Two plus two equals",
+      "top20": [
+        {
+          "token": "Two",
+          "logprob": -0.029276566579937935
+        },
+        {
+          "token": "Four",
+          "logprob": -4.279276371002197
+        },
+        {
+          "token": "2",
+          "logprob": -5.529276371002197
+        },
+        {
+          "token": "The",
+          "logprob": -5.779276371002197
+        },
+        {
+          "token": "**",
+          "logprob": -5.779276371002197
+        },
+        {
+          "token": "In",
+          "logprob": -7.216776371002197
+        },
+        {
+          "token": "$",
+          "logprob": -7.529276371002197
+        },
+        {
+          "token": "Based",
+          "logprob": -7.716776371002197
+        },
+        {
+          "token": "$$",
+          "logprob": -7.841776371002197
+        },
+        {
+          "token": "4",
+          "logprob": -8.029276847839355
+        },
+        {
+          "token": "There",
+          "logprob": -8.529276847839355
+        },
+        {
+          "token": "That",
+          "logprob": -9.029276847839355
+        },
+        {
+          "token": "It",
+          "logprob": -9.029276847839355
+        },
+        {
+          "token": "two",
+          "logprob": -9.091776847839355
+        },
+        {
+          "token": "To",
+          "logprob": -9.216776847839355
+        },
+        {
+          "token": "This",
+          "logprob": -9.466776847839355
+        },
+        {
+          "token": "Since",
+          "logprob": -9.529276847839355
+        },
+        {
+          "token": "If",
+          "logprob": -9.779276847839355
+        },
+        {
+          "token": "When",
+          "logprob": -9.904276847839355
+        },
+        {
+          "token": "Tw",
+          "logprob": -10.154276847839355
+        }
+      ],
+      "continuation": "Two plus two equals **4**."
+    },
+    {
+      "prompt": "The first man on the moon was",
+      "top20": [
+        {
+          "token": "The",
+          "logprob": -0.0025414093397557735
+        },
+        {
+          "token": "Neil",
+          "logprob": -6.502541542053223
+        },
+        {
+          "token": "**",
+          "logprob": -7.502541542053223
+        },
+        {
+          "token": "Ne",
+          "logprob": -8.627541542053223
+        },
+        {
+          "token": "N",
+          "logprob": -9.752541542053223
+        },
+        {
+          "token": "NASA",
+          "logprob": -10.190041542053223
+        },
+        {
+          "token": "Based",
+          "logprob": -11.127541542053223
+        },
+        {
+          "token": "the",
+          "logprob": -11.502541542053223
+        },
+        {
+          "token": "ne",
+          "logprob": -11.815041542053223
+        },
+        {
+          "token": "Ar",
+          "logprob": -12.002541542053223
+        },
+        {
+          "token": "<think>",
+          "logprob": -12.127541542053223
+        },
+        {
+          "token": "It",
+          "logprob": -12.315041542053223
+        },
+        {
+          "token": " Neil",
+          "logprob": -12.377541542053223
+        },
+        {
+          "token": "That",
+          "logprob": -12.440041542053223
+        },
+        {
+          "token": "In",
+          "logprob": -12.502541542053223
+        },
+        {
+          "token": "###",
+          "logprob": -12.502541542053223
+        },
+        {
+          "token": "Nich",
+          "logprob": -12.565041542053223
+        },
+        {
+          "token": "A",
+          "logprob": -12.565041542053223
+        },
+        {
+          "token": "Sir",
+          "logprob": -12.627541542053223
+        },
+        {
+          "token": "While",
+          "logprob": -12.815041542053223
+        }
+      ],
+      "continuation": "The first man on the moon was **Neil Armstrong**.\n\nHe stepped onto the lunar surface on **July 20, 1969**, during"
+    },
+    {
+      "prompt": "Regular expressions are used to",
+      "top20": [
+        {
+          "token": "Regular",
+          "logprob": -0.3689904510974884
+        },
+        {
+          "token": "**",
+          "logprob": -1.743990421295166
+        },
+        {
+          "token": "#",
+          "logprob": -2.243990421295166
+        },
+        {
+          "token": "Based",
+          "logprob": -4.743990421295166
+        },
+        {
+          "token": "###",
+          "logprob": -5.743990421295166
+        },
+        {
+          "token": "In",
+          "logprob": -5.868990421295166
+        },
+        {
+          "token": "The",
+          "logprob": -6.243990421295166
+        },
+        {
+          "token": "##",
+          "logprob": -6.493990421295166
+        },
+        {
+          "token": "regular",
+          "logprob": -6.868990421295166
+        },
+        {
+          "token": "To",
+          "logprob": -6.931490421295166
+        },
+        {
+          "token": "It",
+          "logprob": -7.431490421295166
+        },
+        {
+          "token": "Regex",
+          "logprob": -7.806490421295166
+        },
+        {
+          "token": "Reg",
+          "logprob": -8.056490898132324
+        },
+        {
+          "token": "I",
+          "logprob": -8.368990898132324
+        },
+        {
+          "token": "As",
+          "logprob": -8.368990898132324
+        },
+        {
+          "token": "Since",
+          "logprob": -8.556490898132324
+        },
+        {
+          "token": "A",
+          "logprob": -8.743990898132324
+        },
+        {
+          "token": "\"",
+          "logprob": -8.806490898132324
+        },
+        {
+          "token": "Common",
+          "logprob": -8.931490898132324
+        },
+        {
+          "token": "Here",
+          "logprob": -8.993990898132324
+        }
+      ],
+      "continuation": "Regular expressions (often abbreviated as **regex** or **regexp**) are used to **define patterns for matching, searching, and manipulating text strings**.\n\nThey are"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "description": "Frozen Kearuga evaluation suite: the KLD (Fidelity-40) set (40 prompts, capture/score tool, served BF16 reference capture of 2026-08-24) and the Quality-200 v2 set (200 prompts + runner). The files must stay byte-identical to the listed hashes; verify with `python eval/frozen/check_kld_manifest.py` (exit 1 on any mismatch).",
+  "hash": "sha256 over the file bytes as stored in the repository (LF line endings, enforced by .gitattributes)",
+  "files": {
+    "kld_capture_score.py": {
+      "sha256": "e4ac11e0f2aeb6022d86d1702051e3e7239d6d5b43721e9d24f94e9d95647681",
+      "size": 7878,
+      "source": "/home/benjaminang/ai/staging/kearuga-v4/kpf-fine-awq-live-repo-t_00729941/fidelity_v4.py"
+    },
+    "kld-prompts-40.json": {
+      "sha256": "6eac1c63971664e1f855271119720a1c624f701bd38d497ef7352f7a9a5f0ef5",
+      "size": 1515,
+      "source": "/home/benjaminang/ai/staging/kearuga-v4/kpf-fine-awq-live-repo-t_00729941/fidelity-prompts-40.json"
+    },
+    "kld-bf16-reference-20260824.json": {
+      "sha256": "db941fef999f98de6a9e66407a4bb0c22f1059dddc67b85531966eb7852939de",
+      "size": 80587,
+      "source": "/home/benjaminang/ai/staging/kearuga-v4/kpf-fine-awq-live-repo-t_00729941/bf16-fidelity-v4-20260824.json"
+    },
+    "quality-200-prompts.jsonl": {
+      "sha256": "eae923dfcc1b875b9db2db99203aec9ef815ea8dea964d63403ed98d85d6df06",
+      "size": 137611,
+      "source": "/home/benjaminang/ai/transactions/kearuga-awq-down-boot1/quality-200-v2.jsonl"
+    },
+    "run_quality_200.py": {
+      "sha256": "af2c161dab2642a00d8c53a65b4c3a849180bc5c1b8507881f5202483e725878",
+      "size": 17115,
+      "source": "/home/benjaminang/ai/transactions/kearuga-awq-down-boot1/run_quality_set_v2.py"
+    }
+  }
+}

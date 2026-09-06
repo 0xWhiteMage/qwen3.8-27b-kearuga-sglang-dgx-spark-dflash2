@@ -158,6 +158,30 @@ python3 bench/ndec.py            # Measure net decode throughput
 python3 bench/priority_ttft.py   # Benchmark priority queue preemption latency
 ```
 
+### 📐 Fidelity & Quality Evaluation Set
+
+This repository includes a **frozen, reproducible evaluation suite** under [`eval/`](eval/) so others can compare their quantized Qwen3.8-27B checkpoints against Kearuga on equal footing:
+
+- **KLD-40 (Fidelity-40)** — 40 prompts that measure top-20 token KL/JS divergence, top-1 agreement, and exact 32-token continuation match against a served BF16 reference. The BF16 reference capture is included so you can score without running BF16 yourself.
+- **Quality-200** — 200 prompts across GSM8K, HumanEval, IFEval, agentic coding, and hard reasoning, with per-family objective grading.
+
+All files are SHA-256 pinned and verified by `check_kld_manifest.py`. See **[eval/README.md](eval/README.md)** for full usage instructions.
+
+Quick start:
+```bash
+# Capture KLD-40 from your served model
+python3 eval/frozen/kld_capture_score.py capture \
+  --prompts eval/frozen/kld-prompts-40.json \
+  --base-url http://localhost:8890 \
+  --output my-capture.json
+
+# Score against the included BF16 reference
+python3 eval/frozen/kld_capture_score.py score \
+  --reference eval/frozen/kld-bf16-reference-20260824.json \
+  --candidate my-capture.json \
+  --output my-score.json
+```
+
 ---
 
 ## 🤗 Hugging Face Model Suite
