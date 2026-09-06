@@ -12,7 +12,7 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 * **Speed**: Empirical Spark DFlash (2048 draft window): C1 decode **57 tok/s** (57 tok/s/stream, TTFT 264ms), C2 aggregate **51 tok/s** (40 tok/s/stream, TTFT 416ms), C4 aggregate **94 tok/s** (39 tok/s/stream, TTFT 480ms).
 
 ### ⚡ Serving Migration — Official Image, No Overlay
-* **Migrated to `lmsysorg/sglang@sha256:616a3e97…`**: The V5 checkpoint has no NVFP4_AWQ layers, so the 5-file kernel overlay is no longer needed. TTFT improved −6%.
+* **Migrated to `lmsysorg/sglang@sha256:616a3e97…`**: The Kearuga checkpoint has no NVFP4_AWQ layers, so the 5-file kernel overlay is no longer needed. TTFT improved −6%.
 * **K=10 Draft Block**: Sweep-validated across K=8/10/12/16 as the only value not "worse" on any C1 domain. K=8 loses code/math 7–12%; K=12/16 lose prose/ifeval and C4.
 * **KV Cache bf16**: Fidelity-first default — KL 0.0170→0.0165, exact 19→20/40, speed cost within noise.
 

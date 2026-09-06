@@ -123,9 +123,9 @@ This exits 0 if all hashes match, 1 on any mismatch. Add `--strict` to also fail
 4. Run the Quality-200 set: `run_quality_200.py --base-url http://your-server:port ...`
 5. Report mean KL, top-1 agreement, exact continuation, and Quality-200 per-family scores alongside your throughput numbers.
 
-### Kearuga V5 reference results
+### Kearuga reference results
 
-| Metric | Kearuga V5 (promoted) |
+| Metric | Kearuga (promoted) |
 |---|---:|
 | Served Fidelity-40 mean KL | 0.0165 |
 | Served Fidelity-40 top-1 agreement | 40/40 |
@@ -134,7 +134,7 @@ This exits 0 if all hashes match, 1 on any mismatch. Add `--strict` to also fail
 | Held-out top-1 | 95.0% |
 | Quality-200 objective | 157/180 |
 
-These were measured on `Qwen3.8-27B-Kearuga-V5-GPTQ4o6-BFP8x10` served on a single DGX Spark (GB10) with SGLang, DFlash2 K=10, BF16 KV cache, on the digest-pinned official image. See the [model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) for full details.
+These were measured on `Qwen3.8-27B-Kearuga` served on a single DGX Spark (GB10) with SGLang, DFlash2 K=10, BF16 KV cache, on the digest-pinned official image. See the [model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) for full details.
 
 ---
 
