@@ -9,6 +9,9 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 ### 🏷️ Version coherence across GitHub and Hugging Face
 * The drafter is now named **v1.0** everywhere (HF drafter card badge + Release row, this README, `summary.md`, `drafter/README.md`); the launcher's `DFLASH_REV` default pins the v1.0 **files revision** `4a109695` — the last Hugging Face commit that changed a served file (weights `9a39463f…`, token map `cadaee01…`, overlay, `quantize_manifest.json`); model-card-only commits do not move it. The HF target card names this serving stack **v0.6.4** and the drafter **v1.0**.
 * Version scheme: the serving stack (this repo) carries `v0.x.y`; the drafter carries `v1.x` for releases of the same architecture and `v2` for a retrained drafter; the target checkpoint is unversioned (`Qwen3.8-27B-Kearuga`).
+* README: explicit `v0.6.4` wording (no `v0.6.x`); C2 aggregate reported as **78–94 tok/s across runs** (two `scale.py` runs gave 77.9 and 85.9 mean — each repetition uses a different request marker, so the forced 512-token tail differs).
+* **Sampled-mode and thinking-on exact acceptance measured** on the production resident (drafter v1.0, K=12, 64K head; n = 2 prompts per domain, sequential, verified free of concurrent traffic): greedy code 7.54 · math 7.68 · tool 10.53 · prose 2.50 · IFEval 2.41; model-default sampling (T 1.0 · top-p 0.95 · top-k 20) 6.47 · 7.37 · 9.70 · 2.45 · 2.32; thinking-on code **3.11**, math 6.18, prose 3.62 — recorded in README §1 and INSIGHTS §4; the same numbers are on the drafter card.
+* INSIGHTS.md: drafter named v1.0, C2 range, the acceptance headroom paragraph.
 
 ---
 

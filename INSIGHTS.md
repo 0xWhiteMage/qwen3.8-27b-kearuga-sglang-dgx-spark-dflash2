@@ -12,8 +12,8 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 
 | Benchmark / Capability | Kearuga Profile | Measured Performance | Operational Significance |
 |---|---|---:|---|
-| ⚡ **Single-Stream (C1)** | Kearuga NVFP4 drafter, K=12 + 64K head | **44.7 tok/s** agg (45.5 net) on the forced-512 code probe; battery medians code 57.6 · tool calls 114.6 · prose 21.6 | Interactive daily driver |
-| 👥 **Dual-Stream (C2)** | same | **77.9 tok/s agg** (≈ 40/stream, TTFT 0.28 s) | Two interactive sessions |
+| ⚡ **Single-Stream (C1)** | Kearuga NVFP4 drafter **v1.0**, K=12 + 64K head | **44.7 tok/s** agg (45.5 net) on the forced-512 code probe; battery medians code 57.6 · tool calls 114.6 · prose 21.6 | Interactive daily driver |
+| 👥 **Dual-Stream (C2)** | same | **78–94 tok/s agg** across runs (77.9 and 85.9 mean; ≈ 40–48/stream, TTFT 0.28 s) | Two interactive sessions |
 | 👷 **Saturated Interactive (C4)** | same | **131.3 tok/s agg** (≈ 36/stream, TTFT 0.34 s) | Four seats busy |
 | 📜 **Shared KV Pool** | BF16 KV | **818,294 tokens** (measured at boot) | 4 seats × 262K window; ≈ 3.1 full contexts at once |
 | ⏱️ **Saturated Priority TTFT** | **Preemption Mode** | **43.15s → 2.63s** | **93.9% latency reduction** under full load |
@@ -32,11 +32,11 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 | **Memory Bus Overhead** | $K$ sequential memory round-trips per step | Single memory fetch per candidate block |
 | **Drafter Footprint** | Often multi-billion parameter autoregressive model | 1.55 GB NVFP4 Kearuga drafter (+ 0.67 GB pruned draft head); stock BF16 3.58 GiB |
 | **Kernel Materialization** | Separate draft KV cache allocations | Fused KV projection kernel with the stock BF16 drafter; unfused with the NVFP4 drafter (§3) |
-| **Empirical Throughput** | High per-step latency overhead | **44.7 / 77.9 / 131.3 tok/s agg at C1 / C2 / C4** (clock lock on or off: same) |
+| **Empirical Throughput** | High per-step latency overhead | **44.7 / 78–94 / 131 tok/s agg at C1 / C2 / C4** (clock lock on or off: same) |
 
 ### ⚡ DFlash 2: The Interactive Engine (C1–C4)
 * **How It Works**: Traditional speculative drafters draft tokens sequentially (generating one candidate token at a time). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=12 with the Kearuga drafter, K=10 with the stock drafter) in a single forward pass (single-step O(1)).
-* **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **44.7 tok/s C1**, **77.9 tok/s aggregate C2**, and **131.3 tok/s aggregate C4** on DGX Spark unified memory (identical with the GPU clock lock on or off — the decode loop is memory-bandwidth-bound).
+* **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **44.7 tok/s C1**, **78–94 tok/s aggregate C2**, and **131 tok/s aggregate C4** on DGX Spark unified memory (identical with the GPU clock lock on or off — the decode loop is memory-bandwidth-bound).
 * **Unified Memory Optimization**: Because Grace-Blackwell GB10 utilizes unified high-bandwidth memory, eliminating sequential kernel launches and memory ping-pong is paramount. DFlash 2 reduces GPU memory bus traffic by amortizing draft overhead into a single parallel tensor operation.
 
 ---
@@ -95,17 +95,19 @@ In SGLang's DFlash engine, the draft model projects target hidden states into th
 
 ---
 
-## 🏎️ 4. Drafter: Kearuga's Own DFlash 2 Drafter
+## 🏎️ 4. Drafter: Kearuga's Own DFlash 2 Drafter (v1.0)
 
 > *"The stock drafter delivers instant speedup out of the box; the Kearuga drafter is distilled on Kearuga's own outputs and is 2.5× smaller."*
 
-The released drafter [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) was built in three stages (full recipe on its model card):
+The released drafter [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) **v1.0** (files revision `4a109695`, pinned by this repo's launcher) was built in three stages (full recipe on its model card):
 
 1. **Distillation on Kearuga's own outputs** — 24,644 conversations answered greedily by the Kearuga target over 8 domains, teacher-forced block-diffusion CE, initialized from `z-lab/Qwen3.8-27B-DFlash2` (architecture unchanged).
 2. **NVFP4 weights + Kearuga-calibrated activation scales** — ModelOpt NVFP4 (E2M1, group 16) on 35 linears; input scales calibrated on Kearuga features over 400 conversations; selector, `fc` and conv projections stay BF16. Loads as `--speculative-draft-model-quantization modelopt_fp4`.
 3. **The 64K draft head (FR-Spec-style)** — Kearuga's actual output tokens were counted (14.74 M over 20,000 responses): the top 65,536 ids cover 99.56 %, plus 114 `=identifier` fusion tokens = **65,650 rows**. An even row count matters for the head GEMM (an odd count pushed cuBLAS onto a 3×-slower unaligned kernel). The draft scores candidates through those rows; the target verifies over the full vocabulary — lossless by construction.
 
 **What did not work**: K = 14/16 (C1 tie, C4 −2 to −6 %), a 32K map (acceptance loss eats the bytes), an FP8 draft head (−18 %), draft window 1024/4096 and FP8 draft KV (±0.2 %).
+
+**Where the remaining headroom is** (exact acceptance on the production resident, 2026-09-17, n = 2 prompts per domain): greedy thinking-off code 7.5 · math 7.7 · tool calls 10.5 · prose 2.5 · IFEval 2.4 tokens per cycle; the model's default sampling (T 1.0 · top-p 0.95 · top-k 20) costs only 0.1–1.1 tokens per cycle; **thinking-on code falls to 3.1** because the reasoning trace behaves like prose, so a thinking-on code request decodes at roughly prose speed (≈ 27 tok/s incl. TTFT vs 56–65 thinking-off). Block drafters share this prose floor across the GB10 community (18–25 tok/s); raising acceptance on reasoning text — not more bytes saved — is the next drafter lever.
 
 ---
 
