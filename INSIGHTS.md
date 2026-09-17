@@ -18,7 +18,7 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 | 📜 **Shared KV Pool** | BF16 KV | **818,294 tokens** (measured at boot) | 4 seats × 262K window; ≈ 3.1 full contexts at once |
 | ⏱️ **Saturated Priority TTFT** | **Preemption Mode** | **43.15s → 2.63s** | **93.9% latency reduction** under full load |
 
-*Measured 2026-09-17 with `bench/scale.py` (T=0, thinking off, 512 forced tokens, aggregate incl. TTFT) under the owner's 2400 MHz SM clock cap. The v0.5.0 figures (57 / 51 / 94 with the stock drafter) were taken by the same script before the cap. Paired drafter comparison: [README §1](README.md).*
+*Measured 2026-09-17 with `bench/scale.py` (T=0, thinking off, 512 forced tokens, aggregate incl. TTFT); repeated with the GPU clock lock lifted — identical (C1 44.5 / C2 85.9 / C4 131.1; the GPU ran at 2.40–2.48 GHz by itself). The v0.5.0 figures (57 / 51 / 94 with the stock drafter) are historical and were not reproduced. Paired drafter comparison: [README §1](README.md).*
 
 ---
 
@@ -32,11 +32,11 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 | **Memory Bus Overhead** | $K$ sequential memory round-trips per step | Single memory fetch per candidate block |
 | **Drafter Footprint** | Often multi-billion parameter autoregressive model | 1.55 GB NVFP4 Kearuga drafter (+ 0.67 GB pruned draft head); stock BF16 3.58 GiB |
 | **Kernel Materialization** | Separate draft KV cache allocations | Fused KV projection kernel with the stock BF16 drafter; unfused with the NVFP4 drafter (§3) |
-| **Empirical Throughput** | High per-step latency overhead | **44.7 / 77.9 / 131.3 tok/s agg at C1 / C2 / C4** (2400 MHz cap) |
+| **Empirical Throughput** | High per-step latency overhead | **44.7 / 77.9 / 131.3 tok/s agg at C1 / C2 / C4** (clock lock on or off: same) |
 
 ### ⚡ DFlash 2: The Interactive Engine (C1–C4)
 * **How It Works**: Traditional speculative drafters draft tokens sequentially (generating one candidate token at a time). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=12 with the Kearuga drafter, K=10 with the stock drafter) in a single forward pass (single-step O(1)).
-* **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **44.7 tok/s C1**, **77.9 tok/s aggregate C2**, and **131.3 tok/s aggregate C4** on DGX Spark unified memory (measured under the owner's 2400 MHz SM clock cap).
+* **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **44.7 tok/s C1**, **77.9 tok/s aggregate C2**, and **131.3 tok/s aggregate C4** on DGX Spark unified memory (identical with the GPU clock lock on or off — the decode loop is memory-bandwidth-bound).
 * **Unified Memory Optimization**: Because Grace-Blackwell GB10 utilizes unified high-bandwidth memory, eliminating sequential kernel launches and memory ping-pong is paramount. DFlash 2 reduces GPU memory bus traffic by amortizing draft overhead into a single parallel tensor operation.
 
 ---

@@ -4,6 +4,14 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.6.3] - 2026-09-17
+
+### 🔎 Docs — clock-lock check, historical row relabelled
+* **The GPU clock is not a factor.** `bench/scale.py` re-run with the owner's 2400 MHz SM lock lifted: C1 44.5 / C2 85.9 (78.1–93.6) / C4 131.1 tok/s vs 44.7 / 77.9 / 131.3 locked. Unlocked, the GB10 ran this decode workload at 2.40–2.48 GHz on its own (nominal max 3003 MHz; no thermal or power throttle flags during the run) — the decode loop is memory-bandwidth-bound. v0.6.2 attributed the difference from the v0.5.0 figures to the lock; that attribution is withdrawn.
+* **v0.5.0 row marked historical.** The 57 / 51 / 94 figures cannot be reproduced (raw run not kept; today's same-script number on the current, paired-faster drafter is 44.7). They stay in the table as documentation of that release, not as a current measurement.
+
+---
+
 ## [v0.6.2] - 2026-09-17
 
 ### 📊 Docs — community comparison refreshed, measurements corrected
