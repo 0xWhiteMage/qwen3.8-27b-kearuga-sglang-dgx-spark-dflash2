@@ -250,7 +250,7 @@ The Kearuga deployment suite is interconnected across GitHub and Hugging Face:
 | Artifact | Location | Purpose |
 |---|---|---|
 | **Target Checkpoint (27B)** | [`0xWhiteMage/Qwen3.8-27B-Kearuga`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) | Production weights (24.85 GB, 3 shards + MTP head), model card, and fidelity proofs |
-| **Kearuga DFlash 2 Drafter v1.0** | [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) | Kearuga-distilled, Kearuga-calibrated NVFP4 drafter (1.55 GB) + 64K draft-head map and SGLang overlay — release v1.0, pinned by the launcher at `ae61d9b8` |
+| **Kearuga DFlash 2 Drafter v1.0** | [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) | Kearuga-distilled, Kearuga-calibrated NVFP4 drafter (1.55 GB) + 64K draft-head map and SGLang overlay — release v1.0, pinned by the launcher at files revision `4a109695` |
 | **Stock DFlash 2 Drafter** | [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) | Fallback / baseline speculative draft model (BF16, 3.58 GiB) — `DRAFTER_PROFILE=stock` |
 | **Serving Suite & Harness** | This Repository | Production container scripts, benchmarks, and hardware launchers |
 
