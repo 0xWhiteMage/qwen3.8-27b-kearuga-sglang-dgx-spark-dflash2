@@ -60,7 +60,7 @@ Paired bake-off, 2026-09-17 — control and candidates booted back-to-back on th
 | C4 | prose | 16.07 | **17.22** | **+8.6 %** |
 | C4 | instruction-following | 15.42 | **17.68** | **+11.0 %** |
 
-Median C1 TTFT moved from 0.28–0.30 s to 0.27–0.28 s (tool prompts 0.78 → 0.62 s). Quality-200 (frozen suite): **155/180** with the Kearuga drafter vs 157 for the target alone — inside the 154–159 near-tie band every gated drafter lands in. Fidelity-40 vs the BF16 base: mean KL 0.0165, top-1 40/40 — unchanged by the drafter, because the target verifies every token. Full methodology, acceptance lengths and the ranked candidate table are on the [drafter model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2).
+Median C1 TTFT moved from 0.28–0.30 s to 0.27–0.28 s (tool prompts 0.78 → 0.62 s). Exact acceptance on the production resident (K=12, 64K head; n=2 prompts per domain, 2026-09-17): greedy code 7.5 · math 7.7 · tool 10.5 · prose 2.5 · IFEval 2.4 tokens/cycle; with the model's default sampling (T 1.0, top-p 0.95, top-k 20) 6.5 · 7.4 · 9.7 · 2.5 · 2.3; **with thinking on, code falls to 3.1** (the reasoning trace behaves like prose) — the drafter's largest remaining headroom. Quality-200 (frozen suite): **155/180** with the Kearuga drafter vs 157 for the target alone — inside the 154–159 near-tie band every gated drafter lands in. Fidelity-40 vs the BF16 base: mean KL 0.0165, top-1 40/40 — unchanged by the drafter, because the target verifies every token. Full methodology, acceptance lengths and the ranked candidate table are on the [drafter model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2).
 
 ### ⚡ 2. Interactive Throughput & Community Comparison (C1–C4)
 
