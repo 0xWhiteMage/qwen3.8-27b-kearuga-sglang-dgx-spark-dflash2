@@ -2,7 +2,7 @@
 
 Byte-identical copies of the artifacts published on
 [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)
-at commit `6eaa58f39f55d58999a716e15fad4f9c33283cf2`. Nothing here is generated
+at commit `ae61d9b8863e145f1df343003347a79d7b0c90de` (**drafter release v1.0**). Nothing here is generated
 at build or launch time; every file's SHA-256 is pinned in `SHA256SUMS` and
 re-verified by `./start-dflash2.sh` before the server boots.
 

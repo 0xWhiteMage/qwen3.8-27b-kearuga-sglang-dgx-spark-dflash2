@@ -4,6 +4,14 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.6.4] - 2026-09-17
+
+### 🏷️ Version coherence across GitHub and Hugging Face
+* The drafter is now named **v1.0** everywhere (HF drafter card badge + Release row, this README, `summary.md`, `drafter/README.md`); the launcher's `DFLASH_REV` default pins the v1.0 card commit `ae61d9b8` (weights `9a39463f…` and token map `cadaee01…` unchanged since the release). The HF target card names this serving stack **v0.6.4** and the drafter **v1.0**.
+* Version scheme: the serving stack (this repo) carries `v0.x.y`; the drafter carries `v1.x` for releases of the same architecture and `v2` for a retrained drafter; the target checkpoint is unversioned (`Qwen3.8-27B-Kearuga`).
+
+---
+
 ## [v0.6.3] - 2026-09-17
 
 ### 🔎 Docs — clock-lock check, historical row relabelled

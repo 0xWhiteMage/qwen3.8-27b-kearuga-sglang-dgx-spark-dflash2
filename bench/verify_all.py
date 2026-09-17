@@ -52,9 +52,9 @@ else:
 hf_hub = Path(os.path.expanduser("~/.cache/huggingface/hub"))
 dflash_hf = hf_hub / "models--0xWhiteMage--Qwen3.8-27B-Kearuga-DFlash2"
 if dflash_hf.exists():
-    report("Kearuga DFlash 2 Drafter (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ 6eaa58f3)", True, "Cached in local Hugging Face hub (1.55 GB NVFP4)")
+    report("Kearuga DFlash 2 Drafter (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ ae61d9b8)", True, "Cached in local Hugging Face hub (1.55 GB NVFP4)")
 else:
-    report("Kearuga DFlash 2 Drafter (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ 6eaa58f3)", True, "Hosted on Hugging Face (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ 6eaa58f3)")
+    report("Kearuga DFlash 2 Drafter (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ ae61d9b8)", True, "Hosted on Hugging Face (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ ae61d9b8)")
 
 # 1b-fallback. Stock Drafter Checkpoint: z-lab/Qwen3.8-27B-DFlash2
 stock_hf = hf_hub / "models--z-lab--Qwen3.8-27B-DFlash2"
