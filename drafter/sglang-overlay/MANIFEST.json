@@ -1,0 +1,35 @@
+{
+  "files": {
+    "sglang/srt/speculative/dflash_worker_v2.py": {
+      "base_sha256": "5fd1e3f16c5725e4d56ac327515b56cfd06de52f94b069332d43faad7d771482",
+      "patched_sha256": "509feabb5e42c809ee5fe737482dccc0adc93ab41fdd66500dccd45f9272713f",
+      "base_source": "evidence/readiness/stock-k8-c1-v1/native-graph-source/sglang/srt/speculative/dflash_worker_v2.py",
+      "changed": true
+    },
+    "sglang/srt/speculative/dflash_utils.py": {
+      "base_sha256": "61feff7656e2e4c157e472a1140ea9525200f5003f9bf0de639b50424e776018",
+      "patched_sha256": "61feff7656e2e4c157e472a1140ea9525200f5003f9bf0de639b50424e776018",
+      "base_source": "evidence/readiness/stock-k8-c1-v1/native-graph-source/sglang/srt/speculative/dflash_utils.py",
+      "changed": false
+    },
+    "sglang/srt/models/dflash.py": {
+      "base_sha256": "ad1e7957ce59751266c9359bfe65f51668fd81716744e34f55f7efd42e08d0f6",
+      "patched_sha256": "287d7087eb7e2e0057f009d8f2daf22e2784a5a847d6eeec80721239cec3fc00",
+      "base_source": "evidence/readiness/stock-k8-c1-v1/draft-model-source-scan-v1/dflash.py",
+      "changed": true
+    },
+    "sglang/srt/server_args.py": {
+      "base_sha256": "71d0ad92fa8bfae8384576425f1b2c142a18e3b42ef8f0b671fe594005cf5b99",
+      "patched_sha256": "3ed4a24c1d1394505233b22aac8cf0132d1d082244da255e3ab6a5d0aa6b8a94",
+      "base_source": "evidence/readiness/stock-k8-c1-v1/draft-passive-source-closure-v1/source/sglang/srt/server_args.py",
+      "changed": true
+    },
+    "sglang/srt/speculative/dflash_head_utils.py": {
+      "base_sha256": null,
+      "patched_sha256": "6fe828159df49f1029eae375a61ecb25d25e2a22c56163b2a833a8681aecdd31",
+      "base_source": null,
+      "changed": true,
+      "new_file": true
+    }
+  }
+}

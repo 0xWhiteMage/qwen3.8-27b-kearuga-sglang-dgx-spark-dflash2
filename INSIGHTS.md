@@ -18,6 +18,8 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 | 📜 **Shared KV Cache Capacity** | **BF16 KV Pool** | **1,048,576 tokens**| 4 × full 262K native contexts concurrently |
 | ⏱️ **Saturated Priority TTFT** | **Preemption Mode** | **43.15s → 2.63s** | **93.9% latency reduction** under full load |
 
+*Throughput figures above are stock-drafter, K=10, v0.5.0 single-prompt probes. Paired-battery aggregate throughput with the Kearuga drafter (K=12 + 64K draft head): 35.33 tok/s C1 / 108.90 tok/s C4 — see [README §0](README.md).*
+
 ---
 
 ## 🏗️ 1. Why Block-Diffusion Speculative Decoding (DFlash 2) Outperforms Sequential Drafters
@@ -88,21 +90,22 @@ Without this synchronization, one half of every fused MLP would be dequantized w
 ### 3.1 Fused KV Materialization Contract
 In SGLang's DFlash engine, the draft model projects target hidden states into the draft KV cache using a specialized CUDA kernel (`fused_dflash_kv_kernel`).
 * SGLang's high-speed kernel requires `self_attn.qkv_proj` in native **BF16**.
-* By keeping `qkv_proj` and `out_proj` in native BF16, the stock [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) drafter achieves zero-allocation CUDA graph execution with a compact **3.58 GiB** footprint.
+* The stock [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) drafter keeps `qkv_proj`/`out_proj` in BF16 and gets the fused kernel — still active on `DRAFTER_PROFILE=stock`.
+* **With the NVFP4 Kearuga drafter the kernel is disabled**: its `qkv_proj` is quantized (`quant_method=ModelOptFp4LinearMethod`), so the boot log prints `DFLASH fused KV materialization disabled …`. The drafter still wins because the decode cycle on GB10 is weight-bandwidth-bound — 1.55 GB NVFP4 read vs 3.85 GB BF16 — which more than pays for the unfused projection.
 
 ---
 
-## 🏎️ 4. Drafter Selection: Stock DFlash 2 Baseline & Future Calibration
+## 🏎️ 4. Drafter: Kearuga's Own DFlash 2 Drafter
 
-> *"Stock DFlash 2 delivers instant speedup out of the box; on-target draft retraining remains an active future engineering lane."*
+> *"The stock drafter delivers instant speedup out of the box; the Kearuga drafter is distilled on Kearuga's own outputs and is 2.5× smaller."*
 
-### 4.1 Why Stock DFlash 2 Delivers Strong Baselines
-The stock [`z-lab/Qwen3.8-27B-DFlash2`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2) drafter was distilled against BF16 Qwen3.8 hidden states. Even without custom retraining, it achieves high acceptance lengths (3.7–4.8 tokens) against our hybrid target model due to our Tier 2 sensitivity preservation:
-* **Tapped Layers Held in FP8**: Kearuga retains the draft feature tap layers `[5, 19, 33, 47, 61]` in low-noise FP8 E4M3 rather than aggressive 4-bit quantization, minimizing hidden-state divergence from BF16.
-* **Empirical Speed**: Delivers steady-state interactive decode throughput of **57 tok/s C1 (57 tok/s/stream, TTFT 264ms)**, **51 tok/s aggregate C2 (40 tok/s/stream, TTFT 416ms)**, and **94 tok/s aggregate C4 (39 tok/s/stream, TTFT 480ms)**.
+The released drafter [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) was built in three stages (full recipe on its model card):
 
-### 4.2 Custom Drafter Retraining Status
-While naive post-hoc FC/norm tuning is prone to Triton index assertion instabilities, a dedicated full-stack retraining lane calibrated directly on Kearuga's quantized representations is planned for a future release to further elevate speculative acceptance.
+1. **Distillation on Kearuga's own outputs** — 24,644 conversations answered greedily by the Kearuga target over 8 domains, teacher-forced block-diffusion CE, initialized from `z-lab/Qwen3.8-27B-DFlash2` (architecture unchanged).
+2. **NVFP4 weights + Kearuga-calibrated activation scales** — ModelOpt NVFP4 (E2M1, group 16) on 35 linears; input scales calibrated on Kearuga features over 400 conversations; selector, `fc` and conv projections stay BF16. Loads as `--speculative-draft-model-quantization modelopt_fp4`.
+3. **The 64K draft head (FR-Spec-style)** — Kearuga's actual output tokens were counted (14.74 M over 20,000 responses): the top 65,536 ids cover 99.56 %, plus 114 `=identifier` fusion tokens = **65,650 rows**. An even row count matters for the head GEMM (an odd count pushed cuBLAS onto a 3×-slower unaligned kernel). The draft scores candidates through those rows; the target verifies over the full vocabulary — lossless by construction.
+
+**What did not work**: K = 14/16 (C1 tie, C4 −2 to −6 %), a 32K map (acceptance loss eats the bytes), an FP8 draft head (−18 %), draft window 1024/4096 and FP8 draft KV (±0.2 %).
 
 ---
 
@@ -112,10 +115,10 @@ While naive post-hoc FC/norm tuning is prone to Triton index assertion instabili
 
 ### Serving on a Single 128 GB DGX Spark (Comfortable Headroom)
 * **Target Model (Hybrid GPTQ-4o6 + FP8 + NVFP4)**: 24.85 GiB
-* **DFlash 2 Drafter (BF16)**: 3.58 GiB
+* **Kearuga DFlash 2 Drafter (NVFP4 + 64K BF16 draft head)**: ~2.1 GiB (computed from file sizes: 1.45 GiB weights + 0.63 GiB head)
 * **1M-Token KV Cache Pool (BF16, fidelity-first)**: 32.00 GiB
 * **SGLang & PyTorch Runtime Overhead**: ~4.00 GiB
-* **Total Serving Footprint**: **~64.4 GiB (fits easily within 128 GB Unified Memory with >63.6 GiB headroom)**.
+* **Total Serving Footprint**: **~62.9 GiB (fits easily within 128 GB Unified Memory with >65 GiB headroom)**. Stock BF16 drafter profile: 3.58 GiB drafter → ~64.4 GiB total.
 
 ---
 
@@ -142,3 +145,5 @@ We gratefully acknowledge the researchers, engineers, and creators whose open-so
 * 📊 **[0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark](https://github.com/0xBakeer/Qwen3.8-27B-4-bit-on-a-single-DGX-Spark)**: For vLLM 4-bit memory allocation analysis and throughput benchmarks.
 * ⚡ **[z-lab/dflash](https://github.com/z-lab/dflash)**: For inventing the revolutionary block-diffusion speculative decoding architecture.
 * 🌐 **[SGLang Project](https://github.com/sgl-project/sglang)**: For the high-throughput inference engine, radix attention, and speculative decoding framework.
+
+The drafter-specific credits (base weights, quantization yardsticks, training recipes, papers) are listed in full in [README §Credits](README.md#-credits) and on the [drafter model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2).

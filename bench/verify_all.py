@@ -48,13 +48,42 @@ elif hybrid_dir.exists():
 else:
     report("Target Checkpoint (Qwen3.8-27B-Kearuga)", True, "Hosted on Hugging Face (0xWhiteMage/Qwen3.8-27B-Kearuga)")
 
-# 1b. Stock Drafter Checkpoint: z-lab/Qwen3.8-27B-DFlash2
+# 1b. Kearuga Drafter Checkpoint: 0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2
 hf_hub = Path(os.path.expanduser("~/.cache/huggingface/hub"))
-dflash_hf = hf_hub / "models--z-lab--Qwen3.8-27B-DFlash2"
+dflash_hf = hf_hub / "models--0xWhiteMage--Qwen3.8-27B-Kearuga-DFlash2"
 if dflash_hf.exists():
-    report("Stock DFlash 2 Drafter (z-lab/Qwen3.8-27B-DFlash2)", True, "Cached in local Hugging Face hub (3.58 GiB BF16)")
+    report("Kearuga DFlash 2 Drafter (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ 39a26bd8)", True, "Cached in local Hugging Face hub (1.55 GB NVFP4)")
 else:
-    report("Stock DFlash 2 Drafter (z-lab/Qwen3.8-27B-DFlash2)", True, "Hosted on Hugging Face (z-lab/Qwen3.8-27B-DFlash2 @ 50307d4c)")
+    report("Kearuga DFlash 2 Drafter (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ 39a26bd8)", True, "Hosted on Hugging Face (0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2 @ 39a26bd8)")
+
+# 1b-fallback. Stock Drafter Checkpoint: z-lab/Qwen3.8-27B-DFlash2
+stock_hf = hf_hub / "models--z-lab--Qwen3.8-27B-DFlash2"
+if stock_hf.exists():
+    report("Stock DFlash 2 Drafter (z-lab/Qwen3.8-27B-DFlash2, fallback profile)", True, "Cached in local Hugging Face hub (3.58 GiB BF16)")
+else:
+    report("Stock DFlash 2 Drafter (z-lab/Qwen3.8-27B-DFlash2, fallback profile)", True, "Hosted on Hugging Face (z-lab/Qwen3.8-27B-DFlash2 @ 50307d4c)")
+
+# 1c. Vendored draft-head overlay + token map integrity
+sums_file = REPO / "drafter" / "SHA256SUMS"
+if sums_file.exists():
+    bad = []
+    checked = 0
+    for line in sums_file.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        want, rel = line.split(None, 1)
+        rel = rel.strip()
+        p = REPO / "drafter" / rel
+        if not p.is_file():
+            bad.append(f"{rel}: missing")
+            continue
+        checked += 1
+        got = hashlib.sha256(p.read_bytes()).hexdigest()
+        if got != want:
+            bad.append(f"{rel}: {got[:12]} != {want[:12]}")
+    report("Vendored draft-head overlay + token map integrity (drafter/SHA256SUMS)", not bad, f"{checked} files verified" if not bad else "; ".join(bad))
+else:
+    report("Vendored draft-head overlay + token map integrity (drafter/SHA256SUMS)", False, "drafter/SHA256SUMS missing")
 
 # TEST 2: Quality-200 Benchmark Dataset Audit
 print("\n--- 2. Quality-200 Benchmark Dataset Audit ---")
@@ -112,7 +141,11 @@ dflash_flags = [
     "--max-prefill-tokens",
     "--cuda-graph-max-bs-decode 4",
     "extra_buffer",
-    "MODEL_MOUNT_ARGS"
+    "MODEL_MOUNT_ARGS",
+    "DRAFTER_PROFILE",
+    "--speculative-draft-model-quantization",
+    "--speculative-dflash-token-map",
+    "sha256sum -c"
 ]
 ok, detail = check_launcher_flags(launcher_dflash, dflash_flags)
 report("DFlash 2 Launcher Compliance (start-dflash2.sh)", ok, detail)

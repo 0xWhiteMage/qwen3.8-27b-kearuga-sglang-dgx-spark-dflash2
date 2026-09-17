@@ -4,6 +4,25 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.6.0] - 2026-09-17
+
+### ⚡ Kearuga DFlash 2 Drafter — Default Profile
+* **Released [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)** (`39a26bd8`): distilled on 24,644 Kearuga-answered conversations, quantized to ModelOpt NVFP4 with activation scales calibrated on Kearuga's own features (1.55 GB vs 3.85 GB stock BF16), and served through a frequency-pruned 65,650-row draft head (`draft-vocab-v4-top65650.pt`, sha256 `cadaee01…`).
+* **Paired bake-off vs the stock BF16 K=10 drafter** (same image, target, flags, clock; 50-prompt battery × 2 runs, temperature 0): **+14.5 % C1 / +10.8 % C4 aggregate** with the 64K draft head, better on all 10 domain cells; plain SGLang (no overlay) is +7.9 % / +4.3 %.
+* **Quality & fidelity unchanged**: Quality-200 155/180 (near-tie band 154–159; target alone 157); Fidelity-40 mean KL 0.0165, top-1 40/40 — the target verifies every drafted token.
+
+### 🧩 Launcher & Integrity
+* **`DRAFTER_PROFILE=kearuga|stock`** in `start-dflash2.sh` — `kearuga` is the new default (K=12, `modelopt_fp4`, overlay + token map); `stock` reproduces the exact v0.5.0 recipe (z-lab BF16, K=10, no overlay).
+* **Vendored `drafter/` directory**: the 5-file read-only SGLang overlay, the 64K token map (`.pt` + `.json`), `SHA256SUMS` (vendored bytes) and `BASE-SHA256SUMS` (in-image base hashes). Launch verifies both before mounting; `OVERLAY_SKIP_BASE_CHECK=1` opts out of the image check, `DRY_RUN=1` prints the fully expanded `docker run` command after all checks and exits.
+* **Defaults updated to the validated production profile**: `MEM_FRACTION=0.85` (launcher and `.env.sample`), `DFLASH_DRAFT_TOKENS=12` on the kearuga profile.
+* **Launcher flags aligned with the measured production configuration**: `--disable-flashinfer-autotune` is now always passed (every published number was measured with it), and `--revision local` is added automatically when `TARGET_MODEL` is a local directory.
+* **`bench/verify_all.py`**: new gates for the Kearuga drafter checkpoint (cached-or-hosted) and `drafter/SHA256SUMS` byte verification (13 gates total); stock drafter check retained as the fallback profile.
+
+### 📚 Documentation
+* README paired-benchmark section, memory-math update (drafter ~2.1 GiB computed, total ~62.9 GiB), profile-switching quick start, credits; INSIGHTS §3/§4 rewritten for the NVFP4 drafter + draft head (fused KV materialization is disabled on this profile — it requires a BF16 `qkv_proj`).
+
+---
+
 ## [v0.5.0] - 2026-09-05
 
 ### 🎯 New Production Checkpoint — Hybrid GPTQ-4o6 + FP8

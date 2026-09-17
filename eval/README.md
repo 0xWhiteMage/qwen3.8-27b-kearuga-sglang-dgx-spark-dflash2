@@ -134,7 +134,7 @@ This exits 0 if all hashes match, 1 on any mismatch. Add `--strict` to also fail
 | Held-out top-1 | 95.0% |
 | Quality-200 objective | 157/180 |
 
-These were measured on `Qwen3.8-27B-Kearuga` served on a single DGX Spark (GB10) with SGLang, DFlash2 K=10, BF16 KV cache, on the digest-pinned official image. See the [model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) for full details.
+These were measured on `Qwen3.8-27B-Kearuga` served on a single DGX Spark (GB10) with SGLang, DFlash2 K=10 (stock drafter), BF16 KV cache, on the digest-pinned official image. With the Kearuga drafter at K=12 + 64K draft head, Quality-200 = 155/180 and Fidelity-40 KL 0.0165 / top-1 40/40 — drafter-independent by construction, since the target verifies every drafted token. See the [model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga) for full details.
 
 ---
 

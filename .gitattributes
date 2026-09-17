@@ -6,3 +6,4 @@
 *.jsonl text eol=lf
 *.md text eol=lf
 MANIFEST.sha256 text eol=lf
+*.pt binary

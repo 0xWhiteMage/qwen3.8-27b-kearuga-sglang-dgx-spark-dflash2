@@ -1,0 +1,316 @@
+--- a/sglang/srt/speculative/dflash_worker_v2.py
++++ b/sglang/srt/speculative/dflash_worker_v2.py
+@@ -47,6 +47,12 @@
+     is_dflash_sampling_verify_available,
+     parse_dflash_draft_config,
+ )
++# [kearuga-drafthead] draft-only hot-token lm_head pruning + FP8 head builder.
++from sglang.srt.speculative.dflash_head_utils import (
++    build_dflash_draft_head,
++    load_hot_token_ids,
++    remap_local_to_global,
++)
+ from sglang.srt.speculative.draft_worker_common import (
+     build_block_pos_offsets,
+     build_draft_tp_worker,
+@@ -98,7 +104,8 @@
+     """
+ 
+     def __init__(
+-        self, *, weight, block_size, num_org, org_vocab_start, max_bs, tp_group=None
++        self, *, weight, block_size, num_org, org_vocab_start, max_bs, tp_group=None,
++        hot_token_id=None,
+     ):
+         self.weight = weight
+         self.block_size = int(block_size)
+@@ -106,6 +113,10 @@
+         self.org_vocab_start = int(org_vocab_start)
+         self.tp_group = tp_group
+         self.tp_size = int(tp_group.world_size) if tp_group is not None else 1
++        # [kearuga-drafthead] hot-token map for the pruned draft head (tp=1 only).
++        # When set, the local argmax over the N pruned rows is remapped to global
++        # token ids via this tensor before being written to self.out.
++        self.hot_token_id = hot_token_id
+         max_tokens = int(max_bs) * (self.block_size - 1)
+         device = weight.device
+         self.out = torch.empty((max_tokens,), dtype=torch.int64, device=device)
+@@ -144,6 +155,9 @@
+             tokens = torch.argmax(logits, dim=-1).to(torch.long)
+             if self.org_vocab_start:
+                 tokens += self.org_vocab_start
++            # [kearuga-drafthead] remap pruned-head local ids to global vocab.
++            if self.hot_token_id is not None:
++                tokens = self.hot_token_id.to(tokens.device).index_select(0, tokens)
+             self.out[:n].copy_(tokens)
+             return
+         local_max = self.local_max[:n]
+@@ -301,6 +315,34 @@
+         self._draft_sampler = None
+         self.draft_model = bundle.draft_model
+         self.selector = self.draft_model.candidate_selector
++        # [kearuga-drafthead] draft-only hot-token lm_head pruning + FP8 options.
++        # The map (if any) is a 1-D int64 tensor of full-vocab hot ids, kept on the
++        # worker device; the head-quant option selects BF16-pruned or FP8 rows.
++        self._dflash_hot_token_id: Optional[torch.Tensor] = None
++        self._dflash_head_quantization: str = "none"
++        self._dflash_draft_head = None
++        _dflash_token_map_path = getattr(
++            server_args, "speculative_dflash_token_map", None
++        )
++        if _dflash_token_map_path:
++            self._dflash_hot_token_id = load_hot_token_ids(_dflash_token_map_path).to(
++                self.device
++            )
++            if self.ps.tp_rank == 0:
++                logger.info(
++                    "[kearuga-drafthead] loaded hot token map: rows=%d from %s",
++                    int(self._dflash_hot_token_id.numel()),
++                    _dflash_token_map_path,
++                )
++        _dflash_head_quant = getattr(
++            server_args, "speculative_dflash_head_quantization", "none"
++        )
++        if _dflash_head_quant not in ("none", "fp8_e4m3"):
++            raise ValueError(
++                "Unsupported --speculative-dflash-head-quantization="
++                f"{_dflash_head_quant!r} (expected 'none' or 'fp8_e4m3')."
++            )
++        self._dflash_head_quantization = _dflash_head_quant
+         draft_config = parse_dflash_draft_config(
+             draft_hf_config=self.draft_model_runner.model_config.hf_config
+         )
+@@ -445,6 +487,49 @@
+             "update_mamba_state_after_mtp_verify",
+         )
+ 
++    # [kearuga-drafthead] Build (once, cached) and return the draft lm_head to
++    # assign to draft_model.lm_head before capture. When neither a hot-token map
++    # nor FP8 is requested this returns the target lm_head unchanged (the
++    # existing zero-overhead path). Otherwise it returns a pruned and/or FP8
++    # stand-in whose weight shape is fixed before capture. Also publishes the
++    # hot-token map onto the draft model so compute_candidates can remap ids.
++    def _get_or_build_dflash_draft_head(self, target_lm_head):
++        if self._dflash_draft_head is not None:
++            head = self._dflash_draft_head
++        else:
++            fp8 = self._dflash_head_quantization == "fp8_e4m3"
++            head = build_dflash_draft_head(
++                target_lm_head,
++                self._dflash_hot_token_id,
++                fp8=fp8,
++                device=self.device,
++            )
++            self._dflash_draft_head = head
++            if self._dflash_hot_token_id is not None or fp8:
++                if self.ps.tp_rank == 0:
++                    w = getattr(head, "weight", None)
++                    bytes_ = (
++                        int(w.element_size() * w.numel())
++                        if w is not None
++                        else 0
++                    )
++                    logger.info(
++                        "[kearuga-drafthead] draft head rows=%d dtype=%s bytes=%d "
++                        "fp8=%s hot_map=%s",
++                        int(getattr(head, "org_vocab_size", 0)),
++                        str(w.dtype) if w is not None else "n/a",
++                        bytes_,
++                        fp8,
++                        self._dflash_hot_token_id is not None,
++                    )
++        # Publish the map (or None) on the draft model for compute_candidates.
++        self.draft_model.hot_token_id = (
++            None
++            if self._dflash_hot_token_id is None
++            else self._dflash_hot_token_id.to(self.device)
++        )
++        return head
++
+     def init_cuda_graphs(self):
+         capture_decode_cuda_graph = (
+             get_exec().graph.cuda_graph_config.decode.backend != Backend.DISABLED
+@@ -494,7 +579,10 @@
+                 lm_head, getattr(lm_head, "quant_method", None)
+             ):
+                 return _eager("unsupported quantized lm_head")
+-            self.draft_model.lm_head = lm_head
++            # [kearuga-drafthead] assign the pruned/FP8 draft head (or the target
++            # head unchanged when no map/FP8 is requested) before capture, and
++            # publish the hot-token map onto the draft model.
++            self.draft_model.lm_head = self._get_or_build_dflash_draft_head(lm_head)
+             if self.ps.tp_rank == 0:
+                 logger.info(
+                     "DFLASH selector decode (greedy + sampling) folded into the "
+@@ -508,18 +596,23 @@
+             )
+         if not hasattr(lm_head, "weight"):
+             return _eager("quantized lm_head has no dense weight")
+-        if not is_dense_head_weight(lm_head.weight):
++        # [kearuga-drafthead] use the pruned/FP8 draft head when a map/FP8 is set;
++        # otherwise the target head. An FP8 pruned head is not a dense weight, so
++        # it bails to the eager greedy path (which uses quant_method.apply).
++        draft_head = self._get_or_build_dflash_draft_head(lm_head)
++        head_weight = getattr(draft_head, "weight", None)
++        if not is_dense_head_weight(head_weight):
+             # Quantized lm_head (FP8/INT) would break the static matmul.
+             return _eager("quantized lm_head")
+         tp_group = get_tp_group()
+-        if not hasattr(lm_head, "shard_indices"):
++        if not hasattr(draft_head, "shard_indices") or draft_head.shard_indices is None:
+             if tp_group.world_size != 1:
+                 # No shard metadata to recover per-rank vocab offsets from.
+                 return _eager("tp>1 without shard_indices")
+-            num_org = int(lm_head.weight.shape[0])
++            num_org = int(head_weight.shape[0])
+             org_vocab_start = 0
+         else:
+-            shard = lm_head.shard_indices
++            shard = draft_head.shard_indices
+             if int(shard.num_added_elements) != 0:
+                 return _eager("added vocab")
+             num_org = int(shard.num_org_elements)
+@@ -530,12 +623,14 @@
+                 tp_group.world_size,
+             )
+         return _DflashDraftSampler(
+-            weight=lm_head.weight,
++            weight=head_weight,
+             block_size=self.block_size,
+             num_org=num_org,
+             org_vocab_start=org_vocab_start,
+             max_bs=max(get_exec().graph.cuda_graph_config.decode.bs),
+             tp_group=tp_group if tp_group.world_size > 1 else None,
++            # [kearuga-drafthead] remap pruned-head local argmax to global ids.
++            hot_token_id=self._dflash_hot_token_id,
+         )
+ 
+     def _init_fused_kv_helper(self) -> None:
+@@ -948,7 +1043,9 @@
+         """The eager fallback for batches the draft graph cannot take."""
+         draft_model = self.draft_model
+         if draft_model.lm_head is None:
+-            draft_model.lm_head = lm_head
++            # [kearuga-drafthead] attach the pruned/FP8 draft head (or the target
++            # head) and publish the hot-token map before computing candidates.
++            draft_model.lm_head = self._get_or_build_dflash_draft_head(lm_head)
+ 
+         draft_hidden = draft_logits_output.hidden_states
+         if draft_hidden is None:
+@@ -1056,6 +1153,9 @@
+             if num_org is not None and logits.shape[-1] > num_org:
+                 logits = logits[:, :num_org]
+             out_tokens[start:end] = torch.argmax(logits, dim=-1).to(torch.long)
++        # [kearuga-drafthead] remap pruned-head local argmax to global vocab ids.
++        if self._dflash_hot_token_id is not None:
++            out_tokens = remap_local_to_global(out_tokens, self._dflash_hot_token_id)
+         return out_tokens
+ 
+     def _greedy_sample_from_vocab_parallel_head(
+@@ -1090,12 +1190,15 @@
+         def _cast_hs(x: torch.Tensor) -> torch.Tensor:
+             return x if x.dtype == weight_dtype else x.to(weight_dtype)
+ 
+-        if not hasattr(lm_head, "shard_indices"):
++        if not hasattr(lm_head, "shard_indices") or lm_head.shard_indices is None:
+             for start in range(0, num_tokens, int(chunk_size)):
+                 end = min(num_tokens, start + int(chunk_size))
+                 hs = _cast_hs(hidden_states[start:end])
+                 logits = torch.matmul(hs, weight.T)
+                 out_tokens[start:end] = torch.argmax(logits, dim=-1).to(torch.long)
++            # [kearuga-drafthead] remap pruned-head local argmax to global vocab ids.
++            if self._dflash_hot_token_id is not None:
++                out_tokens = remap_local_to_global(out_tokens, self._dflash_hot_token_id)
+             return out_tokens
+ 
+         shard = lm_head.shard_indices
+@@ -1930,7 +2033,14 @@
+                 hidden_states=draft_hidden[:, 1:, :].reshape(
+                     -1, draft_hidden.shape[-1]
+                 ),
+-                lm_head=lm_head,
++                # [kearuga-drafthead] score through the pruned/FP8 draft head when
++                # a hot-token map is set; otherwise the target head.
++                lm_head=(
++                    self._dflash_draft_head
++                    if self._dflash_hot_token_id is not None
++                    and self._dflash_draft_head is not None
++                    else lm_head
++                ),
+             ).view(bs, int(self.block_size) - 1)
+ 
+         draft_tokens = self._draft_block_tokens_buf[:bs]
+--- a/sglang/srt/models/dflash.py
++++ b/sglang/srt/models/dflash.py
+@@ -962,6 +962,10 @@
+         # The draft has no head of its own; the worker points this at the target's
+         # before capture.
+         self.lm_head: Optional[nn.Module] = None
++        # [kearuga-drafthead] hot-token map for the pruned draft lm_head. When set
++        # by the worker, compute_candidates top-k's over the N pruned rows and
++        # remaps local indices to global ids via this tensor before build_lattice.
++        self.hot_token_id: Optional[torch.Tensor] = None
+ 
+     def _transform_unary_logits(self, logits: torch.Tensor) -> torch.Tensor:
+         logits = logits.float()
+@@ -991,6 +995,13 @@
+                 "DFlash2 selector requires a dense FP16/BF16/FP32 target lm_head "
+                 "or a supported lm_head.quant_method."
+             )
++        # [kearuga-drafthead] the pruned/FP8 draft head is tp=1 only: it has no
++        # shard metadata and the hot-token map assumes a single full-vocab copy.
++        if self.hot_token_id is not None and get_parallel().tp_size != 1:
++            raise RuntimeError(
++                "DFlash2 --speculative-dflash-token-map is only supported at tp=1, "
++                f"got tp_size={get_parallel().tp_size}."
++            )
+         if get_parallel().tp_size == 1:
+             org = int(self.lm_head.org_vocab_size)
+             vals, ids = _radix_topk(
+@@ -999,7 +1010,13 @@
+                 ),
+                 k,
+             )
+-            return ids.long(), self._transform_unary_logits(vals)
++            ids = ids.long()
++            # [kearuga-drafthead] remap pruned-head local row indices to global
++            # token ids so build_lattice/sample_path (codebooks are full-vocab
++            # sized) and the verify path all see global ids.
++            if self.hot_token_id is not None:
++                ids = self.hot_token_id.to(ids.device).index_select(0, ids.reshape(-1)).view_as(ids)
++            return ids, self._transform_unary_logits(vals)
+         shard = self.lm_head.shard_indices
+         vals, ids = _radix_topk(
+             _project_candidate_logits(
+--- a/sglang/srt/server_args.py
++++ b/sglang/srt/server_args.py
+@@ -2240,6 +2240,30 @@
+     _speculative_draft_quantization_explicitly_set: A[
+         Optional[bool], Arg(no_cli=True), NS("spec")
+     ] = None
++    # [kearuga-drafthead] DFlash2 draft-only hot-token lm_head pruning + FP8.
++    speculative_dflash_token_map: A[
++        Optional[str],
++        Arg(
++            help="Path to a torch-saved 1-D int64 tensor of full-vocab hot token "
++            "ids. When set, the DFlash2 draft scores candidates through only those "
++            "target lm_head rows (FR-Spec-style frequency-pruned subset) and remaps "
++            "the local top-k back to global ids. The target's own BF16 lm_head and "
++            "verify path are untouched (losslessness comes from target verification). "
++            "tp=1 only; rejection-sampling verify modes are unsupported with a map.",
++        ),
++        NS("spec"),
++    ] = None
++    # [kearuga-drafthead] DFlash2 draft-only lm_head FP8 per-tensor quantization.
++    speculative_dflash_head_quantization: A[
++        Literal["none", "fp8_e4m3"],
++        Arg(
++            help="Quantize the DFlash2 draft lm_head rows to FP8-E4M3 per-tensor "
++            "(experimental; applies to the pruned rows when a token map is set, or "
++            "the full head otherwise). The target head is never quantized.",
++            choices=["none", "fp8_e4m3"],
++        ),
++        NS("spec"),
++    ] = "none"
+     speculative_skip_dp_mlp_sync: A[
+         bool,
+         "Skip the extra MLP sync that the scheduler performs before merging a new batch when speculative decoding + DP attention are both enabled.",

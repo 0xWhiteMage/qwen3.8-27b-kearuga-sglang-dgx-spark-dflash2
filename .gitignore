@@ -9,9 +9,12 @@ __pycache__/
 bench/results/
 
 # Local Models & Large Weights (Keep out of git code tracking)
-models/
+/models/
 tools/models/
 *.safetensors
 *.bin
 *.pt
 *.pth
+
+# Vendored drafter token map (published artifact, hash-pinned)
+!drafter/*.pt
