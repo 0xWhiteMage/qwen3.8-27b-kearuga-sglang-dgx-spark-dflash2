@@ -11,7 +11,7 @@
   * **Context**: 262,144 tokens native context.
 
 * **Speculative Drafter (DFlash 2)**:
-  * **Repository**: [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) (Kearuga Drafter, revision `39a26bd8…`)
+  * **Repository**: [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) (Kearuga Drafter, revision `6eaa58f3…`)
   * **Precision**: NVFP4 W4A4 (ModelOpt layout, Kearuga-calibrated activation scales), 1.55 GB; selector / fc / conv projections stay BF16.
   * **Draft head**: frequency-pruned 64K head (65,650 rows, 0.63 GiB BF16) via the vendored 5-file read-only overlay (`drafter/`), hash-verified at launch; K=12.
   * **SGLang Kernel**: fused KV materialization is **disabled** on this profile (it requires a BF16 `qkv_proj`); the win is weight bandwidth (1.55 GB vs 3.85 GB read per cycle). On `DRAFTER_PROFILE=stock` it remains active.

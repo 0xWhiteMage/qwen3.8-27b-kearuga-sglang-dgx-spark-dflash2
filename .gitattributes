@@ -7,3 +7,5 @@
 *.md text eol=lf
 MANIFEST.sha256 text eol=lf
 *.pt binary
+# Vendored, hash-pinned drafter assets: store bytes verbatim (a clone must reproduce drafter/SHA256SUMS)
+drafter/** -text

@@ -34,7 +34,9 @@ block is marked `# [kearuga-drafthead]`):
   `remap_local_to_global`). Imports only `torch` at module level; SGLang imports
   are lazy so it is unit-testable on a CPU host without SGLang installed.
 
-`PATCH.diff` holds a unified diff per changed file (generated with `difflib`);
+`PATCH.diff` holds a unified diff per changed file (generated with `difflib`; apply with
+`git -c core.autocrlf=false apply -p1 PATCH.diff` from the `sglang/python` directory, then copy the
+new module `sglang/srt/speculative/dflash_head_utils.py` alongside — it is a new file and not part of the diff);
 `MANIFEST.json` records the base and patched sha256 of every file so drift is
 detected.
 

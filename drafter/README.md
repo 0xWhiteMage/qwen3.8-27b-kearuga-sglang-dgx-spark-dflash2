@@ -2,7 +2,7 @@
 
 Byte-identical copies of the artifacts published on
 [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2)
-at commit `39a26bd8109a70e28363a3267998a6d2be83bdbb`. Nothing here is generated
+at commit `6eaa58f39f55d58999a716e15fad4f9c33283cf2`. Nothing here is generated
 at build or launch time; every file's SHA-256 is pinned in `SHA256SUMS` and
 re-verified by `./start-dflash2.sh` before the server boots.
 
@@ -28,7 +28,9 @@ distribution is unchanged — this changes *speed*, never *what the model says*.
 
 Limitations: `tp = 1` only when a token map is set, and the overlay is pinned
 to the image digest recorded in `BASE-SHA256SUMS`. On any other SGLang build, apply
-`sglang-overlay/PATCH.diff` to your own tree instead of mounting these files.
+`sglang-overlay/PATCH.diff` to your own tree (`git -c core.autocrlf=false apply -p1` from
+`sglang/python`) and copy the new module `sglang/srt/speculative/dflash_head_utils.py`
+alongside — it is a new file and not part of the diff — instead of mounting these files.
 
 ## How the launcher uses it
 

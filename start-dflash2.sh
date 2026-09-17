@@ -36,7 +36,7 @@ DRAFTER_PROFILE="${DRAFTER_PROFILE:-kearuga}"
 case "${DRAFTER_PROFILE}" in
   kearuga)
     _DEF_DFLASH_MODEL="0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"
-    _DEF_DFLASH_REV="39a26bd8109a70e28363a3267998a6d2be83bdbb"
+    _DEF_DFLASH_REV="6eaa58f39f55d58999a716e15fad4f9c33283cf2"
     _DEF_DRAFT_TOKENS="12"
     _DEF_DRAFT_QUANT="modelopt_fp4"
     _DEF_OVERLAY="1"

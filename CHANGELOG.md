@@ -4,6 +4,14 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.6.1] - 2026-09-17
+
+### 🩹 Fix — fresh clones failed the launch-time hash check
+* `drafter/sglang-overlay/MANIFEST.json` and `PATCH.diff` were pinned as CRLF bytes but stored LF by git's eol normalization, so every Linux clone failed `sha256sum -c drafter/SHA256SUMS` and the kearuga profile refused to boot. Both files are now LF at the source and on Hugging Face (drafter commit `6eaa58f3`); `drafter/**` is stored verbatim (`-text`); `drafter/SHA256SUMS` re-pinned; `DFLASH_REV` default → `6eaa58f3` (same weights and token map — only the overlay text files changed). Caught by the end-to-end boot test of the published launcher, before it reached the resident.
+* `PATCH.diff` usage documented: apply with `git apply -p1` in `sglang/python` and copy the new `dflash_head_utils.py` alongside (it is not part of the diff).
+
+---
+
 ## [v0.6.0] - 2026-09-17
 
 ### ⚡ Kearuga DFlash 2 Drafter — Default Profile
