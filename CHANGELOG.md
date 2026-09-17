@@ -4,6 +4,17 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.6.2] - 2026-09-17
+
+### 📊 Docs — community comparison refreshed, measurements corrected
+* **Community comparison rebuilt**: 17 GB10 / Qwen3.8-27B sources re-read on 2026-09-17 with a per-row metric column; non-GB10 results (H200, RTX 5090) excluded from the table; new GB10 recipes added (hasso5703, anliang0306, 0xBakeer, tcclaviger et al., Mia-AiLab, AEON-7).
+* **Our row re-measured** with `bench/scale.py` on the Kearuga profile: C1 44.7 / C2 77.9 / C4 131.3 tok/s aggregate under the owner's 2400 MHz SM clock cap — the v0.5.0 figures (57 / 51 / 94) predate the cap.
+* **Memory math corrected to boot-log measurements**: KV pool 818,294 tokens (49.9 GB target + 15.6 GB drafter KV), ~100 GB static at mem-fraction 0.85 — the previous 1,048,576-token / 32 GiB / ~63 GiB figures were carried over from an earlier configuration and were wrong.
+* **"Reasoning enabled" header corrected** (`bench/scale.py` measures thinking-off) and the unmeasured "no-spec" speed-up rows removed from the fidelity table.
+* **INSIGHTS.md** executive summary, §1 and §5 refreshed with the same measured figures; `summary.md` and `.env.sample` aligned.
+
+---
+
 ## [v0.6.1] - 2026-09-17
 
 ### 🩹 Fix — fresh clones failed the launch-time hash check

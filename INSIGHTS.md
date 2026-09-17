@@ -12,13 +12,13 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 
 | Benchmark / Capability | Kearuga Profile | Measured Performance | Operational Significance |
 |---|---|---:|---|
-| ⚡ **Single-Stream Net Decode (C1)** | **DFlash 2 (C1)** | **57 tok/s** (57/str, TTFT 264ms) | Zero-latency interactive daily driver |
-| 👥 **Dual-Stream Decode (C2)** | **DFlash 2 (C2)** | **51 tok/s agg** (40/str, TTFT 416ms) | Balanced dual-stream interactive sessions |
-| 👷 **Saturated Interactive (C4)** | **DFlash 2 (C4)** | **94 tok/s agg** (39/str, TTFT 480ms) | Quad-stream simultaneous interactive tasks |
-| 📜 **Shared KV Cache Capacity** | **BF16 KV Pool** | **1,048,576 tokens**| 4 × full 262K native contexts concurrently |
+| ⚡ **Single-Stream (C1)** | Kearuga NVFP4 drafter, K=12 + 64K head | **44.7 tok/s** agg (45.5 net) on the forced-512 code probe; battery medians code 57.6 · tool calls 114.6 · prose 21.6 | Interactive daily driver |
+| 👥 **Dual-Stream (C2)** | same | **77.9 tok/s agg** (≈ 40/stream, TTFT 0.28 s) | Two interactive sessions |
+| 👷 **Saturated Interactive (C4)** | same | **131.3 tok/s agg** (≈ 36/stream, TTFT 0.34 s) | Four seats busy |
+| 📜 **Shared KV Pool** | BF16 KV | **818,294 tokens** (measured at boot) | 4 seats × 262K window; ≈ 3.1 full contexts at once |
 | ⏱️ **Saturated Priority TTFT** | **Preemption Mode** | **43.15s → 2.63s** | **93.9% latency reduction** under full load |
 
-*Throughput figures above are stock-drafter, K=10, v0.5.0 single-prompt probes. Paired-battery aggregate throughput with the Kearuga drafter (K=12 + 64K draft head): 35.33 tok/s C1 / 108.90 tok/s C4 — see [README §0](README.md).*
+*Measured 2026-09-17 with `bench/scale.py` (T=0, thinking off, 512 forced tokens, aggregate incl. TTFT) under the owner's 2400 MHz SM clock cap. The v0.5.0 figures (57 / 51 / 94 with the stock drafter) were taken by the same script before the cap. Paired drafter comparison: [README §1](README.md).*
 
 ---
 
@@ -30,13 +30,13 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 |---|---|---|
 | **Draft Prediction Complexity** | Sequential $O(K)$ autoregressive forward passes | Parallel single-step $O(1)$ block diffusion |
 | **Memory Bus Overhead** | $K$ sequential memory round-trips per step | Single memory fetch per candidate block |
-| **Drafter Footprint** | Often multi-billion parameter autoregressive model | Compact stock drafter (3.58 GiB native BF16) |
-| **Kernel Materialization** | Separate draft KV cache allocations | Fused CUDA graph KV projection (`fused_dflash_kv_kernel`) |
-| **Empirical Throughput** | High per-step latency overhead | **57 tok/s C1**, **51 tok/s C2 agg**, **94 tok/s C4 agg** |
+| **Drafter Footprint** | Often multi-billion parameter autoregressive model | 1.55 GB NVFP4 Kearuga drafter (+ 0.67 GB pruned draft head); stock BF16 3.58 GiB |
+| **Kernel Materialization** | Separate draft KV cache allocations | Fused KV projection kernel with the stock BF16 drafter; unfused with the NVFP4 drafter (§3) |
+| **Empirical Throughput** | High per-step latency overhead | **44.7 / 77.9 / 131.3 tok/s agg at C1 / C2 / C4** (2400 MHz cap) |
 
 ### ⚡ DFlash 2: The Interactive Engine (C1–C4)
-* **How It Works**: Traditional speculative drafters draft tokens sequentially (generating one candidate token at a time). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=10) in a single forward pass (single-step O(1)).
-* **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **57 tok/s C1 (57 tok/s/stream, TTFT 264ms)**, **51 tok/s aggregate C2 (40 tok/s/stream)**, and **94 tok/s aggregate C4 (39 tok/s/stream, TTFT 480ms)** on DGX Spark unified memory.
+* **How It Works**: Traditional speculative drafters draft tokens sequentially (generating one candidate token at a time). DFlash 2 uses a non-causal **block-diffusion architecture** that predicts candidate token blocks (block size K=12 with the Kearuga drafter, K=10 with the stock drafter) in a single forward pass (single-step O(1)).
+* **The Benefit**: Eliminates sequential draft latency entirely, unlocking steady-state interactive decode speeds of **44.7 tok/s C1**, **77.9 tok/s aggregate C2**, and **131.3 tok/s aggregate C4** on DGX Spark unified memory (measured under the owner's 2400 MHz SM clock cap).
 * **Unified Memory Optimization**: Because Grace-Blackwell GB10 utilizes unified high-bandwidth memory, eliminating sequential kernel launches and memory ping-pong is paramount. DFlash 2 reduces GPU memory bus traffic by amortizing draft overhead into a single parallel tensor operation.
 
 ---
@@ -63,7 +63,7 @@ Applying sensitivity lessons from mixed-precision research ([`malaiwah/qwen38-27
 | **Tier 4 (Down)** | MLP `down_proj` (Layers 2–61, 60 tensors) | NVFP4 AWQ (Pre-quantized) | ModelOpt AWQ export, retained to handle activation outliers |
 
 
-* **Outcome**: A compact **24.85 GB** model running with full Blackwell Tensor Core acceleration while preserving **40/40 top-1 token agreement** with the BF16 base and passing **157/180 Quality-200 objective gates** (GSM8K, HumanEval, IFEval, agentic coding).
+* **Outcome**: A compact **24.85 GB** model running with full Blackwell Tensor Core acceleration while preserving **40/40 top-1 token agreement** with the BF16 base and passing **157/180 Quality-200 objective gates** (GSM8K, HumanEval, IFEval, agentic coding; 155/180 served with the Kearuga drafter — near-tie band).
 
 #### Four-Over-Six (4o6) Group Scales
 Standard GPTQ uses a single group scale per block (amax → code 6). Four-Over-Six instead evaluates dynamic range per block and chooses the better of:
@@ -111,14 +111,16 @@ The released drafter [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://hugging
 
 ## 💾 5. Hardware Memory Math: Serving Envelope
 
-> *"A single 128 GB DGX Spark serves the 27-billion parameter dense model with abundant headroom."*
+> *"The pool is sized by the memory fraction, not by the cap: 818,294 KV tokens at --mem-fraction-static 0.85."*
 
-### Serving on a Single 128 GB DGX Spark (Comfortable Headroom)
-* **Target Model (Hybrid GPTQ-4o6 + FP8 + NVFP4)**: 24.85 GiB
-* **Kearuga DFlash 2 Drafter (NVFP4 + 64K BF16 draft head)**: ~2.1 GiB (computed from file sizes: 1.45 GiB weights + 0.63 GiB head)
-* **1M-Token KV Cache Pool (BF16, fidelity-first)**: 32.00 GiB
-* **SGLang & PyTorch Runtime Overhead**: ~4.00 GiB
-* **Total Serving Footprint**: **~62.9 GiB (fits easily within 128 GB Unified Memory with >65 GiB headroom)**. Stock BF16 drafter profile: 3.58 GiB drafter → ~64.4 GiB total.
+### Serving on a Single 128 GB DGX Spark (Measured at the Production Boot)
+* **Target weights**: 24.9 GB (hybrid GPTQ-4o6 + FP8 + NVFP4; boot log `mem usage=24.87 GB`)
+* **Kearuga NVFP4 DFlash 2 drafter**: 1.4 GB weights + 0.7 GB pruned 65,650-row BF16 draft head (built at CUDA-graph capture)
+* **GDN / Mamba state pool**: 5.8 GB (20 slots = 4 requests × 5)
+* **Target KV cache (BF16)**: 49.9 GB = **818,294 tokens** (~60 KiB/token)
+* **Drafter KV cache (BF16)**: 15.6 GB for the same 818,294 tokens (~19 KiB/token)
+* **CUDA graphs + workspace**: ~2.0 GB
+* **Total allocated by the server**: **~99.7 GB of 121 GB usable unified memory** at `--mem-fraction-static 0.85`; `available_gpu_mem` after boot 15.5 GB, ~11 GB left to the OS. Stock profile: 3.0 GB BF16 drafter, 802,746-token KV pool (49.0 + 15.3 GB), `available_gpu_mem` 14.7 GB.
 
 ---
 
