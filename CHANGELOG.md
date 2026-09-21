@@ -12,6 +12,7 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 * README: explicit `v0.6.4` wording (no `v0.6.x`); C2 aggregate reported as **78–94 tok/s across runs** (two `scale.py` runs gave 77.9 and 85.9 mean — each repetition uses a different request marker, so the forced 512-token tail differs).
 * **Sampled-mode and thinking-on exact acceptance measured** on the production resident (drafter v1.0, K=12, 64K head; n = 2 prompts per domain, sequential, verified free of concurrent traffic): greedy code 7.54 · math 7.68 · tool 10.53 · prose 2.50 · IFEval 2.41; model-default sampling (T 1.0 · top-p 0.95 · top-k 20) 6.47 · 7.37 · 9.70 · 2.45 · 2.32; thinking-on code **3.11**, math 6.18, prose 3.62 — recorded in README §1 and INSIGHTS §4; the same numbers are on the drafter card.
 * INSIGHTS.md: drafter named v1.0, C2 range, the acceptance headroom paragraph.
+* **Correction (2026-09-21):** the drafter's activation-calibration set is **100 conversations** — a stratified 8-domain, 50 % thinking-on subsample of the 400-conversation Kearuga teacher set — not 400 as INSIGHTS §4 and the HF drafter card previously said; the checkpoint's own quantize manifest points at that 100-prompt calibration (29,686 verified draft tokens, K=10 verify loop). Wording only; no served bytes change.
 
 ---
 
