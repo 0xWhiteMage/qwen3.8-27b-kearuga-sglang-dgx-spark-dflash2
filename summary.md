@@ -24,6 +24,6 @@
 
 * **Hardware Platform**: NVIDIA DGX Spark (GB10 / SM121, 128 GB Unified Memory).
 * **Serving Image**: `lmsysorg/sglang@sha256:616a3e97…` (official, digest-pinned; the kearuga profile mounts a 5-file read-only Python overlay, hash-verified at launch — no image rebuild).
-* **Serving VRAM Envelope**: 24.9 GB (target) + 1.4 GB (NVFP4 drafter) + 0.7 GB (draft head) + 5.8 GB (GDN state pool) + 49.9 GB (target KV, 818,294 tokens BF16) + 15.6 GB (drafter KV) + ~2.0 GB (CUDA graphs) ≈ 99.7 GB of 121 GB unified memory at --mem-fraction-static 0.85 (available_gpu_mem after boot 15.5 GB). Stock profile: 802,746-token pool, 3.0 GB drafter.
+* **Serving VRAM Envelope (v0.6.6)**: 24.9 GB (target) + 1.4 GB (NVFP4 drafter) + 0.7 GB (draft head) + 5.8 GB (GDN state pool) + 56.9 GB (target KV, 932,355 tokens BF16) + 8.9 GB (drafter KV, FP8 E4M3) + ~2.0 GB (CUDA graphs) ≈ 100.6 GB of 121 GB unified memory at --mem-fraction-static 0.85 (available_gpu_mem after boot 15.7 GB). With BF16 drafter KV (v0.6.5 and earlier): 818,294-token pool, 49.9 + 15.6 GB. Stock profile: 802,746-token pool, 3.0 GB drafter.
 * **Launch Profile**:
   * `start-dflash2.sh` (`DRAFTER_PROFILE=kearuga`, default): paired-battery aggregate 35.33 tok/s C1 / 108.90 tok/s C4 (+14.5 % / +10.8 % vs the stock drafter); scale.py C1 44.7 / C2 78–94 (across runs) / C4 131 tok/s aggregate (thinking off; identical with the GPU clock lock lifted); the v0.5.0 stock-drafter figures 57 / 51 / 94 are historical and were not reproduced. `DRAFTER_PROFILE=stock` reproduces the v0.5.0 recipe.

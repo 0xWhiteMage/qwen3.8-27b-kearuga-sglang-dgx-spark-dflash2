@@ -145,6 +145,7 @@ dflash_flags = [
     "DRAFTER_PROFILE",
     "--speculative-draft-model-quantization",
     "--speculative-dflash-token-map",
+    "--speculative-draft-kv-cache-dtype",
     "sha256sum -c"
 ]
 ok, detail = check_launcher_flags(launcher_dflash, dflash_flags)

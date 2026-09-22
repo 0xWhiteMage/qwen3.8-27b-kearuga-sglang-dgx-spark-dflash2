@@ -40,6 +40,7 @@ case "${DRAFTER_PROFILE}" in
     _DEF_DRAFT_TOKENS="12"
     _DEF_DRAFT_QUANT="modelopt_fp4"
     _DEF_OVERLAY="1"
+    _DEF_DRAFT_KV_DTYPE="fp8_e4m3"
     ;;
   stock)
     _DEF_DFLASH_MODEL="z-lab/Qwen3.8-27B-DFlash2"
@@ -47,6 +48,7 @@ case "${DRAFTER_PROFILE}" in
     _DEF_DRAFT_TOKENS="10"
     _DEF_DRAFT_QUANT=""
     _DEF_OVERLAY="0"
+    _DEF_DRAFT_KV_DTYPE=""
     ;;
   *)
     echo "DRAFTER_PROFILE must be 'kearuga' or 'stock', got '${DRAFTER_PROFILE}'"
@@ -70,6 +72,9 @@ CONTEXT_LENGTH="${CONTEXT_LENGTH:-262144}"
 MAX_TOTAL_TOKENS="${MAX_TOTAL_TOKENS:-1048576}"
 DFLASH_DRAFT_TOKENS="${DFLASH_DRAFT_TOKENS:-${_DEF_DRAFT_TOKENS}}"
 DFLASH_DRAFT_WINDOW_SIZE="${DFLASH_DRAFT_WINDOW_SIZE:-2048}"
+# Drafter KV dtype: fp8_e4m3 on the kearuga profile (v0.6.6: +13.9 % shared KV pool for ~-1 % decode);
+# ${VAR-default} so an explicit empty value keeps the BF16 drafter KV (the stock/v0.5.0 recipe).
+DFLASH_DRAFT_KV_DTYPE="${DFLASH_DRAFT_KV_DTYPE-${_DEF_DRAFT_KV_DTYPE}}"
 DFLASH_TOKEN_MAP="${DFLASH_TOKEN_MAP:-${SCRIPT_DIR}/drafter/draft-vocab-v4-top65650.pt}"
 OVERLAY_DIR="${OVERLAY_DIR:-${SCRIPT_DIR}/drafter/sglang-overlay}"
 SGLANG_PKG_DIR="${SGLANG_PKG_DIR:-/sgl-workspace/sglang/python/sglang}"
@@ -151,7 +156,7 @@ fi
 echo "Starting ${TARGET_MODEL} with DFlash 2 profile '${DRAFTER_PROFILE}': ${DFLASH_MODEL} @ ${DFLASH_REV:0:8}"
 echo "Per-request context: ${CONTEXT_LENGTH} tokens (native; YaRN off)"
 echo "Max concurrent requests: ${MAX_CONCURRENT_REQUESTS} (mamba pool ${MAMBA_CACHE_SIZE} slots)"
-echo "KV token pool: ${MAX_TOTAL_TOKENS}; DFlash draft window: ${DFLASH_DRAFT_WINDOW_SIZE}"
+echo "KV token pool cap: ${MAX_TOTAL_TOKENS}; DFlash draft window: ${DFLASH_DRAFT_WINDOW_SIZE}; draft KV dtype: ${DFLASH_DRAFT_KV_DTYPE:-bf16 (default)}"
 echo "Priority scheduling: ${PRIORITY_SCHEDULING} (default=${DEFAULT_PRIORITY_VALUE}, preemption threshold=${PRIORITY_PREEMPTION_THRESHOLD})"
 echo "Spec decode: DFLASH draft=${DFLASH_DRAFT_TOKENS} rev=${DFLASH_REV:0:8} quant='${DFLASH_DRAFT_QUANT}'"
 if [[ "${DFLASH_OVERLAY}" == "1" ]]; then
@@ -195,6 +200,8 @@ DRAFT_REV_ARGS=()
 [[ -n "${DFLASH_REV:-}" ]] && DRAFT_REV_ARGS=(--speculative-draft-model-revision "${DFLASH_REV}")
 DRAFT_QUANT_ARGS=()
 [[ -n "${DFLASH_DRAFT_QUANT}" ]] && DRAFT_QUANT_ARGS=(--speculative-draft-model-quantization "${DFLASH_DRAFT_QUANT}")
+DRAFT_KV_ARGS=()
+[[ -n "${DFLASH_DRAFT_KV_DTYPE}" ]] && DRAFT_KV_ARGS=(--speculative-draft-kv-cache-dtype "${DFLASH_DRAFT_KV_DTYPE}")
 TOKEN_MAP_FLAG=()
 if [[ "${DFLASH_OVERLAY}" == "1" ]]; then
   TOKEN_MAP_FLAG=(--speculative-dflash-token-map "/drafter/$(basename "${DFLASH_TOKEN_MAP}")")
@@ -246,6 +253,7 @@ DOCKER_CMD=(
   "${DRAFT_QUANT_ARGS[@]}"
   --speculative-num-draft-tokens "${DFLASH_DRAFT_TOKENS}"
   --speculative-draft-window-size "${DFLASH_DRAFT_WINDOW_SIZE}"
+  "${DRAFT_KV_ARGS[@]}"
   "${TOKEN_MAP_FLAG[@]}"
   --reasoning-parser qwen3
   --tool-call-parser qwen3_coder

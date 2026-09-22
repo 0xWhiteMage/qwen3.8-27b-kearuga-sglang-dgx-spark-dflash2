@@ -4,6 +4,15 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.6.6] - 2026-09-22
+
+### 📜 FP8 drafter KV adopted (kearuga profile)
+* `start-dflash2.sh`: new `DFLASH_DRAFT_KV_DTYPE` (kearuga profile default `fp8_e4m3` → `--speculative-draft-kv-cache-dtype fp8_e4m3`; stock profile unchanged; set empty for BF16). `.env.sample` documents it; `bench/verify_all.py` requires the flag in the launcher.
+* Production resident switched with the rollback-guarded procedure (downtime 6 min 20 s; previous container kept stopped as the rollback) and re-verified: Fidelity-40 top-1 40/40, mean KL 0.0165. Measured at the boot: **KV pool 818,294 → 932,355 tokens (+13.9 %)**, drafter KV 15.6 → 8.9 GB (FP8 E4M3), target KV 49.9 → 56.9 GB, `available_gpu_mem` 15.7 GB. Cost (paired sweep, v0.6.5): C1 −1.1 %, C4 −1.3 %, 2 of 40 greedy continuations differ.
+* README (highlights, Runtime Envelope, architecture table), INSIGHTS §5 and `summary.md` carry the new measured allocations; the BF16-drafter-KV figures are kept as the v0.6.5-and-earlier reference.
+
+---
+
 ## [v0.6.5] - 2026-09-22
 
 ### 🧠 Measurements — thinking mode, reasoning effort, two non-changes

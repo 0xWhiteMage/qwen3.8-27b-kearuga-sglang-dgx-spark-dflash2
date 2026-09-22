@@ -1,7 +1,7 @@
 # 🧙‍♂️ Qwen3.8-27B Kearuga on a Single DGX Spark
 
 <p align="center">
-  <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang and DFlash 2" width="100%"><br><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.6.5-blue.svg" alt="Version 0.6.5"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Kearuga_DFlash2_Drafter-orange.svg" alt="Kearuga DFlash 2 Drafter"></a> <a href="https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Stock_Drafter_(fallback)-lightgrey.svg" alt="Stock DFlash 2 Drafter (fallback)"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-green.svg" alt="License: Apache 2.0"></a> <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/X-@0xWhiteMage-000000?logo=x&logoColor=white" alt="Follow on X"></a> <a href="https://ko-fi.com/0xwhitemage" target="_blank"><img src="https://img.shields.io/badge/Ko--fi-Donate-FF5E5B?logo=ko-fi&logoColor=white" alt="Donate on Ko-fi"></a>
+  <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang and DFlash 2" width="100%"><br><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.6.6-blue.svg" alt="Version 0.6.6"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Kearuga_DFlash2_Drafter-orange.svg" alt="Kearuga DFlash 2 Drafter"></a> <a href="https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Stock_Drafter_(fallback)-lightgrey.svg" alt="Stock DFlash 2 Drafter (fallback)"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-green.svg" alt="License: Apache 2.0"></a> <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/X-@0xWhiteMage-000000?logo=x&logoColor=white" alt="Follow on X"></a> <a href="https://ko-fi.com/0xwhitemage" target="_blank"><img src="https://img.shields.io/badge/Ko--fi-Donate-FF5E5B?logo=ko-fi&logoColor=white" alt="Donate on Ko-fi"></a>
 </p>
 
 Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** paired with its own DFlash 2 drafter — **[Qwen3.8-27B-Kearuga-DFlash2](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) v1.0** (Kearuga-distilled, Kearuga-calibrated NVFP4, 64K draft head) — on **[SGLang](https://docs.sglang.io)** on a single 128 GB NVIDIA DGX Spark (GB10 / SM121). `DRAFTER_PROFILE=stock` keeps the v0.5.0 stock `z-lab` recipe.
@@ -9,7 +9,7 @@ Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kea
 This repository provides certified production container launchers, hardware configurations, priority preemption queues, and automated multi-gate verification suites.
 
 * ⚡ **DFlash 2 (Interactive Daily Driver)**: Ultra-responsive C1–C4 profile with full reasoning & tool-calling support — paired bake-off aggregate throughput of **35.33 tok/s C1 (+14.5 %)** and **108.90 tok/s C4 (+10.8 %)** vs the stock drafter (see the paired table below).
-* 📜 **818K-Token Shared KV Pool** (measured at boot): four seats, each with the native 262K window, sharing ≈ 818,294 tokens of BF16 KV — no swapping, no fragmentation.
+* 📜 **932K-Token Shared KV Pool** (measured at the v0.6.6 production boot): four seats, each with the native 262K window, sharing 932,355 tokens (BF16 target KV + FP8 drafter KV) — no swapping, no fragmentation.
 * 🛡️ **Tiered Sensitivity Hierarchy**: EXL3-inspired mixed-precision (GPTQ-4o6 / NVFP4 AWQ / FP8 / BF16) preserving vocabulary logit tails and intermediate draft taps.
 * ⏱️ **Priority Queue Preemption**: Sub-3-second interactive response under full multi-session saturation via native priority scheduling.
 * 🚀 **Official digest-pinned image + a 5-file read-only Python overlay**, hash-verified at launch; no Docker build, no kernel patch. `DRAFTER_PROFILE=stock` runs the unmodified image.
@@ -24,10 +24,14 @@ This repository provides certified production container launchers, hardware conf
 
 See the complete chronological release history in **[CHANGELOG.md](CHANGELOG.md)**.
 
+### 🌟 v0.6.6 Release Highlights (2026-09-22)
+* 📜 **FP8 drafter KV is now the kearuga-profile default** (`DFLASH_DRAFT_KV_DTYPE=fp8_e4m3` → `--speculative-draft-kv-cache-dtype fp8_e4m3`): the production resident was switched with the rollback-guarded procedure and re-verified (Fidelity-40 top-1 40/40, mean KL 0.0165). Measured at the production boot: **shared KV pool 818,294 → 932,355 tokens (+13.9 %)**, drafter KV 15.6 GB → 8.9 GB, target KV 49.9 → 56.9 GB, `available_gpu_mem` 15.7 GB. Cost from the paired sweep: C1 −1.1 %, C4 −1.3 %, 2 of 40 greedy continuations differ. Set the variable empty to keep BF16 drafter KV; the stock profile is unchanged.
+* Drafter v1.0 and its files revision are unchanged; `verify_all.py` now also requires the draft-KV flag in the launcher.
+
 ### 🌟 v0.6.5 Release Highlights (2026-09-22, measurements only — drafter v1.0 and the launcher pin are unchanged)
 * 🧠 **Thinking mode measured, paired**: with thinking on (template default `reasoning_effort=xhigh`, model-default sampling) the Kearuga drafter v1.0 is **+7.0 % C1 / +8.1 % C4** faster than the stock drafter at K = 10 and **+10.0 % / +8.2 %** at K = 12, faster in all five domains — the thinking-off advantage carries over. Details in §1.
 * ⏱️ **`reasoning_effort` measured on the live resident**: the chat template defaults to `xhigh`; at that setting both code prompts spent the whole 4,096-token budget reasoning and never answered (135 s), while `medium` answered in ~90 s and cut math wall time 2.6× (53.7 → 20.4 s) with *higher* draft acceptance. For coding and agent clients, send `chat_template_kwargs: {"reasoning_effort": "medium"}`. Table in §1.
-* 🔬 **Two measured non-changes, published for completeness**: quantizing the drafter's remaining BF16 `fc` and conv projections to NVFP4 gave +0.6 % C1 / −1.1 % C4 in a paired sweep — below the +1 % ship gate, so they stay BF16; FP8 draft KV (`--speculative-draft-kv-cache-dtype fp8_e4m3`) grows the KV pool **+13.6 %** for ≈ −1 % decode and 2/40 changed greedy continuations — available as a knob, not the default (see Runtime Envelope).
+* 🔬 **Two measured non-changes, published for completeness**: quantizing the drafter's remaining BF16 `fc` and conv projections to NVFP4 gave +0.6 % C1 / −1.1 % C4 in a paired sweep — below the +1 % ship gate, so they stay BF16; FP8 draft KV (`--speculative-draft-kv-cache-dtype fp8_e4m3`) grows the KV pool **+13.6 %** for ≈ −1 % decode and 2/40 changed greedy continuations — adopted as the kearuga-profile default in v0.6.6 (see Runtime Envelope).
 * 🧰 **Measurement hygiene**: paired sweeps now boot every cell with `--disable-flashinfer-autotune` — FlashInfer re-picks kernels at each boot and can swing code/math cells by ±15 % (credit: hasso5703's "boot lottery" finding).
 
 ### 🌟 v0.6.4 Release Highlights (v0.6.0 → v0.6.4, all 2026-09-17)
@@ -164,24 +168,24 @@ When running concurrent agent workers, interactive developer chats cannot wait f
 
 > *"Measured, not assumed: the allocations SGLang logged at the production boot (2026-09-17, --mem-fraction-static 0.85, BF16 KV)."*
 
-| Allocation (Kearuga profile, `--mem-fraction-static 0.85`, BF16 KV) | Measured | Where it comes from |
+| Allocation (Kearuga profile, `--mem-fraction-static 0.85`, BF16 target KV + FP8 drafter KV; v0.6.6 production boot 2026-09-22) | Measured | Where it comes from |
 |---|:---:|---|
 | **Target weights** | 24.9 GB | Hybrid GPTQ-4o6 + FP8 + NVFP4 (`Load weight end … mem usage=24.87 GB`) |
 | **Drafter weights** | 1.4 GB (+ 0.7 GB pruned draft head) | Kearuga NVFP4 DFlash 2; the 65,650-row BF16 head is built at CUDA-graph capture |
 | **GDN / Mamba state pool** | 5.8 GB | 20 slots (4 requests × 5), `--mamba-full-memory-ratio 4.21`, `extra_buffer` radix strategy |
-| **Target KV cache (BF16)** | 49.9 GB | **818,294 tokens** × ~60 KiB — sized by the memory fraction; the `--max-total-tokens 1048576` cap is not reached |
-| **Drafter KV cache (BF16)** | 15.6 GB | the same 818,294 tokens for the 5-layer drafter (~19 KiB/token) |
+| **Target KV cache (BF16)** | 56.9 GB | **932,355 tokens** × ~60 KiB — sized by the memory fraction; the `--max-total-tokens 1048576` cap is not reached |
+| **Drafter KV cache (FP8 E4M3)** | 8.9 GB | the same 932,355 tokens for the 5-layer drafter (~10 KiB/token); BF16 would be 15.6 GB for 818,294 tokens (v0.6.5 and earlier) |
 | **CUDA graphs + workspace** | ~2.0 GB | target and draft verify graphs, batch sizes 1–4 |
-| **Total allocated by the server** | **~99.7 GB** | of 121 GB usable unified memory; `available_gpu_mem` after boot 15.5 GB, ~11 GB left to the OS (`free -g`) |
+| **Total allocated by the server** | **~100.6 GB** | of 121 GB usable unified memory; `available_gpu_mem` after boot 15.7 GB, ~14 GB left to the OS (`free -g`) |
 
 *Stock profile (`DRAFTER_PROFILE=stock`, same fraction): BF16 drafter 3.0 GB; KV pool 802,746 tokens (49.0 GB target + 15.3 GB drafter); `available_gpu_mem` 14.7 GB.*
 
-*Optional knob (measured 2026-09-22, paired test boots): `--speculative-draft-kv-cache-dtype fp8_e4m3` halves the drafter KV (8.45 + 8.45 GB → 4.80 + 4.80 GB) and grows the shared KV pool **+13.6 %** (885,640 → 1,005,817 tokens in the test boot) for ≈ −1 % decode (C1 −1.1 %, C4 −1.3 %); mean KL unchanged, but 2 of 40 greedy continuations differ, so it is not the default.*
+*FP8 drafter KV (`--speculative-draft-kv-cache-dtype fp8_e4m3`, default since v0.6.6): halves the drafter KV and grows the shared pool **+13.9 %** at the same memory fraction (production boot: 818,294 → 932,355 tokens) for ≈ −1 % decode (paired sweep: C1 −1.1 %, C4 −1.3 %); mean KL unchanged, 2 of 40 greedy continuations differ. `DFLASH_DRAFT_KV_DTYPE=` (empty) restores BF16 drafter KV.*
 
 | Architectural Dimension | Specification | Operational Details |
 |---|---:|---|
 | 🧠 **Per-Request Context** | `262,144` tokens | Native Qwen3.8 window (YaRN interpolation disabled) |
-| 📜 **Shared KV Pool** | `818,294` tokens (measured) | Shared by the 4 seats: ≈ 3.1 full 262K contexts at once, or 4 requests of ≈ 200K each. `--max-total-tokens 1048576` is a ceiling, not the allocation |
+| 📜 **Shared KV Pool** | `932,355` tokens (measured, v0.6.6) | Shared by the 4 seats: ≈ 3.6 full 262K contexts at once, or 4 requests of ≈ 233K each. `--max-total-tokens 1048576` is a ceiling, not the allocation |
 | 👥 **Admitted Concurrency** | `4` concurrent streams | Sets the decode CUDA-graph batch sizes (1–4) and the 20-slot GDN state pool |
 | 💾 **KV Precision** | BF16 | Fidelity-first: FP8 KV measured within noise on speed, BF16 kept for fidelity |
 | ⚡ **Target Weights** | `24.85 GB` | Hybrid GPTQ-4o6 + FP8 + NVFP4 (3 shards + MTP head) |

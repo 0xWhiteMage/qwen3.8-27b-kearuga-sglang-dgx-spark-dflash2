@@ -15,7 +15,7 @@ Kearuga achieves this on a **single 128 GB NVIDIA DGX Spark (GB10 / SM121)** by 
 | ⚡ **Single-Stream (C1)** | Kearuga NVFP4 drafter **v1.0**, K=12 + 64K head | **44.7 tok/s** agg (45.5 net) on the forced-512 code probe; battery medians code 57.6 · tool calls 114.6 · prose 21.6 | Interactive daily driver |
 | 👥 **Dual-Stream (C2)** | same | **78–94 tok/s agg** across runs (77.9 and 85.9 mean; ≈ 40–48/stream, TTFT 0.28 s) | Two interactive sessions |
 | 👷 **Saturated Interactive (C4)** | same | **131.3 tok/s agg** (≈ 36/stream, TTFT 0.34 s) | Four seats busy |
-| 📜 **Shared KV Pool** | BF16 KV | **818,294 tokens** (measured at boot) | 4 seats × 262K window; ≈ 3.1 full contexts at once |
+| 📜 **Shared KV Pool** | BF16 target KV + FP8 drafter KV (v0.6.6) | **932,355 tokens** (measured at the production boot; 818,294 with BF16 drafter KV) | 4 seats × 262K window; ≈ 3.6 full contexts at once |
 | ⏱️ **Saturated Priority TTFT** | **Preemption Mode** | **43.15s → 2.63s** | **93.9% latency reduction** under full load |
 
 *Measured 2026-09-17 with `bench/scale.py` (T=0, thinking off, 512 forced tokens, aggregate incl. TTFT); repeated with the GPU clock lock lifted — identical (C1 44.5 / C2 85.9 / C4 131.1; the GPU ran at 2.40–2.48 GHz by itself). The v0.5.0 figures (57 / 51 / 94 with the stock drafter) are historical and were not reproduced. Paired drafter comparison: [README §1](README.md).*
@@ -113,16 +113,16 @@ The released drafter [`0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2`](https://hugging
 
 ## 💾 5. Hardware Memory Math: Serving Envelope
 
-> *"The pool is sized by the memory fraction, not by the cap: 818,294 KV tokens at --mem-fraction-static 0.85."*
+> *"The pool is sized by the memory fraction, not by the cap: 932,355 KV tokens at --mem-fraction-static 0.85 with FP8 drafter KV (818,294 with BF16 drafter KV)."*
 
 ### Serving on a Single 128 GB DGX Spark (Measured at the Production Boot)
 * **Target weights**: 24.9 GB (hybrid GPTQ-4o6 + FP8 + NVFP4; boot log `mem usage=24.87 GB`)
 * **Kearuga NVFP4 DFlash 2 drafter**: 1.4 GB weights + 0.7 GB pruned 65,650-row BF16 draft head (built at CUDA-graph capture)
 * **GDN / Mamba state pool**: 5.8 GB (20 slots = 4 requests × 5)
-* **Target KV cache (BF16)**: 49.9 GB = **818,294 tokens** (~60 KiB/token)
-* **Drafter KV cache (BF16)**: 15.6 GB for the same 818,294 tokens (~19 KiB/token)
+* **Target KV cache (BF16)**: 56.9 GB = **932,355 tokens** (~60 KiB/token)
+* **Drafter KV cache (FP8 E4M3, default since v0.6.6)**: 8.9 GB for the same 932,355 tokens (~10 KiB/token). With BF16 drafter KV the pool was 818,294 tokens (49.9 GB target + 15.6 GB drafter); the FP8 drafter KV costs ≈ −1 % decode (paired sweep) and buys +13.9 % pool.
 * **CUDA graphs + workspace**: ~2.0 GB
-* **Total allocated by the server**: **~99.7 GB of 121 GB usable unified memory** at `--mem-fraction-static 0.85`; `available_gpu_mem` after boot 15.5 GB, ~11 GB left to the OS. Stock profile: 3.0 GB BF16 drafter, 802,746-token KV pool (49.0 + 15.3 GB), `available_gpu_mem` 14.7 GB.
+* **Total allocated by the server**: **~100.6 GB of 121 GB usable unified memory** at `--mem-fraction-static 0.85`; `available_gpu_mem` after boot 15.7 GB, ~14 GB left to the OS. Stock profile: 3.0 GB BF16 drafter, 802,746-token KV pool (49.0 + 15.3 GB), `available_gpu_mem` 14.7 GB.
 
 ---
 
