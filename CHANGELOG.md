@@ -4,6 +4,18 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.6.5] - 2026-09-22
+
+### 🧠 Measurements — thinking mode, reasoning effort, two non-changes
+* **Thinking mode, paired for the first time**: v1.0 drafter vs stock K = 10 / K = 12 with thinking on (`reasoning_effort=xhigh`, model-default sampling), 50-prompt battery × 2 runs — C1 aggregate **32.90 vs 30.61 / 29.61 tok/s (+7.0 % / +10.0 %)**, C4 **102.33 vs 94.00 / 93.96 (+8.1 % / +8.2 %)**, v1.0 faster in all five domains; thinking-on acceptance at K = 12: code 3.15 · math 5.68 · tool 7.14 · prose 2.50 · IFEval 3.79 tokens/cycle. Fidelity-40 40/40 in every cell. (README §1.)
+* **`reasoning_effort` measured on the live resident** (thinking on, 2 prompts per domain, 4,096-token cap): at the template default `xhigh` both code prompts spent the entire budget reasoning without answering (135 s, 30.4 tok/s, 3.47 accepted/cycle); `medium` answered in ~90 s at 44.3 tok/s / 5.05 accepted; on math `medium` cut wall time 53.7 → 20.4 s (acceptance 6.27 → 7.56). Recommendation: coding/agent clients send `chat_template_kwargs: {"reasoning_effort": "medium"}`. No model or template change was made.
+* **Drafter `fc` + conv projections stay BF16 — measured**: a Kearuga-calibrated NVFP4 export of the drafter's remaining BF16 linears (`fc` 25600×5120 and the ten conv `kernel_projection`s, 1.27 GB vs 1.55 GB) scored **C1 +0.58 % / C4 −1.10 %** in a paired sweep (fidelity unchanged), below the pre-registered +1 % ship gate. Not shipped; the published checkpoint is unchanged.
+* **FP8 draft KV measured** (`--speculative-draft-kv-cache-dtype fp8_e4m3`): KV pool +13.6 % (885,640 → 1,005,817 tokens in paired test boots), C1 −1.1 %, C4 −1.3 %, mean KL unchanged, exact greedy continuations 18 → 16 of 40. Documented as an optional knob in the README's Runtime Envelope; not the default.
+* **Measurement hygiene**: paired sweeps boot every cell with `--disable-flashinfer-autotune` (FlashInfer autotune re-picks kernels per boot; hasso5703 measured ±15 % swings on code/math cells). The launcher and the production resident are unchanged.
+* INSIGHTS.md §4 "Where the remaining headroom is" extended with the thinking-mode and reasoning-effort findings.
+
+---
+
 ## [v0.6.4] - 2026-09-17
 
 ### 🏷️ Version coherence across GitHub and Hugging Face

@@ -1,7 +1,7 @@
 # 🧙‍♂️ Qwen3.8-27B Kearuga on a Single DGX Spark
 
 <p align="center">
-  <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang and DFlash 2" width="100%"><br><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.6.4-blue.svg" alt="Version 0.6.4"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Kearuga_DFlash2_Drafter-orange.svg" alt="Kearuga DFlash 2 Drafter"></a> <a href="https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Stock_Drafter_(fallback)-lightgrey.svg" alt="Stock DFlash 2 Drafter (fallback)"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-green.svg" alt="License: Apache 2.0"></a> <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/X-@0xWhiteMage-000000?logo=x&logoColor=white" alt="Follow on X"></a> <a href="https://ko-fi.com/0xwhitemage" target="_blank"><img src="https://img.shields.io/badge/Ko--fi-Donate-FF5E5B?logo=ko-fi&logoColor=white" alt="Donate on Ko-fi"></a>
+  <img src="assets/header.png" alt="The White Mage — Qwen3.8-27B Kearuga on DGX Spark with SGLang and DFlash 2" width="100%"><br><a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Release-v0.6.5-blue.svg" alt="Version 0.6.5"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Target_Model-yellow.svg" alt="HuggingFace Model"></a> <a href="https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Kearuga_DFlash2_Drafter-orange.svg" alt="Kearuga DFlash 2 Drafter"></a> <a href="https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2"><img src="https://img.shields.io/badge/%F0%9F%A4%97_HuggingFace-Stock_Drafter_(fallback)-lightgrey.svg" alt="Stock DFlash 2 Drafter (fallback)"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache_2.0-green.svg" alt="License: Apache 2.0"></a> <a href="https://x.com/0xWhiteMage" target="_blank"><img src="https://img.shields.io/badge/X-@0xWhiteMage-000000?logo=x&logoColor=white" alt="Follow on X"></a> <a href="https://ko-fi.com/0xwhitemage" target="_blank"><img src="https://img.shields.io/badge/Ko--fi-Donate-FF5E5B?logo=ko-fi&logoColor=white" alt="Donate on Ko-fi"></a>
 </p>
 
 Serve **[Qwen3.8-27B-Kearuga](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga)** paired with its own DFlash 2 drafter — **[Qwen3.8-27B-Kearuga-DFlash2](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2) v1.0** (Kearuga-distilled, Kearuga-calibrated NVFP4, 64K draft head) — on **[SGLang](https://docs.sglang.io)** on a single 128 GB NVIDIA DGX Spark (GB10 / SM121). `DRAFTER_PROFILE=stock` keeps the v0.5.0 stock `z-lab` recipe.
@@ -23,6 +23,12 @@ This repository provides certified production container launchers, hardware conf
 ## 📢 Recent Updates
 
 See the complete chronological release history in **[CHANGELOG.md](CHANGELOG.md)**.
+
+### 🌟 v0.6.5 Release Highlights (2026-09-22, measurements only — drafter v1.0 and the launcher pin are unchanged)
+* 🧠 **Thinking mode measured, paired**: with thinking on (template default `reasoning_effort=xhigh`, model-default sampling) the Kearuga drafter v1.0 is **+7.0 % C1 / +8.1 % C4** faster than the stock drafter at K = 10 and **+10.0 % / +8.2 %** at K = 12, faster in all five domains — the thinking-off advantage carries over. Details in §1.
+* ⏱️ **`reasoning_effort` measured on the live resident**: the chat template defaults to `xhigh`; at that setting both code prompts spent the whole 4,096-token budget reasoning and never answered (135 s), while `medium` answered in ~90 s and cut math wall time 2.6× (53.7 → 20.4 s) with *higher* draft acceptance. For coding and agent clients, send `chat_template_kwargs: {"reasoning_effort": "medium"}`. Table in §1.
+* 🔬 **Two measured non-changes, published for completeness**: quantizing the drafter's remaining BF16 `fc` and conv projections to NVFP4 gave +0.6 % C1 / −1.1 % C4 in a paired sweep — below the +1 % ship gate, so they stay BF16; FP8 draft KV (`--speculative-draft-kv-cache-dtype fp8_e4m3`) grows the KV pool **+13.6 %** for ≈ −1 % decode and 2/40 changed greedy continuations — available as a knob, not the default (see Runtime Envelope).
+* 🧰 **Measurement hygiene**: paired sweeps now boot every cell with `--disable-flashinfer-autotune` — FlashInfer re-picks kernels at each boot and can swing code/math cells by ±15 % (credit: hasso5703's "boot lottery" finding).
 
 ### 🌟 v0.6.4 Release Highlights (v0.6.0 → v0.6.4, all 2026-09-17)
 * ⚡ **Kearuga's Own DFlash 2 Drafter v1.0 ([Qwen3.8-27B-Kearuga-DFlash2](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2))**: distilled on Kearuga's own outputs, Kearuga-calibrated NVFP4 (1.55 GB vs 3.85 GB stock BF16), served with a frequency-pruned 64K draft head — **+14.5 % C1 / +10.8 % C4 aggregate** vs the stock drafter in a paired bake-off, better on all 10 domain cells.
@@ -60,7 +66,30 @@ Paired bake-off, 2026-09-17 — control and candidates booted back-to-back on th
 | C4 | prose | 16.07 | **17.22** | **+8.6 %** |
 | C4 | instruction-following | 15.42 | **17.68** | **+11.0 %** |
 
-Median C1 TTFT moved from 0.28–0.30 s to 0.27–0.28 s (tool prompts 0.78 → 0.62 s). Exact acceptance on the production resident (K=12, 64K head; n=2 prompts per domain, 2026-09-17): greedy code 7.5 · math 7.7 · tool 10.5 · prose 2.5 · IFEval 2.4 tokens/cycle; with the model's default sampling (T 1.0, top-p 0.95, top-k 20) 6.5 · 7.4 · 9.7 · 2.5 · 2.3; **with thinking on, code falls to 3.1** (the reasoning trace behaves like prose) — the drafter's largest remaining headroom. Quality-200 (frozen suite): **155/180** with the Kearuga drafter vs 157 for the target alone — inside the 154–159 near-tie band every gated drafter lands in. Fidelity-40 vs the BF16 base: mean KL 0.0165, top-1 40/40 — unchanged by the drafter, because the target verifies every token. Full methodology, acceptance lengths and the ranked candidate table are on the [drafter model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2).
+Median C1 TTFT moved from 0.28–0.30 s to 0.27–0.28 s (tool prompts 0.78 → 0.62 s). Exact acceptance on the production resident (K=12, 64K head; n=2 prompts per domain, 2026-09-17): greedy code 7.5 · math 7.7 · tool 10.5 · prose 2.5 · IFEval 2.4 tokens/cycle; with the model's default sampling (T 1.0, top-p 0.95, top-k 20) 6.5 · 7.4 · 9.7 · 2.5 · 2.3; **with thinking on, code falls to 3.1** (the reasoning trace behaves like prose) — the drafter's largest remaining headroom.
+
+**Thinking mode, paired (2026-09-22).** Same paired protocol with thinking **on** (chat-template default `reasoning_effort=xhigh`, model-default sampling T 1.0 · top-p 0.95 · top-k 20; every cell booted with `--disable-flashinfer-autotune`), 50-prompt battery × 2 runs:
+
+| Serving configuration (thinking on) | C1 aggregate | C4 aggregate | C1 domains faster |
+|---|:---:|:---:|:---:|
+| **Kearuga drafter v1.0, K = 12, + 64K draft head** | **32.90 tok/s** | **102.33 tok/s** | — |
+| Stock BF16 `z-lab` drafter, K = 10 | 30.61 tok/s (−7.0 %) | 94.00 tok/s (−8.1 %) | 0 / 5 |
+| Stock BF16 `z-lab` drafter, K = 12 | 29.61 tok/s (−10.0 %) | 93.96 tok/s (−8.2 %) | 0 / 5 |
+
+Per-domain C1 median tok/s, v1.0 vs stock K = 12: code 34.6 vs 31.9 · math 49.3 vs 43.0 · tool calls 75.2 vs 53.3 · prose 23.6 vs 21.9 · instruction-following 37.8 vs 34.5. Thinking-on acceptance at K = 12: v1.0 code 3.15 · math 5.68 · tool 7.14 · prose 2.50 · IFEval 3.79 tokens/cycle (stock K = 12: 3.29 · 5.76 · 6.81 · 2.58 · 4.25 — it accepts a little more per cycle but its cycle costs more). Fidelity-40 40/40 in every cell. Reasoning text drafts at roughly half the acceptance of answer text for every block drafter we have seen measured; that gap, not bytes, is the drafter's next lever.
+
+**Reasoning effort (2026-09-22, live resident, thinking on, model-default sampling, 2 prompts per domain, 4,096-token cap).** The Kearuga chat template — like Qwen3.8's — defaults to `reasoning_effort=xhigh`:
+
+| Domain | `reasoning_effort` | accepted tokens / cycle | mean tokens (reasoning) | mean wall | net tok/s | finished |
+|---|---|:---:|:---:|:---:|:---:|---|
+| code | **xhigh** (default) | 3.47 | 4,096 (all reasoning) | 135 s | 30.4 | 0 / 2 — still thinking at the cap |
+| code | medium | 5.05 | 4,096 (1,954) | 92 s | 44.3 | answering, long answers cut at the cap |
+| code | low | 5.04 | 3,758 (2,150) | 85 s | 44.3 | 1 / 2 |
+| math | **xhigh** (default) | 6.27 | 2,286 (1,841) | 53.7 s | 42.5 | 2 / 2 |
+| math | medium | 7.56 | 1,245 (671) | 20.4 s | 61.2 | 2 / 2 |
+| math | low | 7.68 | 1,112 (620) | 17.7 s | 63.0 | 2 / 2 |
+
+Small sample, but the direction is unambiguous and matches independent DGX Spark reports: `xhigh` spends the budget deliberating and drafts worse; `medium` is 2.6× faster on math and turns code from "no answer" into an answer. **Recommendation for coding and agent clients: send `chat_template_kwargs: {"reasoning_effort": "medium"}` per request** (a request setting — no model or template change). `low` is marginally faster still; independent evaluations report a measurable quality cost at `low`, so we do not recommend it as a default. Quality-200 (frozen suite): **155/180** with the Kearuga drafter vs 157 for the target alone — inside the 154–159 near-tie band every gated drafter lands in. Fidelity-40 vs the BF16 base: mean KL 0.0165, top-1 40/40 — unchanged by the drafter, because the target verifies every token. Full methodology, acceptance lengths and the ranked candidate table are on the [drafter model card](https://huggingface.co/0xWhiteMage/Qwen3.8-27B-Kearuga-DFlash2).
 
 ### ⚡ 2. Interactive Throughput & Community Comparison (C1–C4)
 
@@ -146,6 +175,8 @@ When running concurrent agent workers, interactive developer chats cannot wait f
 | **Total allocated by the server** | **~99.7 GB** | of 121 GB usable unified memory; `available_gpu_mem` after boot 15.5 GB, ~11 GB left to the OS (`free -g`) |
 
 *Stock profile (`DRAFTER_PROFILE=stock`, same fraction): BF16 drafter 3.0 GB; KV pool 802,746 tokens (49.0 GB target + 15.3 GB drafter); `available_gpu_mem` 14.7 GB.*
+
+*Optional knob (measured 2026-09-22, paired test boots): `--speculative-draft-kv-cache-dtype fp8_e4m3` halves the drafter KV (8.45 + 8.45 GB → 4.80 + 4.80 GB) and grows the shared KV pool **+13.6 %** (885,640 → 1,005,817 tokens in the test boot) for ≈ −1 % decode (C1 −1.1 %, C4 −1.3 %); mean KL unchanged, but 2 of 40 greedy continuations differ, so it is not the default.*
 
 | Architectural Dimension | Specification | Operational Details |
 |---|---:|---|
