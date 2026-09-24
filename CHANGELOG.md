@@ -4,6 +4,16 @@ All notable changes to the Kearuga model suite and DGX Spark deployment stack ar
 
 ---
 
+## [v0.6.7] - 2026-09-24
+
+### 📏 Measurements — no-speculation baseline, losslessness, reference-loop caveat (drafter v1.0 and the launcher pin unchanged)
+* **No-speculation baseline**: a throwaway twin of the production container composed from its own `docker inspect` with every `--speculative-*` flag removed (`bench/compose_nospec.py`) decodes the 50-prompt battery at **10.30 tok/s C1 / 39.56 tok/s C4** aggregate (thinking off; C1 medians code 10.4 · math 10.4 · tool 12.7 · prose 10.4 · IFEval 10.5 — flat, weight-streaming-bound). The production configuration (drafter v1.0, K = 12, 64K head, FP8 draft KV) measures 35.66 / 108.83 on the same bench line (paired-sweep cell, 2026-09-21) → **3.46× C1, 2.75× C4**; per-domain C1 5.6× code, 6.0× math, 8.5× tool calls, 2.1× prose / IFEval. KV pool without the drafter: hits the 1,048,576-token cap (4 × 262,144) with 21.0 GB unallocated; with it 932,355 tokens. The production container's own in-window run was discarded (2–4 concurrent client requests during the bench, visible in the server log).
+* **Losslessness measured, wording tightened**: `bench/lossless_probe.py` — 40 Fidelity prompts × 256 greedy tokens, top-2 logprobs, captured spec-on (A), spec-off (OFF) and spec-on again (B). A vs OFF 28/40 prompts diverge, A vs B 6/40; every first divergence in both comparisons has a top-2 logprob margin ≤ 0.25 (0 / 0.125 / 0.25). The rule we pre-registered for this probe compared the two divergence *counts* and therefore formally returned SUSPECT; the margins show what a count cannot — no divergence at a decided position — so the repository now says "lossless up to floating-point numerics" instead of "identical" (README §1, drafter card).
+* **Reference-loop caveat**: transformers' `Cache.crop` does not roll back Gated-DeltaNet recurrent state; the HF/z-lab reference DFlash loop is therefore not lossless on Qwen3.5-class hybrids and inflates offline acceptance (1.9× over 100 prompts in our diagnostic). Reported as huggingface/transformers#49036 (with a runnable reproducer) and z-lab/dflash#172. SGLang's verify path is unaffected (the measurement above).
+* Tools vendored: `bench/compose_nospec.py`, `bench/lossless_probe.py` (standard library only).
+
+---
+
 ## [v0.6.6] - 2026-09-22
 
 ### 📜 FP8 drafter KV adopted (kearuga profile)
