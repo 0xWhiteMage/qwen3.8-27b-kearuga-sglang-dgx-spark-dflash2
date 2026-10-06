@@ -249,6 +249,16 @@ DRY_RUN=1 ./start-dflash2.sh   # runs all checks, prints the expanded docker run
 
 *The launcher automatically pulls the verified Kearuga checkpoint and DFlash drafter from Hugging Face on first run. No manual weight conversion or kernel patching is required.*
 
+**Download the target checkpoint manually** (for a local copy, or if the launcher's first pull fails):
+
+```bash
+python3 -m pip install -U huggingface_hub
+hf download 0xWhiteMage/Qwen3.8-27B-Kearuga \
+  --local-dir ./models/Qwen3.8-27B-Kearuga
+```
+
+The target repository is public and ungated. Its full snapshot is about **24.9 GB**, so allow at least 30 GB of free space. `hf download` retrieves the actual files; use it instead of a plain Git clone for the large checkpoint. To serve this local copy, set `TARGET_MODEL` in your uncommitted `.env` to its absolute path (for example, `/absolute/path/to/models/Qwen3.8-27B-Kearuga`). The drafter is a separate Hugging Face repository and is still fetched automatically by the default profile. If an anonymous download is rate-limited, sign in with `hf auth login` and retry.
+
 ---
 
 ## 🧪 Verification & Benchmarking
